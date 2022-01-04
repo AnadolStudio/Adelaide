@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "867036515955",
+    "project_id": "adelaide-e96a0",
+    "storage_bucket": "adelaide-e96a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867036515955:android:19654b29bdf96aad09a406",
+        "android_client_info": {
+          "package_name": "com.anadolstudio.adelaide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867036515955-f7466jes5kvvn0jebtcsktuat6mmhpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcUJ7sRpPdFkzBifcum0PTbyE-eZGv5dI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "867036515955-f7466jes5kvvn0jebtcsktuat6mmhpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

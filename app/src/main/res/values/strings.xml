@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Adelaide</string>
+    <string name="popular">Popular</string>
+    <string name="beautiful">Beautiful</string>
+    <string name="photo">Photo</string>
+    <string name="collage">Collage</string>
+</resources>
