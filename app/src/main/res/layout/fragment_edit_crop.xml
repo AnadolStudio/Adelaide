@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:maxHeight="@dimen/max_height_bottom_fragment"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/main_recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/min_height_bottom_fragment"
+        android:layout_gravity="center"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_function" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ratio_recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/max_height_bottom_fragment"
+        android:layout_gravity="center"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_crop" />
+
+
+    <!--
+        <include
+            android:id="@+id/support_layout"
+            layout="@layout/support_edit_layout"
+            android:visibility="gone" />
+    -->
+
+</LinearLayout>

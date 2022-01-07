@@ -44,4 +44,6 @@
     <dimen name="image_button_side">50dp</dimen>
     <dimen name="color_picker_button_side_small">35dp</dimen>
     <dimen name="image_filter_side">60dp</dimen>
+    <dimen name="min_height_bottom_fragment">76dp</dimen>
+    <dimen name="max_height_bottom_fragment">126dp</dimen>
 </resources>

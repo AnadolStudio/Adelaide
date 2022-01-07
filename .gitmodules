@@ -1,0 +1,6 @@
+[submodule "AndroidCoreBase"]
+	path = AndroidCoreBase
+	url = git@github.com:AnadolStudio/AndroidCoreBase.git
+[submodule "PhotoEditorCore"]
+	path = PhotoEditorCore
+	url = git@github.com:AnadolStudio/PhotoEditorCore.git

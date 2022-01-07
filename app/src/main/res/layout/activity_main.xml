@@ -4,7 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".ui.screens.main.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/confetti_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -30,20 +40,16 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_weight="1"
-                    android:fontFamily="@font/amadeus_ap"
+                    app:fontFamily="@font/amadeus_ap"
                     android:gravity="center_vertical"
-                    android:text="@string/app_name"
+                    android:text="@string/app_name_label"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/text_header_large"
                     android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/night_btn"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="@dimen/image_button_side"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    android:background="@drawable/item_ripple_oval_without_mask"
+                    style="@style/MenuImageView"
                     android:src="@drawable/ic_mode_night" />
             </LinearLayout>
 
@@ -58,84 +64,83 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/popular"
-        app:layout_constraintBottom_toTopOf="@+id/ad_card_view"
+        android:layout_marginTop="@dimen/margin_xlarge"
         app:layout_constraintEnd_toEndOf="@+id/ad_card_view"
-        app:layout_constraintStart_toStartOf="@+id/ad_card_view" />
+        app:layout_constraintStart_toStartOf="@+id/ad_card_view"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ad_card_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin.56"
-        android:layout_marginEnd="@dimen/margin_large"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="@dimen/radius16"
         app:cardElevation="@dimen/elevation_normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintHeight_percent="0.225"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar">
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Cамореклама"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_subtitle" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/test" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
 
     <TextView
+        android:id="@+id/textView2"
         style="@style/HeaderSmall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:text="@string/beautiful"
-        app:layout_constraintBottom_toTopOf="@+id/beautiful_card_view"
         app:layout_constraintEnd_toEndOf="@+id/beautiful_card_view"
-        app:layout_constraintStart_toStartOf="@+id/beautiful_card_view" />
+        app:layout_constraintStart_toStartOf="@+id/beautiful_card_view"
+        app:layout_constraintTop_toBottomOf="@+id/ad_card_view" />
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/beautiful_card_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginEnd="@dimen/margin_large"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="@dimen/radius16"
         app:cardElevation="@dimen/elevation_normal"
-        app:layout_constraintBottom_toTopOf="@+id/photo_card_view"
+        app:layout_constraintHeight_percent="0.225"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ad_card_view">
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Красивые Фотографий"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_subtitle" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/test" />
         </LinearLayout>
 
 
     </androidx.cardview.widget.CardView>
 
 
+<!--
     <androidx.cardview.widget.CardView
         android:id="@+id/collage_card_view"
         style="@style/SimpleCardView"
@@ -171,16 +176,18 @@
 
 
     </androidx.cardview.widget.CardView>
+-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/photo_card_view"
         style="@style/SimpleCardView"
-        android:layout_marginStart="@dimen/margin_large"
         android:layout_marginBottom="@dimen/margin_xlarge"
+        android:layout_marginStart="@dimen/margin_large"
         android:clickable="true"
         android:focusable="true"
         android:stateListAnimator="@animator/item_card_large"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline">
 
         <LinearLayout

@@ -3,7 +3,7 @@ package com.anadolstudio.adelaide
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate.*
-import com.anadolstudio.adelaide.model.SettingsPreference
+import com.anadolstudio.adelaide.data.SettingsPreference
 
 class App : Application() {
 
@@ -12,21 +12,19 @@ class App : Application() {
         setDefaultNightMode(SettingsPreference.getNightMode(this))
     }
 
-
     fun changeTheme() {
-        val mode = if (getDefaultNightMode() == MODE_NIGHT_FOLLOW_SYSTEM) {
-            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_NO -> MODE_NIGHT_YES
-                else -> MODE_NIGHT_NO
-            }
-        } else {
-            if (getDefaultNightMode() == MODE_NIGHT_YES) {
-                MODE_NIGHT_NO
-            } else {
-                MODE_NIGHT_YES
-            }
+        val mode = when (getDefaultNightMode()) { // TODO это можно вынести за пределы App
+            MODE_NIGHT_FOLLOW_SYSTEM -> getNightModeFromSystem()
+            MODE_NIGHT_NO -> MODE_NIGHT_YES
+            else /*MODE_NIGHT_YES*/ -> MODE_NIGHT_NO
         }
+
         SettingsPreference.setNightMode(this, mode)
         setDefaultNightMode(mode)
+    }
+
+    private fun getNightModeFromSystem(): Int = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_NO -> MODE_NIGHT_YES
+        else -> MODE_NIGHT_NO
     }
 }
