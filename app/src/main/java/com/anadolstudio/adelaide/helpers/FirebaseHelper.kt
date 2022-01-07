@@ -27,6 +27,7 @@ class FirebaseHelper private constructor() {
 
 
     fun logEvent(event: Event) {
+        return // TODO открой в релизе
         val name = event.name.lowercase()
         firebaseAnalytics.logEvent(name) {
             param(name, name)
@@ -34,6 +35,7 @@ class FirebaseHelper private constructor() {
     }
 
     fun logEvent(event: Event, item: String) {
+        return // TODO открой в релизе
         lastItem = item
         val name = event.name.lowercase().replace(REPLACE_NAME, item)
         firebaseAnalytics.logEvent(SELECT_ITEM) {
@@ -161,14 +163,16 @@ class FirebaseHelper private constructor() {
         PAY_MONTH,
         PAY_YEAR,
         PAY_CANCEL,
-        REMOVE_WATERMARK,
+        SAVE_PHOTO,
         SHARE_OTHERS,
+        SHARE_VK,
         SHARE_INSTAGRAM,
         SHARE_FACEBOOK,
-        SHARE_WHATSUP,
+        SHARE_MESSENGER,
+        SHARE_WHATS_APP,
+        SHARE_TWITTER,
         BACK_TO_MAIN,
-        BACK_TO_PHOTO_EDIT,
-        BACK_TO_COLLAGE_EDIT
+        BACK_TO_PHOTO,
     }
 
 }

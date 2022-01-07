@@ -39,11 +39,7 @@
 
                 <ImageButton
                     android:id="@+id/night_btn"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="@dimen/image_button_side"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    android:background="@drawable/item_ripple_oval_without_mask"
+                    style="@style/MenuImageView"
                     android:src="@drawable/ic_mode_night" />
             </LinearLayout>
 
@@ -81,14 +77,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Cамореклама"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_subtitle" />
+                android:src="@drawable/test"
+                android:scaleType="centerCrop"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -122,14 +115,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Красивые Фотографий"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_subtitle" />
+                android:src="@drawable/test"
+                android:scaleType="centerCrop"/>
         </LinearLayout>
 
 

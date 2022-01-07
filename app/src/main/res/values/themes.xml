@@ -15,7 +15,7 @@
     </style>
 
     <style name="ToolBarWithNavigationBack">
-        <item name="navigationIcon">@drawable/abc_ic_ab_back_material</item>
+        <item name="navigationIcon">@drawable/ic_arrow_left</item>
     </style>
 
     <style name="SimpleCardView">
@@ -69,5 +69,39 @@
         <item name="android:layout_margin">@dimen/margin_xsmall</item>
     </style>
 
+    <style name="MenuImageView" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">@dimen/image_button_side</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/margin_normal</item>
+        <item name="android:background">@drawable/item_ripple_oval_without_mask</item>
+    </style>
+
+    <style name="EditItem" />
+
+    <style name="EditItem.LinearLayout">
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">60dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_small</item>
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+    </style>
+
+    <style name="EditItem.LinearLayoutRipple" parent="EditItem.LinearLayout">
+        <item name="android:background">@drawable/item_ripple_oval_without_mask</item>
+    </style>
+
+    <style name="AdAttribution">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textColor">@color/colorAccentInverse</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:text">@string/ad_attribution</item>
+        <item name="android:background">@color/colorPrimaryInverse</item>
+    </style>
+
+    <style name="SlidingDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
 
 </resources>

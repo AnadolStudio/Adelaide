@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate.*
 import com.anadolstudio.adelaide.model.SettingsPreference
+import com.google.android.gms.ads.MobileAds
 
 class App : Application() {
 
