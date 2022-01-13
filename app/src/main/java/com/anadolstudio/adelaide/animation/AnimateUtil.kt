@@ -121,6 +121,7 @@ class AnimateUtil {
                 .setListener(listener)
         }
 
+        //TODO UP, DOWN, LEFT, RIGHT
         fun showAnimY(view: View, start: Float, end: Float) {
             view.visibility = View.INVISIBLE
             view.translationY = start
@@ -129,6 +130,16 @@ class AnimateUtil {
                 .setDuration(DURATION_NORMAL)
                 .setListener(getSimpleListener(view))
         }
+
+        fun showAnimY(view: View, start: Float, end: Float, listener: AnimatorListenerAdapter) {
+            view.visibility = View.INVISIBLE
+            view.translationY = start
+            view.animate()
+                .translationY(end)
+                .setDuration(DURATION_NORMAL)
+                .setListener(listener)
+        }
+
 
         private fun getSimpleListener(view: View) = object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {

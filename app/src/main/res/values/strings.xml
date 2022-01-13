@@ -12,10 +12,6 @@
     <string name="get_permission">Please, give permission</string>
     <string name="nothing_found">Nothing found</string>
 
-    <!--    EditActivity-->
-    <string name="double_click_for_exit">Double click for exit</string>
-    <string name="cant_open_photo">Can\'t open the photo</string>
-
     <!--    SaveActivity-->
     <string name="another">Another</string>
     <string name="instagram">Instagram</string>
@@ -23,4 +19,44 @@
     <string name="whatsapp">WhatsApp</string>
     <string name="thank_you">Thank you for choosing us!</string>
     <string name="ad_attribution" translatable="false">Ad</string>
+
+    <!--    EditActivity-->
+    <string name="double_click_for_exit">Double click for exit</string>
+    <string name="cant_open_photo">Can\'t open the photo</string>
+    <string name="saved">Saved</string>
+    <string name="instagram_1x1">IG 1:1</string>
+    <string name="instagram_4x5">IG 4:5</string>
+    <string name="instagram_story">Inst Story</string>
+    <string name="movie">Movie</string>
+    <string name="ratio5x4">5:4</string>
+    <string name="A4">A4</string>
+    <string name="header">Header</string>
+    <string name="post">Post</string>
+    <string name="cover">Cover</string>
+    <string name="display">Display</string>
+    <string name="ratio16x9">16:9</string>
+    <string name="ratio9x16">9:16</string>
+    <string name="ratio2x3">2:3</string>
+    <string name="ratio3x2">3:2</string>
+    <string name="ratio4x3">4:3</string>
+    <string name="ratio3x4">3:4</string>
+    <string name="free_size">Free</string>
+    <string name="transform">Transform</string>
+    <string name="turn">Turn</string>
+    <string name="flip_h">Horizontal</string>
+    <string name="flip_v">Vertical</string>
+    <string name="filter">Filter</string>
+    <string name="effect">Effect</string>
+    <string name="fit">Fit</string>
+    <string name="cut">Cut</string>
+    <string name="blur">Blur</string>
+    <string name="mirror">Mirror</string>
+    <string name="text">Text</string>
+    <string name="sticker">Sticker</string>
+    <string name="exposition">Exposition</string>
+    <string name="add">Add</string>
+    <string name="brush">Brush</string>
+    <string name="crop">Crop</string>
+
+
 </resources>

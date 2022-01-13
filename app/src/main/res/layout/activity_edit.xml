@@ -26,11 +26,29 @@
                 android:layout_gravity="center"
                 android:gravity="end|center">
 
+                <!--
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:text="37:14"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/text_title_small"
+                                    android:textColor="@color/colorAccent"/>
+                -->
+
                 <ImageButton
                     android:id="@+id/save_btn"
                     style="@style/MenuImageView"
                     android:background="@drawable/item_ripple_oval_without_mask"
                     android:src="@drawable/ic_save" />
+
+                <ImageButton
+                    android:id="@+id/apply_btn"
+                    style="@style/MenuImageView"
+                    android:background="@drawable/item_ripple_oval_without_mask"
+                    android:src="@drawable/ic_apply"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -41,10 +59,10 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="50dp"
         android:background="@color/colorPrimary"
-        app:adSize="SMART_BANNER"
         android:visibility="invisible"
+        app:adSize="SMART_BANNER"
         app:adUnitId="ca-app-pub-3940256099942544/6300978111"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,23 +78,41 @@
         app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <ImageView
-            android:id="@+id/testImage"
+            android:id="@+id/main_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter" />
+
+        <com.theartofdev.edmodo.cropper.CropImageView
+            android:id="@+id/crop_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:cropBorderCornerColor="@color/colorPrimaryInverse"
+            app:cropBorderCornerLength="30dp"
+            app:cropBorderCornerOffset="6dp"
+            app:cropBorderCornerThickness="3dp"
+            app:cropBorderLineColor="@color/colorPrimaryInverse"
+            app:cropBorderLineThickness="3dp"
+            app:cropGuidelinesColor="@color/colorPrimaryInverse"
+            />
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/toolbar_fragment"
         android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
-        android:background="@color/colorPrimary"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:maxHeight="@dimen/max_height_bottom_fragment"
+        android:minHeight="@dimen/min_height_bottom_fragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!--<include layout="@layout/main_edit_fragment" />-->
+        <!--        <include layout="@layout/fragment_edit_crop" />-->
     </FrameLayout>
 
 

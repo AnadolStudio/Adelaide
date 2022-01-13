@@ -13,12 +13,14 @@ import android.view.View
 import android.view.View.VISIBLE
 import androidx.core.animation.doOnEnd
 import androidx.core.content.FileProvider
+import com.anadolstudio.adelaide.BuildConfig
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.fragments.ImageDialog.decodeSampledBitmapFromRealPath
 import com.anadolstudio.adelaide.fragments.ImageDialogTouchListener
+import com.anadolstudio.adelaide.helpers.BitmapHelper.CONTENT
+import com.anadolstudio.adelaide.helpers.BitmapHelper.decodeSampledBitmapFromContentResolverPath
 import com.anadolstudio.adelaide.helpers.FirebaseHelper
 import com.anadolstudio.adelaide.helpers.populateNativeAdView
 import com.anadolstudio.adelaide.model.AdKeys
@@ -96,7 +98,7 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
         )
 
         binding.savedImage.setImageBitmap(
-            decodeSampledBitmapFromRealPath(path, 400, 400)
+            decodeSampledBitmapFromContentResolverPath(this, path, 400, 400)
         )
 
         binding.share.setOnClickListener(this)
@@ -154,13 +156,16 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
 
     private fun createShareIntent(path: String, namePackage: String?) {
         val type = "image/*"
-        val photoURI = FileProvider.getUriForFile(
-            this,
-            applicationContext.packageName + ".provider",
-            File(path)
-        )
-        Log.d("TAG", "createShareIntent: path $path")
-        Log.d("TAG", "createShareIntent: uri $photoURI")
+        val photoURI = if (path.contains(CONTENT)) {
+            Uri.parse(path)
+        } else {
+            FileProvider.getUriForFile(
+                this,
+                applicationContext.packageName + ".provider",
+                File(path)
+            )
+        }
+
         val share = Intent(Intent.ACTION_SEND)
         share.type = type
         share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -201,7 +206,9 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
                 0F,
             )
             if (SettingsPreference.isFirstRunShareActivity(this)) {
-//                SettingsPreference.firstRunShareActivity(this)// TODO В релизе открой
+                if (!BuildConfig.DEBUG)
+                    SettingsPreference.firstRunShareActivity(this)
+
                 Handler(Looper.getMainLooper()).postDelayed({
                     horizontalScrollAnim()
                 }, 2000L)

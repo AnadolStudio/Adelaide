@@ -9,7 +9,7 @@ import java.util.Locale;
 
 public class TimeHelper {
     public static final String TAG = TimeHelper.class.getName();
-    public static final String STANDART_FORMAT = "yyyy_MM_dd_HHmmss";
+    public static final String DEFAULT_FORMAT = "yyyy_MM_dd_HHmmss";
 
     public static int getCurrentHour() {
         Date currentDate = new Date();

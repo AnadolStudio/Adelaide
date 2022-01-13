@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FAFAFA</color>
-    <color name="colorPrimaryInverse">#424242</color>
     <color name="colorPrimaryDark">#1b1b1b</color>
     <color name="colorSecondary">#EBEBEB</color>
     <color name="colorAccent">#FF1B1B1B</color>
-    <color name="colorAccentInverse">#FAFAFA</color>
+    <color name="colorPrimaryShadow">#99FAFAFA</color>
     <color name="colorAccentShadow">#991B1B1B</color>
     <color name="colorTextRipple">#bdbdbd</color>
 
+    <color name="colorPrimaryInverse">#424242</color>
+    <color name="colorSecondaryInverse">#616161</color>
+    <color name="colorAccentInverse">#FAFAFA</color>
+
+    <color name="notification">#B71C1C</color>
     <color name="black">#000</color>
+    <color name="gray">#FF1B1B1B</color>
     <color name="white">#FFF</color>
+
 </resources>

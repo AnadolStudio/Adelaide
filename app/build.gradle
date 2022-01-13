@@ -63,4 +63,7 @@ dependencies {
 
     //Ad
     implementation 'com.google.android.gms:play-services-ads:20.5.0'
+
+    //PhotoEditLibs
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }

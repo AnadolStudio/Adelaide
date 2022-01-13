@@ -1,36 +1,51 @@
 package com.anadolstudio.adelaide.activities
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Bundle
-import android.provider.MediaStore
+import android.os.*
 import android.util.Log
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.activities.MainActivity.Companion.EDIT_TYPE
+import com.anadolstudio.adelaide.activities.MainActivity.Companion.PHOTO_TYPE
 import com.anadolstudio.adelaide.animation.AnimateUtil
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.helpers.GlideLoader
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.anadolstudio.adelaide.editphotoprocessor.EditListener
+import com.anadolstudio.adelaide.editphotoprocessor.EditProcessorIml
+import com.anadolstudio.adelaide.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.fragments.BaseEditFragment
+import com.anadolstudio.adelaide.fragments.FunctionListFragment
+import com.anadolstudio.adelaide.helpers.BitmapHelper
+import com.anadolstudio.adelaide.helpers.FunctionItem
+import com.anadolstudio.adelaide.helpers.PermissionHelper.*
+import com.anadolstudio.adelaide.helpers.TimeHelper
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import java.io.IOException
+import com.theartofdev.edmodo.cropper.CropImageView
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EditActivity : BaseActivity() {
-
+    var currentFunction: FunctionItem? = null
+    private var bottomFragment: BaseEditFragment? = null
     private var backPressed = 0L
 
     companion object {
         val TAG: String = EditActivity::class.java.name
+        const val FUNCTION = "function"
         private const val IMAGE_PATH = "image_path"
         var callback: Callback? = null
 
@@ -48,41 +63,23 @@ class EditActivity : BaseActivity() {
     }
 
     private lateinit var path: String
-
+    lateinit var editProcessor: EditProcessorIml
     private lateinit var binding: ActivityEditBinding
 
-    inner class MyRequestListener() : RequestListener<Bitmap> {
-        override fun onResourceReady(
-            resource: Bitmap?,
-            model: Any?,
-            target: Target<Bitmap>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
-        ): Boolean {
-            useCallback()
-            hideLoadingDialog()
-            return false
-        }
-
-        override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Bitmap>?,
-            isFirstResource: Boolean
-        ): Boolean {
-            useCallback()
-            hideLoadingDialog()
-            Log.d(TAG, "onLoadFailed: Can\\'t open file")
-            Toast.makeText(this@EditActivity, getText(R.string.cant_open_photo), Toast.LENGTH_SHORT)
-                .show()
-            finish()
-            return false
-        }
-
-        private fun useCallback() {
-            callback?.callback()
+    private fun useCallback() {
+        callback?.let {
+            it.callback()
             callback = null
         }
+    }
+
+    private fun failureLoadBitmap() {
+        useCallback()
+        hideLoadingDialog()
+        Log.d(TAG, "onLoadFailed: Can\\'t open file")
+        Toast.makeText(this@EditActivity, getText(R.string.cant_open_photo), Toast.LENGTH_SHORT)
+            .show()
+        finish()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,56 +98,52 @@ class EditActivity : BaseActivity() {
     }
 
     private fun init() {
-        binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.navigationToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         binding.navigationToolbar.title = null
         binding.saveBtn.setOnClickListener {
-            val realPath = getRealPath()
-            SaveActivity.start(this, realPath)
-        }
-        /*currentMode = EditActivity.Mode.MODE_MAIN
-        dialogIsShow = false
-        lastDialogIsAccept = false
-        getEditHelper()
-
-        binding.navigationToolbar.setNavigationOnClickListener { v -> onBackPressed() }
-        binding.navigationToolbar.title = null
-        val fm = supportFragmentManager
-        bottomFragment = fm.findFragmentById(R.id.toolbar_fragment)
-        val key = intent.getStringExtra(EDIT_TYPE.name())
-        val fragment: MainEditFragment = MainEditFragment.newInstance(key ?: PHOTO_KEY)
-        addFragment(fm, fragment)
-        currentMode = EditActivity.Mode.MODE_MAIN
-        binding.textFlipper.setInAnimation(this, R.anim.in_bottom_to_top)
-        binding.textFlipper.setOutAnimation(this, R.anim.out_bottom_to_top)
-        binding.applyText.setOnClickListener { v ->
-            if (bottomFragment != null && bottomFragment is StateListener
-                && (bottomFragment as StateListener).isReadyToApply()
-            ) {
-                createDialog(true)
-            }
-        }
-        flipperWrapper = ViewFlipperWrapper(
-            binding.textFlipper, 0
-        ) { v, c ->
-            binding.applyText.setEnabled(c === 1)
-            binding.saveText.setEnabled(c === 0)
-        }
-        binding.saveText.setOnClickListener { v ->
-            if (PermissionHelper.hasPermission(this, STORAGE_PERMISSION)) {
-                getEditHelper().saveImage()
+            if (hasPermission(this, STORAGE_PERMISSION)) {
+                saveImage()
             } else {
-                PermissionHelper.requestPermission(
+                requestPermission(
                     this,
                     STORAGE_PERMISSION,
                     REQUEST_STORAGE_PERMISSION
                 )
             }
         }
-        val photoEditorView: PhotoEditorView = binding.photoEditorView*/
+        binding.applyBtn.setOnClickListener {
+            bottomFragment?.let {
+                if (!it.apply()) { //TODO
+                    showWorkspace(false)
+                    super.onBackPressed()
+                }
+            }
+        }
+        val key = intent.getStringExtra(EDIT_TYPE) ?: PHOTO_TYPE
+        bottomFragment =
+            supportFragmentManager.findFragmentById(R.id.toolbar_fragment) as BaseEditFragment?
+
+        addFragment(FunctionListFragment.newInstance(key))
         path = intent.getStringExtra(IMAGE_PATH).toString()
         Log.d(TAG, "init path: $path")
-        showLoadingDialog()
-        GlideLoader.loadImageWithoutCache(binding.testImage, path, MyRequestListener())
+
+        editProcessor = EditProcessorIml(this, path, object : EditListener<Bitmap> {
+            override fun onSuccess(t: Bitmap) {
+                useCallback()
+                BitmapHelper.getInfoOfBitmap(t)
+                binding.mainImage.setImageBitmap(t)
+            }
+
+            override fun onFailure(ex: Throwable) {
+                failureLoadBitmap()
+            }
+        })
+
+        binding.cropImage.setMinCropResultSize(250, 250)
+
+
         /*editHelper.initPhotoEditor(photoEditorView)
         multiTouchListener = MyMultiTouchListener(binding.frameContentImageView, true)
         binding.frameContentImageView.setOnTouchListener(multiTouchListener)
@@ -159,39 +152,149 @@ class EditActivity : BaseActivity() {
         }*/
     }
 
-    @Deprecated("getRealPath")
-    private fun getRealPath(): String {
-        val contentUri = Uri.parse(path)
-        var cursor: Cursor? = null
-        var realPath = ""
-        try {
-            val proj = arrayOf(MediaStore.Images.Media.DATA)
-            cursor = contentResolver.query(contentUri, proj, null, null, null)
-            cursor?.let {
-                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                cursor.moveToFirst()
-                realPath = cursor.getString(columnIndex).toString()
+    override fun onBackPressed() {
+        bottomFragment?.let {
+            if (!it.onBackClick()) {
+                if (currentFunction == null) { // Начальное состояние
+                    if (backPressed + 2000 > System.currentTimeMillis()) {
+                        super.onBackPressed()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.double_click_for_exit),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        backPressed = System.currentTimeMillis()
+                    }
+                } else {
+                    showWorkspace(false)
+                    super.onBackPressed()
+                }
             }
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            cursor?.close()
         }
-        return realPath
     }
 
-    override fun onBackPressed() {
-        if (backPressed + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed()
-        } else {
-            Toast.makeText(
-                this,
-                getString(R.string.double_click_for_exit),
-                Toast.LENGTH_SHORT
-            ).show()
-            backPressed = System.currentTimeMillis()
+    fun cropView(): CropImageView = binding.cropImage
+
+    fun showCropImage(show: Boolean) {
+        binding.cropImage.visibility = if (show) VISIBLE else GONE
+        showMainImage(show)
+        binding.cropImage.isShowCropOverlay = false
+//        binding.cropImage.guidelines =
+        if (!show) {
+            binding.cropImage.clearImage()
+            binding.cropImage.rotatedDegrees = 0
+            binding.cropImage.isFlippedVertically = false
+            binding.cropImage.isFlippedHorizontally = false
+            binding.cropImage.setOnCropWindowChangedListener(null)
         }
+    }
+
+    private fun showMainImage(show: Boolean) {
+        binding.mainImage.visibility = if (show) GONE else VISIBLE
+    }
+
+    fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
+        if (!show) currentFunction = null
+
+        binding.adView.visibility = if (needMoreSpace) GONE else VISIBLE
+        if (needMoreSpace) binding.adView.clearAnimation()
+
+        binding.saveBtn.visibility = if (show) GONE else VISIBLE
+        binding.applyBtn.visibility = if (show) VISIBLE else GONE
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        replaceFragment(fragment, true)
+    }
+
+    fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+        if (bottomFragment == fragment) return
+        bottomFragment = fragment as BaseEditFragment
+
+        val transaction = supportFragmentManager.beginTransaction()
+            .replace(R.id.toolbar_fragment, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+        if (addToBackStack) transaction.addToBackStack(fragment.javaClass.name)
+        transaction.commit()
+    }
+
+    fun addFragment(fragment: Fragment) {
+        addFragment(supportFragmentManager, fragment)
+    }
+
+    private fun addFragment(fm: FragmentManager, fragment: Fragment) {
+        if (bottomFragment == fragment) return
+
+        bottomFragment = fragment as BaseEditFragment
+        fm.beginTransaction()
+            .add(R.id.toolbar_fragment, fragment)
+            .commit()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_STORAGE_PERMISSION -> {
+                Log.d(TAG, "onRequestPermissionsResult: " + grantResults.contentToString())
+                if (grantResults.isNotEmpty()
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    saveImage()
+                } else {
+                    val shouldShow = ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        STORAGE_PERMISSION[1]
+                    )
+                    showSettingsSnackbar(this, binding.root)
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun saveImage() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) return
+
+        editProcessor.saveAsFile(this, createAppDir(), object : EditListener<String> {
+            override fun onSuccess(path: String) {
+                SaveActivity.start(this@EditActivity, path)
+            }
+
+            override fun onFailure(ex: Throwable) {
+                Log.d(TAG, "onFailure: ${ex.message}")
+            }
+        })
+    }
+
+    private fun getFileName(): String {
+        val currentDate = Date()
+        val timeFormat: DateFormat =
+            SimpleDateFormat(TimeHelper.DEFAULT_FORMAT, Locale.getDefault())
+        return "IMG_${timeFormat.format(currentDate)}.jpeg" // TODO JPEG?
+    }
+
+    private fun createAppDir(): File {
+        val directory =
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .toString() + File.separator + getString(
+                    R.string.app_name
+                )
+            )
+        if (!directory.exists() && !directory.isDirectory) {
+            Log.d(TAG, "Not exist")
+            if (!directory.mkdirs()) // create empty directory
+                Log.d(TAG, "Unable to create app dir!")
+        }
+        return File(directory, getFileName())
     }
 
     private fun initAd() {
@@ -210,6 +313,21 @@ class EditActivity : BaseActivity() {
             }
         }
         binding.adView.loadAd(adRequest)
+    }
 
+    fun setupCropImage(function: TransformFunction) {
+        binding.cropImage.setAspectRatio(
+            if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
+            if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
+        )
+        binding.cropImage.setFixedAspectRatio(false)
+        setupWindowCropImage(function)
+//        binding.cropImage.isFlippedVertically = function.flipVertical
+//        binding.cropImage.isFlippedHorizontally = function.flipHorizontal
+        binding.cropImage.rotatedDegrees = function.degrees
+    }
+
+    fun setupWindowCropImage(function: TransformFunction) {
+        binding.cropImage.cropRect = function.cropWindow ?: binding.cropImage.wholeImageRect
     }
 }

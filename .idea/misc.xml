@@ -4,39 +4,79 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/tereh/.gradle/caches/transforms-3/189813eb876ba79f05955cb27e3a9655/transformed/appcompat-1.4.0/res/drawable/abc_ic_ab_back_material.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi-v24/ic_notification.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi-v24/ic_stat_name.xml" value="0.36875" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_collage.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_crop.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_crop_free.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_facebook_vector.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_grid_3.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_image.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_instagram_vector.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_instagram_vector_color.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_mode_night.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_phone_android.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_twitter_vector.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-anydpi/ic_youtube_vector.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-night/activity_splash.xml" value="0.22" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-night/drawab.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable-v24/item_ripple.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/activity_splash.xml" value="0.2" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/activity_splash_night.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_add_image.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_apply.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_arrow_left.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_baseline_phone_android_24.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_baseline_save_24.xml" value="0.30416666666666664" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_blur.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_brush.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_crop.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_cut.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_effect.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_facebook_vector.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_filter.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_fit.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_flip_horizontal.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_flip_vertical.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_grid_4.xml" value="0.253125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_home.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_hove.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_inside.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_instagram_vector.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_layout.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_lens_ra_alpha_back.xml" value="0.25" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_lensra.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_mirror.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_mirror__1_.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_movie_vector.xml" value="0.22604166666666667" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_overlap.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_rotate.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_save.xml" value="0.21794871794871795" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_save2.xml" value="0.30416666666666664" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_share.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_sticker.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_text.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_transform.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_twitter_vector.xml" value="0.3828125" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/ic_youtube_vector.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/item_ripple.xml" value="0.34629629629629627" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/item_ripple_oval.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/drawable/item_ripple_oval_without_mask.xml" value="0.3828125" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/font/fonts.xml" value="0.396875" />
-        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/activity_edit.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/activity_edit.xml" value="0.25" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/activity_gallery.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/activity_save.xml" value="0.33" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/bottom_list_edit_fragment.xml" value="0.5" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/dialog_image.xml" value="0.25" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/dialog_loading.xml" value="0.33" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/fragment_edit_crop.xml" value="0.33" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/fragment_list_function.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/gallery_media_item.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/image_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/item_crop.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/item_function.xml" value="0.45751633986928103" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/native_ad_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/simple_list_item.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />

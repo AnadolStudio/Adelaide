@@ -2,19 +2,15 @@ package com.anadolstudio.adelaide.helpers;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.ArrayMap;
+import android.os.ParcelFileDescriptor;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 import io.reactivex.Observable;
 
@@ -42,6 +37,7 @@ public class BitmapHelper {
     public static final int COLOR_MASK = Color.parseColor("#EFEFEF");// panelBackground, c ALFA_8 в любом случае будет черным.
 
     public static final Integer[] ARRAY_OF_COLORS_MASK = new Integer[]{Color.RED, Color.GREEN, Color.BLUE};
+    public static final String CONTENT = "content:";
 
     public static Observable<Bitmap> loadBitmapFromAssets(Context context, final String path) {
         return Observable.create(emitter -> {
@@ -77,15 +73,7 @@ public class BitmapHelper {
         return Math.abs((bitmap1.getHeight() - bitmap.getHeight()) / 2);
     }
 
-    public static BitmapWrapper[] trim(Bitmap[] sources) {
-        BitmapWrapper[] wrappers = new BitmapWrapper[sources.length];
-        for (int i = 0; i < sources.length; i++) {
-            wrappers[i] = trim(sources[i]);
-        }
-        return wrappers;
-    }
-
-    public static BitmapWrapper trim(Bitmap source) {
+    public static Bitmap trim(Bitmap source) {
         int firstX = 0, firstY = 0;
         int lastX = source.getWidth();
         int lastY = source.getHeight();
@@ -128,10 +116,7 @@ public class BitmapHelper {
                 }
             }
         }
-        Bitmap bitmap = Bitmap.createBitmap(source, firstX, firstY, lastX - firstX, lastY - firstY);
-        float[] bounds = new float[]{firstX, firstY, lastX, lastY};
-
-        return new BitmapWrapper(bounds, bitmap);
+        return Bitmap.createBitmap(source, firstX, firstY, lastX - firstX, lastY - firstY);
     }
 
     public static int[] getBounds(Bitmap source) {
@@ -288,6 +273,7 @@ public class BitmapHelper {
     }
 
     public static Bitmap rotate(Bitmap source, float degree) {
+        if (degree == 0) return source;
         //Если хочешь кастомный градус, то используй editor().setScaleType(ImageView.ScaleType.MATRIX);
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
@@ -312,6 +298,12 @@ public class BitmapHelper {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics;
+    }@NonNull
+
+    public static DisplayMetrics getRealSize(AppCompatActivity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
+        return displayMetrics;
     }
 
     public static Bitmap getBitmapFromImageView(ImageView source) {
@@ -329,17 +321,11 @@ public class BitmapHelper {
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    @NonNull
-    public static String getFileName() {
-        return "IMG_" + TimeHelper.getTime(TimeHelper.STANDART_FORMAT) + ".jpeg";
-    }
-
     public static Observable<String> saveBitmapAsFile(Context context, Bitmap originalBitmap, File file) {
         return Observable.create(emitter -> {
             try {
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     originalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    getInfoOfBitmap(originalBitmap);
                     MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, (s, uri) -> Log.d(TAG, "onSuccess"));
                     emitter.onNext(file.getPath());
                     emitter.onComplete();
@@ -349,7 +335,6 @@ public class BitmapHelper {
                 emitter.onError(e);
             }
         });
-
     }
 
     public static void getInfoOfBitmap(Bitmap bitmap) {
@@ -372,40 +357,101 @@ public class BitmapHelper {
         return mimeType;
     }
 
-    private static Bitmap readImage(Context context, String path) {
-        Uri contentUri = Uri.parse(path);
-        Cursor cursor = null;
-        String realPath = "";
+    public static Bitmap decodeSampledBitmapFromContentResolverPath(Context context, String path,
+                                                                    int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
         int orientation = 1;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            realPath = cursor.getString(column_index);
+        Bitmap bitmap = null;
 
-            ExifInterface exif = new ExifInterface(realPath);
-            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+        options.inJustDecodeBounds = true;
+        if (path.contains(CONTENT)) {// Content
+            try {
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+                if (pfd != null) {
+                    BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
+                    orientation = new ExifInterface(pfd.getFileDescriptor()).getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION, 1);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
+            int degree = getDegree(orientation);
+
+            // Вычисляем inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, true);
+
+            // Читаем с использованием inSampleSize коэффициента
+            options.inJustDecodeBounds = false;
+//            var bitmap = BitmapFactory.decodeFile(path, options)
+
+            try {
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+                if (pfd != null) {
+                    bitmap = BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+                bitmap = rotate(bitmap, degree);
+            }
+        } else {//RealPath
+            try {
+                BitmapFactory.decodeFile(path, options);
+                orientation = new ExifInterface(path).getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int degree = getDegree(orientation);
+
+            // Вычисляем inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, true);
+
+            // Читаем с использованием inSampleSize коэффициента
+            options.inJustDecodeBounds = false;
+//            var bitmap = BitmapFactory.decodeFile(path, options)
+            bitmap = BitmapFactory.decodeFile(path, options);
+
+            if (bitmap != null) {
+                bitmap = rotate(bitmap, degree);
             }
         }
-        int degree = getDegree(orientation);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(realPath, options);
-
-        if (degree != 0) {
-            bitmap = rotate(bitmap, degree);
-        }
-        getInfoOfBitmap(bitmap);
-
         return bitmap;
+    }
+
+
+    public static int calculateInSampleSize(BitmapFactory.Options options,
+                                            int reqWidth, int reqHeight, boolean isHard) {
+        // Реальные размеры изображения
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        Log.d(TAG, "calculateInSampleSize: " + reqWidth + " " + reqHeight);
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Вычисляем наибольший inSampleSize, который будет кратным двум
+            // и оставит полученные размеры больше, чем требуемые
+            if (isHard) {
+                while ((halfHeight / inSampleSize) > reqHeight || (halfWidth / inSampleSize) > reqWidth) {
+                    inSampleSize *= 2;
+                }
+            } else {
+                while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
+                    inSampleSize *= 2;
+                }
+
+            }
+        }
+
+        return inSampleSize;
     }
 
     private static void logMemory() {
@@ -431,246 +477,5 @@ public class BitmapHelper {
         return degree;
     }
 
-    public static Bitmap takeScreenShot(AppCompatActivity activity) {
-        View view = activity.getWindow().getDecorView();
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-        Bitmap b1 = view.getDrawingCache();
-        Rect frame = new Rect();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-        int statusBarHeight = frame.top;
-        Point size = new Point();
-        activity.getWindowManager().getDefaultDisplay().getSize(size);
-
-        Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, size.x, size.y - statusBarHeight);
-        view.destroyDrawingCache();
-        return b;
-    }
-
-    public static Bitmap fastBlur(Bitmap sentBitmap, int radius) {
-        Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-
-        if (radius < 1) {
-            return (null);
-        }
-
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-
-        int[] pix = new int[w * h];
-        Log.e("pix", w + " " + h + " " + pix.length);
-        bitmap.getPixels(pix, 0, w, 0, 0, w, h);
-
-        int wm = w - 1;
-        int hm = h - 1;
-        int wh = w * h;
-        int div = radius + radius + 1;
-
-        int r[] = new int[wh];
-        int g[] = new int[wh];
-        int b[] = new int[wh];
-        int rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
-        int vmin[] = new int[Math.max(w, h)];
-
-        int divsum = (div + 1) >> 1;
-        divsum *= divsum;
-        int dv[] = new int[256 * divsum];
-        for (i = 0; i < 256 * divsum; i++) {
-            dv[i] = (i / divsum);
-        }
-
-        yw = yi = 0;
-
-        int[][] stack = new int[div][3];
-        int stackpointer;
-        int stackstart;
-        int[] sir;
-        int rbs;
-        int r1 = radius + 1;
-        int routsum, goutsum, boutsum;
-        int rinsum, ginsum, binsum;
-
-        for (y = 0; y < h; y++) {
-            rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum = bsum = 0;
-            for (i = -radius; i <= radius; i++) {
-                p = pix[yi + Math.min(wm, Math.max(i, 0))];
-                sir = stack[i + radius];
-                sir[0] = (p & 0xff0000) >> 16;
-                sir[1] = (p & 0x00ff00) >> 8;
-                sir[2] = (p & 0x0000ff);
-                rbs = r1 - Math.abs(i);
-                rsum += sir[0] * rbs;
-                gsum += sir[1] * rbs;
-                bsum += sir[2] * rbs;
-                if (i > 0) {
-                    rinsum += sir[0];
-                    ginsum += sir[1];
-                    binsum += sir[2];
-                } else {
-                    routsum += sir[0];
-                    goutsum += sir[1];
-                    boutsum += sir[2];
-                }
-            }
-            stackpointer = radius;
-
-            for (x = 0; x < w; x++) {
-
-                r[yi] = dv[rsum];
-                g[yi] = dv[gsum];
-                b[yi] = dv[bsum];
-
-                rsum -= routsum;
-                gsum -= goutsum;
-                bsum -= boutsum;
-
-                stackstart = stackpointer - radius + div;
-                sir = stack[stackstart % div];
-
-                routsum -= sir[0];
-                goutsum -= sir[1];
-                boutsum -= sir[2];
-
-                if (y == 0) {
-                    vmin[x] = Math.min(x + radius + 1, wm);
-                }
-                p = pix[yw + vmin[x]];
-
-                sir[0] = (p & 0xff0000) >> 16;
-                sir[1] = (p & 0x00ff00) >> 8;
-                sir[2] = (p & 0x0000ff);
-
-                rinsum += sir[0];
-                ginsum += sir[1];
-                binsum += sir[2];
-
-                rsum += rinsum;
-                gsum += ginsum;
-                bsum += binsum;
-
-                stackpointer = (stackpointer + 1) % div;
-                sir = stack[(stackpointer) % div];
-
-                routsum += sir[0];
-                goutsum += sir[1];
-                boutsum += sir[2];
-
-                rinsum -= sir[0];
-                ginsum -= sir[1];
-                binsum -= sir[2];
-
-                yi++;
-            }
-            yw += w;
-        }
-        for (x = 0; x < w; x++) {
-            rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum = bsum = 0;
-            yp = -radius * w;
-            for (i = -radius; i <= radius; i++) {
-                yi = Math.max(0, yp) + x;
-
-                sir = stack[i + radius];
-
-                sir[0] = r[yi];
-                sir[1] = g[yi];
-                sir[2] = b[yi];
-
-                rbs = r1 - Math.abs(i);
-
-                rsum += r[yi] * rbs;
-                gsum += g[yi] * rbs;
-                bsum += b[yi] * rbs;
-
-                if (i > 0) {
-                    rinsum += sir[0];
-                    ginsum += sir[1];
-                    binsum += sir[2];
-                } else {
-                    routsum += sir[0];
-                    goutsum += sir[1];
-                    boutsum += sir[2];
-                }
-
-                if (i < hm) {
-                    yp += w;
-                }
-            }
-            yi = x;
-            stackpointer = radius;
-            for (y = 0; y < h; y++) {
-                // Preserve alpha channel: ( 0xff000000 & pix[yi] )
-                pix[yi] = (0xff000000 & pix[yi]) | (dv[rsum] << 16) | (dv[gsum] << 8) | dv[bsum];
-
-                rsum -= routsum;
-                gsum -= goutsum;
-                bsum -= boutsum;
-
-                stackstart = stackpointer - radius + div;
-                sir = stack[stackstart % div];
-
-                routsum -= sir[0];
-                goutsum -= sir[1];
-                boutsum -= sir[2];
-
-                if (x == 0) {
-                    vmin[y] = Math.min(y + r1, hm) * w;
-                }
-                p = x + vmin[y];
-
-                sir[0] = r[p];
-                sir[1] = g[p];
-                sir[2] = b[p];
-
-                rinsum += sir[0];
-                ginsum += sir[1];
-                binsum += sir[2];
-
-                rsum += rinsum;
-                gsum += ginsum;
-                bsum += binsum;
-
-                stackpointer = (stackpointer + 1) % div;
-                sir = stack[stackpointer];
-
-                routsum += sir[0];
-                goutsum += sir[1];
-                boutsum += sir[2];
-
-                rinsum -= sir[0];
-                ginsum -= sir[1];
-                binsum -= sir[2];
-
-                yi += w;
-            }
-        }
-
-        Log.e("pix", w + " " + h + " " + pix.length);
-        bitmap.setPixels(pix, 0, w, 0, 0, w, h);
-
-        return (bitmap);
-    }
-
     public enum FlipType {HORIZONTAL, VERTICAL}
-
-    public static class BitmapWrapper {
-        private float[] bounds;
-        private Bitmap bitmap;
-
-        public BitmapWrapper(float[] bounds, Bitmap bitmap) {
-            this.bounds = bounds;
-            this.bitmap = bitmap;
-        }
-
-        public float[] getBounds() {
-            return bounds;
-        }
-
-        public Bitmap getBitmap() {
-            return bitmap;
-        }
-
-        public void setBitmap(Bitmap bitmap) {
-            this.bitmap = bitmap;
-        }
-    }
 }

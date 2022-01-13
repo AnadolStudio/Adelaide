@@ -1,9 +1,9 @@
 package com.anadolstudio.adelaide.helpers
 
 import android.util.Log
-import com.anadolstudio.adelaide.interfaces.ISelectableItem
+import com.anadolstudio.adelaide.interfaces.ISelectableAdapterItem
 
-abstract class SelectableController<T> : ISelectableItem<T> {
+abstract class SelectableAdapterController<T> : ISelectableAdapterItem<T> {
     private var currentSelectedItem: T? = null
     private var state = -1
 
@@ -13,7 +13,7 @@ abstract class SelectableController<T> : ISelectableItem<T> {
 
     override fun setCurrentSelectedItem(t: T?) {
         Log.d("SelectableController", "onBindViewHolder: $state")
-        currentSelectedItem?.let { updateView(it, false) }
+        currentSelectedItem?.let { updateView(state) }
 
         currentSelectedItem = t
         currentSelectedItem ?: let {
@@ -22,13 +22,20 @@ abstract class SelectableController<T> : ISelectableItem<T> {
         }
         currentSelectedItem?.let {
             state = saveState(it)
-            updateView(it, true)
+            updateView(state)
         }
     }
 
-    abstract override fun updateView(t: T, isSelected: Boolean)
+    abstract override fun updateView(state: Int)
 
     abstract override fun saveState(t: T): Int
+
+    fun setStartItem(t: T) {
+        currentSelectedItem ?: let {
+            currentSelectedItem = t
+            state = saveState(t)
+        }
+    }
 
     fun selectableItemIsExist() = currentSelectedItem != null
 }
