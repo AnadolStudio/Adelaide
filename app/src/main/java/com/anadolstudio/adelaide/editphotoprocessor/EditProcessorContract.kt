@@ -8,7 +8,7 @@ import java.io.File
 
 interface EditProcessorContract {
 
-    val allFuncList: MutableSet<EditFunction>
+    val containerFunctions: LinkedHashMap<String, EditFunction>
 
     val applyFuncList: MutableSet<EditFunction>
 

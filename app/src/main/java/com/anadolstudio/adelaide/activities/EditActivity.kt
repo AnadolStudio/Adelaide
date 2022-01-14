@@ -11,6 +11,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.toRectF
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -179,15 +180,14 @@ class EditActivity : BaseActivity() {
     fun showCropImage(show: Boolean) {
         binding.cropImage.visibility = if (show) VISIBLE else GONE
         showMainImage(show)
-        binding.cropImage.isShowCropOverlay = false
-//        binding.cropImage.guidelines =
+
         if (!show) {
             binding.cropImage.clearImage()
-            binding.cropImage.rotatedDegrees = 0
-            binding.cropImage.isFlippedVertically = false
-            binding.cropImage.isFlippedHorizontally = false
+            binding.cropImage.resetCropRect()
             binding.cropImage.setOnCropWindowChangedListener(null)
+            binding.cropImage.setOnSetCropOverlayMovedListener(null)
         }
+        binding.cropImage.isShowCropOverlay = false
     }
 
     private fun showMainImage(show: Boolean) {
@@ -324,10 +324,10 @@ class EditActivity : BaseActivity() {
         setupWindowCropImage(function)
 //        binding.cropImage.isFlippedVertically = function.flipVertical
 //        binding.cropImage.isFlippedHorizontally = function.flipHorizontal
-        binding.cropImage.rotatedDegrees = function.degrees
+//        binding.cropImage.rotatedDegrees = function.degrees
     }
 
     fun setupWindowCropImage(function: TransformFunction) {
-        binding.cropImage.cropRect = function.cropWindow ?: binding.cropImage.wholeImageRect
+        binding.cropImage.cropRect = function.cropRect ?: binding.cropImage.wholeImageRect
     }
 }

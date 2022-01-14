@@ -300,6 +300,18 @@ class BitmapUtils {
                 matrix,
                 true
             )
+            /*var result = Bitmap.createBitmap(
+                bitmap,
+                rect.left,
+                rect.top,
+                rect.width(),
+                rect.height()
+            )
+            result =  Bitmap.createBitmap(
+                result, 0, 0,
+                result.width, result.height,
+                matrix, true
+            )*/
             if (result == bitmap) {
                 // corner case when all bitmap is selected, no worth optimizing for it
                 result = bitmap.copy(bitmap.config, false)

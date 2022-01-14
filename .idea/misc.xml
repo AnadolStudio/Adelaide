@@ -79,8 +79,12 @@
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/item_function.xml" value="0.45751633986928103" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/native_ad_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/layout/simple_list_item.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/menu/crop_image_menu.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/cropper/cropper/src/main/res/menu/crop_image_menu.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/cropper/src/main/res/layout/crop_image_view.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tereh/Desktop/My_Projects/Adelaide/cropper/src/main/res/menu/crop_image_menu.xml" value="0.23697916666666666" />
       </map>
     </option>
   </component>

@@ -48,8 +48,12 @@ class EditProcessorIml(
         mLoadingView?.hideLoadingIndicator()
     }
 
+    override val containerFunctions: LinkedHashMap<String, EditFunction> = LinkedHashMap()
 
-    override var allFuncList: MutableSet<EditFunction> = mutableSetOf()
+    private fun LinkedHashMap<String, EditFunction>.add(func: EditFunction) {
+        put(func.type, func)
+    }
+
 
     override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()// TODO нужен ли?
 
@@ -112,7 +116,7 @@ class EditProcessorIml(
     override fun processAll(bitmap: Bitmap): Bitmap {
         showLoadingDialog()
         var result: Bitmap? = null
-        for (f in allFuncList) {
+        for (f in containerFunctions.values) {
             (f as? TransformFunction)?.let {
                 originalBitmap?.let {
                     f.scale = BitmapUtils.getScaleRatio(
@@ -139,11 +143,10 @@ class EditProcessorIml(
         disposable?.let { if (!it.isDisposed) disposable }
     }
 
-    fun getFunction(type: String): EditFunction? {
-        for (f in allFuncList) {
-            if (f.type == type) return f
-        }
-        return null
+    fun getFunction(type: String): EditFunction? = containerFunctions[type]
+
+    fun add(func: EditFunction) {
+        containerFunctions.add(func)
     }
 
 

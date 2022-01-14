@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
+import androidx.core.graphics.toRectF
 import com.anadolstudio.adelaide.helpers.FunctionItem
 import com.anadolstudio.adelaide.helpers.RatioItem
 
@@ -32,13 +33,14 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
         const val DEGREES_ROTATE = 90
     }
 
-
     var ratioItem: RatioItem = RatioItem.FREE
     var scale = 1F
     var flipHorizontal = false
     var flipVertical = false
     var cropPoints = FloatArray(0)
-    var cropWindow: Rect? = null
+    var cropRect: Rect? = null
+        private set
+
     var degrees = 0
 
     var fixAspectRatio = (ratioItem.ratio.x != 0 && ratioItem.ratio.y != 0)
@@ -52,18 +54,18 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
         parcel?.writeFloatArray(cropPoints)
         parcel?.writeInt(degrees)
         parcel?.writeString(ratioItem.name)
-        parcel?.writeParcelable(cropWindow, PARCELABLE_WRITE_RETURN_VALUE)
+        parcel?.writeParcelable(cropRect, PARCELABLE_WRITE_RETURN_VALUE)
     }
 
     constructor(parcel: Parcel) : this() {
         scale = parcel.readFloat()
-        flipHorizontal = parcel.readByte() != 0.toByte()
-        flipVertical = parcel.readByte() != 0.toByte()
+        flipHorizontal = parcel.readByte() == 1.toByte()
+        flipVertical = parcel.readByte() == 1.toByte()
         cropPoints = parcel.createFloatArray()!!
         degrees = parcel.readInt()
         ratioItem = RatioItem.valueOf(parcel.readString().toString())
         fixAspectRatio = (ratioItem.ratio.x != 0 && ratioItem.ratio.y != 0)
-        cropWindow = parcel.readParcelable(Rect::class.java.classLoader)
+        cropRect = parcel.readParcelable(Rect::class.java.classLoader)
     }
 
     fun setDegree(degrees: Int, w: Int, h: Int) {
@@ -74,7 +76,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
         flipHorizontal = flipVertical
         flipVertical = isFlippedHorizontally*/
 
-//        updateCropWindow(w, h, false, true)
+//        cropRect = updateCropWindow(w, h, false, true)
     }
 
     override fun process(bitmap: Bitmap): Bitmap {
@@ -106,21 +108,39 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
 
     fun flipHorizontally(w: Int, h: Int) {
         flipHorizontal = !flipHorizontal
-        updateCropWindow(w, h, true, false)
+        cropRect = updateCropWindow(w, h, true, false)
     }
 
     fun flipVertically(w: Int, h: Int) {
         flipVertical = !flipVertical
-        updateCropWindow(w, h, false, true)
+        cropRect = updateCropWindow(w, h, false, true)
     }
 
-    private fun updateCropWindow(w: Int, h: Int, horizontal: Boolean, vertical: Boolean) {
+    fun setCropWindow(rect: Rect, w: Int, h: Int) {
+        cropRect = rect
+        val r = updateCropWindow(w, h, flipHorizontal, flipVertical).toRectF()
+        if (cropPoints.isNotEmpty() && (flipHorizontal || flipVertical)) {
+            cropPoints[0] = r.left
+            cropPoints[6] = r.left
 
+            cropPoints[2] = r.right
+            cropPoints[4] = r.right
+
+            cropPoints[1] = r.top
+            cropPoints[3] = r.top
+
+            cropPoints[5] = r.bottom
+            cropPoints[7] = r.bottom
+        }
+    }
+
+    private fun updateCropWindow(w: Int, h: Int, horizontal: Boolean, vertical: Boolean): Rect {
+        val rect = Rect(cropRect)
         val centerX = w / 2F
         val centerY = h / 2F
         var delta: Float
         var tmp: Int
-        cropWindow?.let {
+        rect.let {
             if (horizontal) {
                 delta = centerX - it.left
                 tmp = (it.left + 2 * delta).toInt()
@@ -136,6 +156,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
                 it.bottom = tmp
             }
         }
+        return rect
     }
 
     fun getCopyWithoutCrop(): TransformFunction {
@@ -156,7 +177,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
         function.flipVertical = flipVertical
         function.degrees = degrees
         function.ratioItem = ratioItem
-        function.cropWindow = cropWindow
+        function.cropRect = cropRect
         function.cropPoints = cropPoints
         return function
     }

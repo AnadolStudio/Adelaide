@@ -2,6 +2,7 @@ package com.anadolstudio.adelaide.fragments
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -13,7 +14,6 @@ import com.anadolstudio.adelaide.adapters.CropListAdapter
 import com.anadolstudio.adelaide.adapters.FunctionListAdapter
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
 import com.anadolstudio.adelaide.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.editphotoprocessor.TransformFunction.CREATOR.DEGREES_ROTATE
 import com.anadolstudio.adelaide.helpers.BitmapHelper
 import com.anadolstudio.adelaide.helpers.FunctionItem
 import com.anadolstudio.adelaide.helpers.RatioItem
@@ -23,6 +23,7 @@ import com.theartofdev.edmodo.cropper.CropImageView
 class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
 
     companion object {
+        private val TAG = CropEditFragment::class.java.name
 
         fun newInstance(function: TransformFunction): CropEditFragment {
             val fragment = CropEditFragment()
@@ -58,23 +59,21 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         func = (arguments?.getParcelable(FUNCTION) as? TransformFunction)?.copy()
             ?: TransformFunction()
 
-/*
-        newFunc = (savedInstanceState?.getParcelable(FUNCTION) ?: let {
-            arguments?.getParcelable(FUNCTION) ?: TransformFunction()
-        })
-*/
-
         binding.ratioRecyclerView.adapter = CropListAdapter(RatioDetailable(), func.ratioItem)
 
         parent()?.let {
-            defaultImage = it.editProcessor.getOriginalImage()
-                ?.let { b -> func.getCopyWithoutCrop().process(b) }!!
+            it.editProcessor.getOriginalImage()
+                ?.let { b ->
+                    defaultImage = func.getCopyWithoutCrop().process(b)
+                    cropImage = func.process(b)
+                }
+
             it.setupCropImage(func)
             it.showCropImage(true)
         }
 
         parent()?.cropView()?.let { cropImageView ->
-            cropImageView.setImageBitmap(func.process(defaultImage))
+            cropImageView.setImageBitmap(cropImage)
             cropImageView.setFixedAspectRatio(false)
             selectWholeRect(cropImageView)
         }
@@ -94,16 +93,22 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
                 func.ratioItem = currentRatioItem
             }
             parent()?.editProcessor?.let { processor ->
+                defaultImage = processor.getOriginalImage()
+                    ?.let { b -> func.getCopyWithoutCrop().process(b) }!!
                 cropImage = processor.getOriginalImage()?.let { b -> func.process(b) }
-                cropView?.let { rebootFlip(it) }
+
+//                cropView?.let { rebootFlip(it) }
                 cropView?.setImageBitmap(cropImage)
+                resetCropView()
             }
+//            changeFlipHorizontal = false
+//            changeFlipVertical = false
             showRatioView(false)
             return true
         }
 
         parent()?.let {
-            it.editProcessor.allFuncList.add(func)
+            it.editProcessor.add(func)
             it.editProcessor.processPreview()
         }
 
@@ -112,15 +117,22 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         return super.apply()
     }
 
+    fun resetCropView() {
+        parent()?.cropView()?.resetCropRect()
+    }
+
     private fun rebootFlip(it: CropImageView) {
         it.isFlippedVertically = false
         it.isFlippedHorizontally = false
     }
 
     private fun saveWindowCrop(it: CropImageView) {
-        //TODO логика более хитрая
         func.cropPoints = it.cropPoints
-        func.cropWindow = it.cropRect
+        func.setCropWindow(
+            it.cropRect,
+            defaultImage.width,
+            defaultImage.height
+        )
     }
 
     override fun isLocalBackClick(): Boolean {
@@ -131,8 +143,25 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         if (isLocalBackClick) {
             showRatioView(false)
 
-            parent()?.cropView()?.setImageBitmap(cropImage ?: func.process(defaultImage))
+
+            parent()?.cropView()?.let {
+                it.setImageBitmap(
+                    cropImage
+                        ?: func.process(defaultImage)
+                )
+                val flipH = it.isFlippedHorizontally
+                val flipV = it.isFlippedVertically
+                val degrees = it.rotatedDegrees
+                resetCropView()
+                it.isFlippedHorizontally = flipH
+                it.isFlippedVertically = flipV
+                it.rotatedDegrees = degrees
+            }
             parent()?.setupCropImage(func)
+            Log.d(
+                TAG,
+                "toDetailBack: crop ${parent()?.cropView()?.isFlippedVertically} ${parent()?.cropView()?.isFlippedHorizontally}"
+            )
 
             /*val tmp = arguments?.getParcelable(FUNCTION) ?: TransformFunction()
             func.cropPoints = tmp.cropPoints
@@ -162,28 +191,35 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
 
         when (t) {
             FunctionItem.CROP -> {
+//                rebootFlip(cropView)
+                resetCropView()
                 parent()?.editProcessor?.let {
-                    cropView.setImageBitmap(defaultImage)
+                    cropView.setImageBitmap(it.getOriginalImage()
+                        ?.let { b -> func.getCopyWithoutCrop().process(b) }
+
+                    )
+                    cropImage = it.getOriginalImage()?.let { b -> func.process(b) }
                 }
                 showRatioView(true)
                 cropView.setFixedAspectRatio(func.fixAspectRatio)
 //                parent()?.setupWindowCropImage(func)
                 parent()?.setupCropImage(func)
+
+
             }
             FunctionItem.TURN -> {
-//                cropView.rotatedDegrees -= DEGREES_ROTATE
-                func.degrees -= DEGREES_ROTATE
-                cropView.rotatedDegrees = func.degrees
+//                func.degrees -= DEGREES_ROTATE
+//                cropView.rotatedDegrees = func.degrees
                 //TODO с flip + rotate = работает криво
 //                func.setDegree(-DEGREES_ROTATE, defaultImage.width, defaultImage.height)
             }
             FunctionItem.FLIP_HORIZONTAL -> {
                 func.flipHorizontally(defaultImage.width, defaultImage.height)
-                cropView.isFlippedHorizontally = func.flipHorizontal
+                cropView.flipImageHorizontally()
             }
             FunctionItem.FLIP_VERTICAL -> {
                 func.flipVertically(defaultImage.width, defaultImage.height)
-                cropView.isFlippedVertically = func.flipVertical
+                cropView.flipImageVertically()
             }
             else -> {}
         }
@@ -211,3 +247,4 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         }
     }
 }
+

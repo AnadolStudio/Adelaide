@@ -12,7 +12,6 @@ abstract class SelectableAdapterController<T> : ISelectableAdapterItem<T> {
     }
 
     override fun setCurrentSelectedItem(t: T?) {
-        Log.d("SelectableController", "onBindViewHolder: $state")
         currentSelectedItem?.let { updateView(state) }
 
         currentSelectedItem = t
