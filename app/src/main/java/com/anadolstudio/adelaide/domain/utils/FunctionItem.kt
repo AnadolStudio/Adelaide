@@ -10,6 +10,8 @@ enum class FunctionItem(
     @DrawableRes var drawableId: Int,
     val innerFunctions: List<FunctionItem> = listOf()
 ) {
+
+    //TODO Разделить на InnerFunc and MainFunc
     //Тут описанны все функции
     CROP(R.string.crop, R.drawable.ic_crop),
     TURN(R.string.turn, R.drawable.ic_rotate),

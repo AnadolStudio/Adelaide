@@ -26,6 +26,7 @@ import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnack
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
+import com.anadolstudio.core.adapters.BaseSpaceItemDecoration
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 import com.anadolstudio.core.tasks.Result
@@ -81,7 +82,7 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(this@GalleryListActivity, 3)
             setItemViewCacheSize(50)
-            addItemDecoration(SpacesItemDecoration(SpacesItemDecoration.NORMAL_SPACE))
+            addItemDecoration(BaseSpaceItemDecoration.All())
             adapter = galleryListAdapter
         }
 

@@ -4,14 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
-import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.Companion.MAX_SIDE_COPY
-import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.Companion.saveBitmapAsFileQ
+import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.MAX_SIDE_COPY
 import com.anadolstudio.core.dialogs.LoadingView
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.anadolstudio.core.tasks.RxTask
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.io.File
-
 
 class EditProcessorIml(
     val activity: AppCompatActivity,
@@ -53,7 +50,6 @@ class EditProcessorIml(
         put(func.type, func)
     }
 
-
     override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()// TODO нужен ли?
 
     override fun setImage(path: String) {
@@ -74,7 +70,6 @@ class EditProcessorIml(
         TODO("Not yet implemented")
     }
 
-
     override fun saveAsFile(context: Context, file: File, listener: EditListener<String>) {
         showLoadingDialog()
         var realImage = BitmapUtils.decodeBitmapFromContentResolverPath(activity, path)
@@ -82,25 +77,18 @@ class EditProcessorIml(
         realImage?.let { realImage = processAll(it) }
 
         realImage?.let {
-            disposable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val fileName = file.name
-                saveBitmapAsFileQ(context, it, fileName)
-            } else {
-                BitmapUtils.saveBitmapAsFileBellowQ(context, it, file)
+            RxTask.Base {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    BitmapUtils.saveBitmapAsFileQ(context, it, file.name)
+                } else {
+                    BitmapUtils.saveBitmapAsFileBellowQ(context, it, file)
+                }
             }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { imagePath ->
-                        listener.onSuccess(imagePath)
-                        hideLoadingDialog()
-                    },
-                    { throwable: Throwable? ->
-                        throwable?.let { thr -> listener.onFailure(thr) }
-                        hideLoadingDialog()
-                    })
+                .onSuccess { imagePath -> listener.onSuccess(imagePath) }
+                .onError { throwable -> listener.onFailure(throwable) }
+                .onFinal { hideLoadingDialog() }
+
         } ?: hideLoadingDialog()
-        // TODO ?:
     }
 
     override fun processPreview() {
@@ -115,19 +103,24 @@ class EditProcessorIml(
     override fun processAll(bitmap: Bitmap): Bitmap {
         showLoadingDialog()
         var result: Bitmap? = null
+
         for (f in containerFunctions.values) {
+
             (f as? TransformFunction)?.let {
                 originalBitmap?.let {
+
                     f.scale = BitmapUtils.getScaleRatio(
                         bitmap.width.toFloat(),
                         bitmap.height.toFloat(),
                         it.width.toFloat(),
                         it.height.toFloat()
                     )
+
                 }
             }
             result = f.process(bitmap)
         }
+
         hideLoadingDialog()
         return result ?: bitmap
     }

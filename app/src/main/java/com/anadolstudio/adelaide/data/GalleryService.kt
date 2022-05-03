@@ -65,6 +65,7 @@ class GalleryService {
             val columnIndexData = cursor.getColumnIndexOrThrow(_ID)
             val indexMT = cursor.getColumnIndexOrThrow(MIME_TYPE)
             var count = 0
+
             while (cursor.moveToNext() && count < ONE_PORTION) {
                 val pathOfImage =
                     Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
@@ -77,6 +78,7 @@ class GalleryService {
                 images.add(pathOfImage)
                 count++
             }
+
             cursor.close()
         }
         this.images = images
@@ -98,19 +100,23 @@ class GalleryService {
 
         if (cursor != null) {
             val columnIndexData = cursor.getColumnIndexOrThrow(Media.BUCKET_DISPLAY_NAME)
+
             while (cursor.moveToNext()) {
                 val folderItem =
                     Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
                 folders.add(File(Uri.parse(folderItem).path!!).name)
             }
+
             cursor.close()
         }
+
         this.folders = folders
         notifyChanges()
     }
 
     fun addListener(listener: GalleryListener) {
         listeners.add(listener)
+
         if (folders.isNotEmpty())
             listener.invoke(folders, images)
     }

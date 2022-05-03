@@ -83,7 +83,7 @@ public class ImageLoader {
 
     @NonNull
     private static RequestListener<Bitmap> getBitmapRequestListener(SimpleRequestListener<Bitmap> listener) {
-        return new RequestListener<Bitmap>() {
+        return new RequestListener<>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                 listener.onLoadFailed(e);
@@ -100,7 +100,7 @@ public class ImageLoader {
 
     @NonNull
     private static Target<Bitmap> createBitmapTarget(IResourceReady<Bitmap> listener) {
-        return new CustomTarget<Bitmap>() {
+        return new CustomTarget<>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 listener.resourceReady(resource);

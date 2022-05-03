@@ -28,9 +28,9 @@ import com.anadolstudio.adelaide.domain.utils.PermissionHelper.hasPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.requestPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnackbar
 import com.anadolstudio.adelaide.domain.utils.TimeHelper
-import com.anadolstudio.adelaide.fragments.BaseEditFragment
-import com.anadolstudio.adelaide.fragments.FunctionListFragment
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.adelaide.view.screens.BaseEditFragment
+import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
@@ -105,21 +105,17 @@ class EditActivity : BaseActivity() {
     }
 
     private fun init() {
-        binding.navigationToolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.navigationToolbar.title = null
+
         binding.saveBtn.setOnClickListener {
             if (hasPermission(this, STORAGE_PERMISSION)) {
                 saveImage()
             } else {
-                requestPermission(
-                    this,
-                    STORAGE_PERMISSION,
-                    REQUEST_STORAGE_PERMISSION
-                )
+                requestPermission(this, STORAGE_PERMISSION, REQUEST_STORAGE_PERMISSION)
             }
         }
+
         binding.applyBtn.setOnClickListener {
             bottomFragment?.let {
                 if (!it.apply()) { //TODO
@@ -128,6 +124,7 @@ class EditActivity : BaseActivity() {
                 }
             }
         }
+
         val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
         bottomFragment =
             supportFragmentManager.findFragmentById(R.id.toolbar_fragment) as BaseEditFragment?
@@ -162,16 +159,20 @@ class EditActivity : BaseActivity() {
     override fun onBackPressed() {
         bottomFragment?.let {
             if (!it.onBackClick()) {
+                //TODO Сделать утилиту
                 if (currentFunction == null) { // Начальное состояние
                     if (backPressed + 2000 > System.currentTimeMillis()) {
                         super.onBackPressed()
                     } else {
+
                         Toast.makeText(
                             this,
                             getString(R.string.double_click_for_exit),
                             Toast.LENGTH_SHORT
                         ).show()
+
                         backPressed = System.currentTimeMillis()
+
                     }
                 } else {
                     showWorkspace(false)
@@ -193,6 +194,7 @@ class EditActivity : BaseActivity() {
             binding.cropImage.setOnCropWindowChangedListener(null)
             binding.cropImage.setOnSetCropOverlayMovedListener(null)
         }
+
         binding.cropImage.isShowCropOverlay = false
     }
 
@@ -275,6 +277,7 @@ class EditActivity : BaseActivity() {
             }
 
             override fun onFailure(ex: Throwable) {
+                //TODO обработка исключения
                 Log.d(TAG, "onFailure: ${ex.message}")
             }
         })
@@ -284,22 +287,25 @@ class EditActivity : BaseActivity() {
         val currentDate = Date()
         val timeFormat: DateFormat =
             SimpleDateFormat(TimeHelper.DEFAULT_FORMAT, Locale.getDefault())
+
         return "IMG_${timeFormat.format(currentDate)}.jpeg" // TODO JPEG?
     }
 
     private fun createAppDir(): File {
-        val directory =
-            File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    .toString() + File.separator + getString(
-                    R.string.app_name
-                )
+        val directory = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                .toString() + File.separator + getString(
+                R.string.app_name
             )
+        )
+
         if (!directory.exists() && !directory.isDirectory) {
             Log.d(TAG, "Not exist")
-            if (!directory.mkdirs()) // create empty directory
-                Log.d(TAG, "Unable to create app dir!")
+
+            // create empty directory
+            if (!directory.mkdirs()) Log.d(TAG, "Unable to create app dir!")
         }
+
         return File(directory, getFileName())
     }
 
@@ -326,6 +332,7 @@ class EditActivity : BaseActivity() {
             if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
             if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
         )
+
         binding.cropImage.setFixedAspectRatio(false)
         setupWindowCropImage(function)
 //        binding.cropImage.isFlippedVertically = function.flipVertical

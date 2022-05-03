@@ -1,7 +1,6 @@
 package com.anadolstudio.adelaide.data;
 
 import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-import static com.anadolstudio.adelaide.data.SettingsPreference.GridColumn.THREE;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
@@ -68,38 +67,4 @@ public class SettingsPreference {
 
     }
 
-    public static int getCurrentGridColumn(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(GRID_COLUMN, THREE.column);
-    }
-
-    public static void setCurrentGridColumn(Context context, int gridColumn) {
-        boolean isCorrect = false;
-        for (GridColumn value : GridColumn.values()) {
-            if (gridColumn == value.column) {
-                isCorrect = true;
-                break;
-            }
-        }
-        if (!isCorrect) return;
-
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putInt(GRID_COLUMN, gridColumn)
-                .apply();
-    }
-
-    public enum GridColumn {
-        THREE(3), FOUR(4);
-
-        private final int column;
-
-        GridColumn(int column) {
-            this.column = column;
-        }
-
-        public int getColumn() {
-            return column;
-        }
-    }
 }

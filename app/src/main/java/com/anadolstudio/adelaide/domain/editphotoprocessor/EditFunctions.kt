@@ -17,6 +17,10 @@ abstract class AbstractFunction(override val type: String) : EditFunction {
     }
 
     abstract fun reboot()
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
 }
 
 class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parcelable {
@@ -119,6 +123,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
     fun setCropWindow(rect: Rect, w: Int, h: Int) {
         cropRect = rect
         val r = updateCropWindow(w, h, flipHorizontal, flipVertical).toRectF()
+
         if (cropPoints.isNotEmpty() && (flipHorizontal || flipVertical)) {
             cropPoints[0] = r.left
             cropPoints[6] = r.left
@@ -140,7 +145,9 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
         val centerY = h / 2F
         var delta: Float
         var tmp: Int
+
         rect.let {
+
             if (horizontal) {
                 delta = centerX - it.left
                 tmp = (it.left + 2 * delta).toInt()
@@ -148,6 +155,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
                 it.left = (it.right + 2 * delta).toInt()
                 it.right = tmp
             }
+
             if (vertical) {
                 delta = centerY - it.top
                 tmp = (it.top + 2 * delta).toInt()
@@ -156,6 +164,7 @@ class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parce
                 it.bottom = tmp
             }
         }
+
         return rect
     }
 

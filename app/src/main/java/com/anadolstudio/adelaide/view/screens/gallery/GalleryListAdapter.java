@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.anadolstudio.adelaide.R;
 import com.anadolstudio.adelaide.databinding.ItemGalleryBinding;
 import com.anadolstudio.adelaide.domain.utils.ImageLoader;
+import com.anadolstudio.core.adapters.BaseDiffUtilCallback;
 import com.anadolstudio.core.interfaces.IDetailable;
 import com.anadolstudio.core.interfaces.ILoadMore;
 
@@ -55,8 +56,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     }
 
     public void setData(ArrayList<String> list) {
-        GalleryDiffUtilCallback NMIDiffUtilCallback = new GalleryDiffUtilCallback(mList, list);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(NMIDiffUtilCallback, false);
+        BaseDiffUtilCallback<String> diffUtilCallback = new BaseDiffUtilCallback<>(mList, list);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback, false);
 
         mList = list;
         diffResult.dispatchUpdatesTo(this);

@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.fragments;
+package com.anadolstudio.adelaide.view.screens.dialogs;
 
 import static com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath;
 

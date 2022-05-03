@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.fragments
+package com.anadolstudio.adelaide.view.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -321,22 +321,6 @@ public class BitmapHelper {
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public static Observable<String> saveBitmapAsFile(Context context, Bitmap originalBitmap, File file) {
-        return Observable.create(emitter -> {
-            try {
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    originalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, (s, uri) -> Log.d(TAG, "onSuccess"));
-                    emitter.onNext(file.getPath());
-                    emitter.onComplete();
-                    fos.flush();
-                }
-            } catch (Exception e) {
-                emitter.onError(e);
-            }
-        });
-    }
-
     public static void getInfoOfBitmap(Bitmap bitmap) {
         Log.d(TAG, String.format("bitmap size = %sx%s, byteCount = %s, total = %s",
                 bitmap.getWidth(), bitmap.getHeight(),

@@ -18,7 +18,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.fragments.ImageDialogTouchListener
+import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper.CONTENT
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
