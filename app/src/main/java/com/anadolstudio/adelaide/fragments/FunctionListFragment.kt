@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.anadolstudio.adelaide.activities.MainActivity.Companion.EDIT_TYPE
-import com.anadolstudio.adelaide.adapters.FunctionListAdapter
+import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
+import com.anadolstudio.adelaide.view.adapters.FunctionListAdapter
 import com.anadolstudio.adelaide.databinding.FragmentListFunctionBinding
-import com.anadolstudio.adelaide.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.helpers.FunctionItem
-import com.anadolstudio.adelaide.helpers.MainFunctions
-import com.anadolstudio.adelaide.interfaces.IDetailable
+import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.utils.FunctionItem
+import com.anadolstudio.adelaide.domain.utils.MainFunctions
+import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
     companion object {

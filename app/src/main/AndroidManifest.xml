@@ -31,7 +31,7 @@
         </provider>
 
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".view.screens.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashActivity">
@@ -42,21 +42,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".view.screens.main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.GalleryActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".view.screens.gallery.GalleryListActivity"
+            android:parentActivityName=".view.screens.main.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.EditActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".view.screens.edit.EditActivity"
+            android:parentActivityName=".view.screens.main.MainActivity"
             android:screenOrientation="portrait" /> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <activity
-            android:name=".activities.SaveActivity"
+            android:name=".view.screens.save.SaveActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".view.screens.main.MainActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

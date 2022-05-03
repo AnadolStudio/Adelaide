@@ -3,8 +3,7 @@ package com.anadolstudio.adelaide
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate.*
-import com.anadolstudio.adelaide.model.SettingsPreference
-import com.google.android.gms.ads.MobileAds
+import com.anadolstudio.adelaide.data.SettingsPreference
 
 class App : Application() {
 

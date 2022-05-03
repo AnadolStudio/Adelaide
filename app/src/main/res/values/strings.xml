@@ -7,10 +7,10 @@
     <string name="collage">Collage</string>
     <string name="loading">Loading…</string>
     <!--    GalleryActivity-->
-    <string name="gallery">Gallery</string>
-    <string name="settings">Settings</string>
-    <string name="get_permission">Please, give permission</string>
-    <string name="nothing_found">Nothing found</string>
+    <string name="gallery_snack_bar_settings">Settings</string>
+    <string name="gallery_error_miss_permission">Please, give permission</string>
+    <string name="gallery_spinner_title">Gallery</string>
+    <string name="gallery_error_nothing_found">There is nothing here</string>
 
     <!--    SaveActivity-->
     <string name="another">Another</string>

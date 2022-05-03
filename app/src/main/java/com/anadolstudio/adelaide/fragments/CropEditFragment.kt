@@ -9,15 +9,15 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.anadolstudio.adelaide.activities.EditActivity.Companion.FUNCTION
-import com.anadolstudio.adelaide.adapters.CropListAdapter
-import com.anadolstudio.adelaide.adapters.FunctionListAdapter
+import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.FUNCTION
+import com.anadolstudio.adelaide.view.adapters.CropListAdapter
+import com.anadolstudio.adelaide.view.adapters.FunctionListAdapter
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
-import com.anadolstudio.adelaide.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.helpers.BitmapHelper
-import com.anadolstudio.adelaide.helpers.FunctionItem
-import com.anadolstudio.adelaide.helpers.RatioItem
-import com.anadolstudio.adelaide.interfaces.IDetailable
+import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.utils.BitmapHelper
+import com.anadolstudio.adelaide.domain.utils.FunctionItem
+import com.anadolstudio.adelaide.domain.utils.RatioItem
+import com.anadolstudio.core.interfaces.IDetailable
 import com.theartofdev.edmodo.cropper.CropImageView
 
 class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {

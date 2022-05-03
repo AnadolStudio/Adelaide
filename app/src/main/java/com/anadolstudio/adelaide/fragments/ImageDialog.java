@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide.fragments;
 
-import static com.anadolstudio.adelaide.helpers.BitmapHelper.decodeSampledBitmapFromContentResolverPath;
+import static com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
