@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.MAX_SIDE_COPY
 import com.anadolstudio.core.dialogs.LoadingView
+import com.anadolstudio.core.tasks.RxCallback
 import com.anadolstudio.core.tasks.RxTask
 import io.reactivex.disposables.Disposable
 import java.io.File
@@ -14,8 +15,7 @@ class EditProcessorIml(
     val activity: AppCompatActivity,
     path: String,
     val editListener: EditListener<Bitmap>?
-) :
-    EditProcessorContract {
+) :    EditProcessorContract {
     constructor(
         activity: AppCompatActivity,
         path: String,
@@ -53,17 +53,14 @@ class EditProcessorIml(
     override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()// TODO нужен ли?
 
     override fun setImage(path: String) {
-        showLoadingDialog()
         this.path = path
-        try {
-            originalBitmap =
-                BitmapUtils.decodeBitmapFromContentResolverPath(activity, path, MAX_SIDE_COPY)
-            originalBitmap?.let { editListener?.onSuccess(it) }
-                ?: throw IllegalArgumentException("Bitmap is null")
-        } catch (throwable: Throwable) {
-            editListener?.onFailure(throwable)
-        }
-        hideLoadingDialog()
+
+        RxTask.Base { BitmapUtils.decodeBitmapFromContentResolverPath(activity, path, MAX_SIDE_COPY)!! }
+            .onSuccess {bitmap->
+                originalBitmap = bitmap
+                editListener?.onSuccess(bitmap)
+            }
+            .onError { editListener?.onFailure(it) }
     }
 
     override fun saveAsBitmap(listener: EditListener<Bitmap>) {

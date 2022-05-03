@@ -40,7 +40,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/ic_launcher_background"
+        android:background="@color/colorPrimary"
         android:scrollbarFadeDuration="1"
         android:scrollbarSize="4dp"
         android:scrollbars="vertical"

@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.anadolstudio.adelaide.domain.utils.ImageLoader.ScaleType.CENTER_CROP;
 
-public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.GalleryViewHolder> {
-    public static final String TAG = GalleryListAdapter.class.getName();
+public class GalleryListAdapterJ extends RecyclerView.Adapter<GalleryListAdapterJ.GalleryViewHolder> {
+    public static final String TAG = GalleryListAdapterJ.class.getName();
     private final IDetailable<String> iDetailable;
     private final ILoadMore iLoadMore;
     boolean isLoading = false;
     private ArrayList<String> mList;
 
-    public GalleryListAdapter(ArrayList<String> list, IDetailable<String> detailable, @Nullable ILoadMore iLoadMore) {
+    public GalleryListAdapterJ(ArrayList<String> list, IDetailable<String> detailable, @Nullable ILoadMore iLoadMore) {
         mList = list;
         iDetailable = detailable;
         this.iLoadMore = iLoadMore;
@@ -102,6 +102,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+
             if (position == RecyclerView.NO_POSITION) {
                 return;
             }

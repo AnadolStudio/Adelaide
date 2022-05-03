@@ -34,7 +34,7 @@ import com.anadolstudio.core.view.BaseActivity
 
 import java.io.File
 
-class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
+class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
 
     companion object {
         private const val TAG = "GalleryListActivity"
@@ -50,7 +50,7 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
     }
 
     private lateinit var binding: ActivityGalleryBinding
-    private lateinit var galleryListAdapter: GalleryListAdapter
+    private lateinit var galleryListAdapter: GalleryAdapter
     private var currentFolder: String? = null
     private var loadingMore = false
     private val viewModel: GalleryListViewModel by viewModels { ViewModelFactory() }
@@ -75,8 +75,7 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        galleryListAdapter =
-            GalleryListAdapter(mutableListOf<String>() as java.util.ArrayList<String>, this, this)
+        galleryListAdapter = GalleryAdapter(mutableListOf(), this, this)
         currentFolder = savedInstanceState?.getString(CURRENT_FOLDERS)
 
         binding.recyclerView.apply {
@@ -105,8 +104,10 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
 
                     loadingMore = false
                 }
+
                 is Result.Error -> it.error.printStackTrace()
                 is Result.Loading -> showLoadingDialog()
+
                 is Result.Empty ->
                     if (loadingMore) loadingMore = false
                     else showEmptyText()
@@ -139,6 +140,7 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
             add(getString(R.string.gallery_spinner_title))
             addAll(folders)
         }
+
         binding.spinner.apply {
             adapter = ArrayAdapter(this@GalleryListActivity, R.layout.item_simple_list, data)
             onItemSelectedListener = ItemSelectedListener()
@@ -146,32 +148,13 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
     }
 
     private fun getLastItemId(): Long {
-        val data = galleryListAdapter.data
+        val data = galleryListAdapter.getData()
         if (data.isEmpty()) return -1
 
         val toParseInt = File(Uri.parse(data.last()).path!!).name
         return if (TextUtils.isDigitsOnly(toParseInt)) toParseInt.toLong() else -1L
     }
 
-    inner class ItemSelectedListener : AdapterView.OnItemSelectedListener {
-
-        @SuppressLint("MissingPermission")
-        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-            if (adapterView?.adapter == null || view == null || adapterView.adapter.isEmpty)
-                return
-
-            currentFolder =
-                if (i == 0) null
-                else adapterView.adapter.getItem(i).toString()
-
-            if (hasPermission(this@GalleryListActivity, STORAGE_PERMISSION[0])) {
-                viewModel.loadImages(this@GalleryListActivity, currentFolder)
-            }
-        }
-
-        override fun onNothingSelected(p0: AdapterView<*>?) {
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -210,18 +193,12 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
         }
     }
 
-    override fun toDetail(path: String?) {
-        if (path == null) return
+    override fun toDetail(path: String) {
 
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             val editType = intent.getStringExtra(TypeKey::class.java.name)
-
-            EditActivity.start(this, editType, path, object : EditActivity.Callback {
-                override fun callback() {
-                    hideLoadingDialog()
-                }
-            })
-
+            showLoadingDialog()
+            EditActivity.start(this, editType, path)
         } else {
             setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, path))
             finish()
@@ -230,8 +207,27 @@ class GalleryListActivity : BaseActivity(), IDetailable<String?>, ILoadMore {
 
     private fun hideAll() {
         binding.emptyText.visibility = View.INVISIBLE
-//        binding.recyclerView.visibility = View.INVISIBLE
         hideLoadingDialog()
+    }
+
+    inner class ItemSelectedListener : AdapterView.OnItemSelectedListener {
+
+        @SuppressLint("MissingPermission")
+        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+            if (adapterView?.adapter == null || view == null || adapterView.adapter.isEmpty)
+                return
+
+            currentFolder =
+                if (i == 0) null
+                else adapterView.adapter.getItem(i).toString()
+
+            if (hasPermission(this@GalleryListActivity, STORAGE_PERMISSION[0])) {
+                viewModel.loadImages(this@GalleryListActivity, currentFolder)
+            }
+        }
+
+        override fun onNothingSelected(p0: AdapterView<*>?) {
+        }
     }
 
     class GalleryResultContract : ActivityResultContract<String, String?>() {

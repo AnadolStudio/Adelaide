@@ -22,7 +22,6 @@ import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper.CONTENT
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
-import com.anadolstudio.adelaide.domain.utils.populateNativeAdView
 import com.anadolstudio.adelaide.data.AdKeys
 import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.core.view.BaseActivity

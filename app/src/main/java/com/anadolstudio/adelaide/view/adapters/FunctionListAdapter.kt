@@ -4,56 +4,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.adelaide.domain.utils.FunctionItem
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListAdapter(
-    val mList: List<FunctionItem>,
-    val detailable: IDetailable<FunctionItem>
-) :
-    RecyclerView.Adapter<FunctionListAdapter.CropViewHolder>() {
-    companion object {
-        private val TAG: String = FunctionListAdapter::class.java.name
-    }
+    data: List<FunctionItem>,
+    detailable: IDetailable<FunctionItem>
+) : SimpleAdapter<FunctionItem>(data, detailable) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CropViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder {
         val view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.item_function, parent, false)
-        return CropViewHolder(view)
+
+        return FunctionViewHolder(view,detailable)
     }
 
-    override fun onBindViewHolder(holder: CropViewHolder, position: Int) {
-        holder.onBind(mList[position])
-    }
+    class FunctionViewHolder(
+        view: View,
+        detailable: IDetailable<FunctionItem>
+    ) : SimpleViewHolder<FunctionItem>(view, detailable) {
 
-    override fun getItemCount(): Int = mList.size
+        private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(view)
 
-    inner class CropViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(itemView)
-        lateinit var functionItem: FunctionItem
-
-        init {
-            binding.constraintLayout.setOnClickListener(this)
-        }
-
-        fun onBind(functionItem: FunctionItem) {
-            this.functionItem = functionItem
+        override fun onBind(data: FunctionItem) {
+            super.onBind(data)
 
             binding.icon.setImageDrawable(
-                functionItem.drawableId.let { ContextCompat.getDrawable(itemView.context, it) }
+                data.drawableId.let { ContextCompat.getDrawable(itemView.context, it) }
             )
-            binding.text.setText(functionItem.textId)
+
+            binding.text.setText(data.textId)
         }
-
-
-        override fun onClick(v: View) {
-            detailable.toDetail(functionItem)
-        }
-
     }
 
 }

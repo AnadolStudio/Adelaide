@@ -35,6 +35,7 @@ import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_T
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.view.BaseActivity
+import com.anadolstudio.core.view.util.DoubleClickExit
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -49,54 +50,50 @@ import java.util.Locale
 class EditActivity : BaseActivity() {
     var currentFunction: FunctionItem? = null
     private var bottomFragment: BaseEditFragment? = null
-    private var backPressed = 0L
+    protected val doubleClickExit = DoubleClickExit.Base()
 
     companion object {
         val TAG: String = EditActivity::class.java.name
         const val FUNCTION = "function"
         private const val IMAGE_PATH = "image_path"
-        var callback: Callback? = null
 
-        fun start(context: Context, key: String?, path: String?, callback: Callback) {
+        fun start(context: Context, key: String?, path: String?) {
             val starter = Intent(context, EditActivity::class.java)
             starter.putExtra(EDIT_TYPE, key)
             starter.putExtra(IMAGE_PATH, path)
             context.startActivity(starter)
-            Companion.callback = callback
         }
     }
 
-    interface Callback {
-        fun callback()
+    inner class EditListenerCallback : EditListener<Bitmap> {
+        override fun onSuccess(data: Bitmap) {
+            hideLoadingDialog()
+            BitmapHelper.getInfoOfBitmap(data)
+            binding.mainImage.setImageBitmap(data)
+        }
+
+        override fun onFailure(ex: Throwable) {
+            hideLoadingDialog()
+            Log.d(TAG, "onLoadFailed: Can\\'t open file")
+            Toast.makeText(this@EditActivity, getText(R.string.cant_open_photo), Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
 
     private lateinit var path: String
     lateinit var editProcessor: EditProcessorIml
     private lateinit var binding: ActivityEditBinding
 
-    private fun useCallback() {
-        callback?.let {
-            it.callback()
-            callback = null
-        }
-    }
-
-    private fun failureLoadBitmap() {
-        useCallback()
-        hideLoadingDialog()
-        Log.d(TAG, "onLoadFailed: Can\\'t open file")
-        Toast.makeText(this, getText(R.string.cant_open_photo), Toast.LENGTH_SHORT).show()
-        finish()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (savedInstanceState != null) {
             //Создаю активити заново ибо сохранять большой bitmap - проблема
             val intent = intent
             finish()
             startActivity(intent)
         }
+
         binding = ActivityEditBinding.inflate(layoutInflater)
         setSupportActionBar(binding.navigationToolbar)
         setContentView(binding.root)
@@ -131,22 +128,11 @@ class EditActivity : BaseActivity() {
 
         addFragment(FunctionListFragment.newInstance(key))
         path = intent.getStringExtra(IMAGE_PATH).toString()
-        Log.d(TAG, "init path: $path")
 
-        editProcessor = EditProcessorIml(this, path, object : EditListener<Bitmap> {
-            override fun onSuccess(t: Bitmap) {
-                useCallback()
-                BitmapHelper.getInfoOfBitmap(t)
-                binding.mainImage.setImageBitmap(t)
-            }
-
-            override fun onFailure(ex: Throwable) {
-                failureLoadBitmap()
-            }
-        })
+        showLoadingDialog()
+        editProcessor = EditProcessorIml(this, path, EditListenerCallback())
 
         binding.cropImage.setMinCropResultSize(250, 250)
-
 
         /*editHelper.initPhotoEditor(photoEditorView)
         multiTouchListener = MyMultiTouchListener(binding.frameContentImageView, true)
@@ -161,19 +147,13 @@ class EditActivity : BaseActivity() {
             if (!it.onBackClick()) {
                 //TODO Сделать утилиту
                 if (currentFunction == null) { // Начальное состояние
-                    if (backPressed + 2000 > System.currentTimeMillis()) {
-                        super.onBackPressed()
-                    } else {
-
-                        Toast.makeText(
-                            this,
-                            getString(R.string.double_click_for_exit),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        backPressed = System.currentTimeMillis()
-
+                    doubleClickExit.click { isTrue ->
+                        if (isTrue)
+                            super.onBackPressed()
+                        else
+                            showToast(R.string.double_click_for_exit)
                     }
+
                 } else {
                     showWorkspace(false)
                     super.onBackPressed()

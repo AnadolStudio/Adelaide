@@ -16,8 +16,6 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:padding="@dimen/padding_xsmall"
         android:background="@drawable/item_ripple"
-        android:clickable="true"
-        android:focusable="true"
         android:gravity="center">
 
         <LinearLayout

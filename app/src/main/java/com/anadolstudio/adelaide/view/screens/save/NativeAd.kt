@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.utils
+package com.anadolstudio.adelaide.view.screens.save
 
 import android.view.View
 import android.widget.Button

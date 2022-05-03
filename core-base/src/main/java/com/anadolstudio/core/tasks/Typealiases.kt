@@ -1,5 +1,5 @@
 package com.anadolstudio.core.tasks
 
-internal typealias RxDoMainCallback<T> = () -> T
+typealias RxDoMainCallback<T> = () -> T
 
-internal typealias RxCallback<T> = (T) -> Unit
+typealias RxCallback<T> = (T) -> Unit

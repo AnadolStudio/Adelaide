@@ -1,8 +1,8 @@
 package com.anadolstudio.adelaide.domain.editphotoprocessor
 
-interface EditListener<T> {
+interface EditListener<Data> {
 
-    fun onSuccess(t: T)
+    fun onSuccess(data: Data)
 
     fun onFailure(ex: Throwable)
 
