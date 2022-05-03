@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemCropBinding
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper
-import com.anadolstudio.adelaide.domain.utils.RatioItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.RatioItem
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.view.selectablecontroller.SelectableController
 

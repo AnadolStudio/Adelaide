@@ -1,4 +1,4 @@
-package com.anadolstudio.core.view.util
+package com.anadolstudio.core.view
 
 import android.view.View
 

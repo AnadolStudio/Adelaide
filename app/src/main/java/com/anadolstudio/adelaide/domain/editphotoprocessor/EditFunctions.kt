@@ -7,7 +7,6 @@ import android.os.Parcelable
 import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.core.graphics.toRectF
 import com.anadolstudio.adelaide.domain.utils.FunctionItem
-import com.anadolstudio.adelaide.domain.utils.RatioItem
 
 abstract class AbstractFunction(override val type: String) : EditFunction {
     override fun equals(other: Any?): Boolean {

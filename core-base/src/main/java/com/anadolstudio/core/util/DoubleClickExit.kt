@@ -1,4 +1,4 @@
-package com.anadolstudio.core.view.util
+package com.anadolstudio.core.util
 
 typealias DoubleClickListener = (Boolean) -> Unit
 

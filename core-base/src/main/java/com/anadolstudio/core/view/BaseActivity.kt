@@ -23,10 +23,10 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun showToast(@StringRes id: Int, length: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(this, getString(id), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(id), length).show()
     }
 
     protected fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, text, length).show()
     }
 }

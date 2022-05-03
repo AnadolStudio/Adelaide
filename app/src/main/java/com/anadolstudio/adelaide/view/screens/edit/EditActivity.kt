@@ -27,15 +27,15 @@ import com.anadolstudio.adelaide.domain.utils.PermissionHelper.STORAGE_PERMISSIO
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.hasPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.requestPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnackbar
-import com.anadolstudio.adelaide.domain.utils.TimeHelper
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
+import com.anadolstudio.core.util.DoubleClickExit
+import com.anadolstudio.core.util.TimeUtil
 import com.anadolstudio.core.view.BaseActivity
-import com.anadolstudio.core.view.util.DoubleClickExit
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -263,14 +263,16 @@ class EditActivity : BaseActivity() {
         })
     }
 
+    @Deprecated("Его место не тут")
     private fun getFileName(): String {
         val currentDate = Date()
         val timeFormat: DateFormat =
-            SimpleDateFormat(TimeHelper.DEFAULT_FORMAT, Locale.getDefault())
+            SimpleDateFormat(TimeUtil.DEFAULT_FORMAT, Locale.getDefault())
 
         return "IMG_${timeFormat.format(currentDate)}.jpeg" // TODO JPEG?
     }
 
+    @Deprecated("Его место не тут")
     private fun createAppDir(): File {
         val directory = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
@@ -280,8 +282,6 @@ class EditActivity : BaseActivity() {
         )
 
         if (!directory.exists() && !directory.isDirectory) {
-            Log.d(TAG, "Not exist")
-
             // create empty directory
             if (!directory.mkdirs()) Log.d(TAG, "Unable to create app dir!")
         }
