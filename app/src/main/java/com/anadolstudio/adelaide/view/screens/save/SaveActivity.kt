@@ -1,10 +1,9 @@
 package com.anadolstudio.adelaide.view.screens.save
 
 import android.animation.ObjectAnimator
-import android.content.ActivityNotFoundException
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,36 +11,38 @@ import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
 import androidx.core.animation.doOnEnd
-import androidx.core.content.FileProvider
 import com.anadolstudio.adelaide.BuildConfig
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
-import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
-import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
-import com.anadolstudio.adelaide.domain.utils.BitmapHelper.CONTENT
-import com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.data.AdKeys
 import com.anadolstudio.adelaide.data.SettingsPreference
+import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
+import com.anadolstudio.adelaide.domain.editphotoprocessor.share_action.SharedAction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.share_action.SharedActionFactory
+import com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath
+import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
+import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
+import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
+import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
+import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.view.BaseActivity
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAdView
-import java.io.File
 
+class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
+    // TODO
+    //  1) Переделать через RecyclerView
 
-class SaveActivity : BaseActivity(), View.OnClickListener {
     companion object {
         const val PATH = "path"
         val TAG = SaveActivity::class.java.name
-        private const val VK_PACKAGE = "com.vkontakte.android"
-        private const val INSTAGRAM_PACKAGE = "com.instagram.android"
-        private const val FACEBOOK_PACKAGE = "com.facebook.katana"
-        private const val MESSENGER_PACKAGE = "com.facebook.orca"
-        private const val WHATS_APP_PACKAGE = "com.whatsapp"
-        private const val TWITTER_PACKAGE = "com.twitter.android"
 
         fun start(context: Context, path: String?) {
             val starter = Intent(context, SaveActivity::class.java)
@@ -54,6 +55,7 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
     private lateinit var path: String
     private var nativeAdView: NativeAdView? = null
     private var mInterstitialAd: InterstitialAd? = null
+
     private val fullScreenContentCallback: FullScreenContentCallback =
         object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
@@ -66,7 +68,6 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
                 super.onAdDismissedFullScreenContent()
             }
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,118 +84,52 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
         super.onBackPressed()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun init() {
         setSupportActionBar(binding.navigationToolbar)
         binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.navigationToolbar.title = null
+
         binding.homeButton.setOnClickListener {
             FirebaseHelper.get().logEvent(FirebaseHelper.Event.BACK_TO_MAIN)
             if (!SettingsPreference.hasPremium(this)) showInterstitialAd()
         }
-        binding.savedImage.setOnClickListener(this) // Не бесполезный, он влияет на анимацию
 
-        binding.savedImage.setOnTouchListener(
-            ImageDialogTouchListener(path, this)
-        )
+        binding.savedImage.setOnClickListener {} // Не бесполезный, он влияет на анимацию
+        binding.savedImage.setOnTouchListener(ImageDialogTouchListener(path, this))
 
-        binding.savedImage.setImageBitmap(
+        RxTask.Base {
             decodeSampledBitmapFromContentResolverPath(this, path, 400, 400)
-        )
+        }.onSuccess { binding.savedImage.setImageBitmap(it) }
 
-        binding.share.setOnClickListener(this)
-        binding.instagram.setOnClickListener(this)
-        binding.vk.setOnClickListener(this)
-        binding.facebook.setOnClickListener(this)
-        binding.messenger.setOnClickListener(this)
-        binding.whatsApp.setOnClickListener(this)
-        binding.twitter.setOnClickListener(this)
+        binding.recyclerView.apply {
+            adapter = SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
+        }
     }
 
-    private fun updateAd() {
-        if (SettingsPreference.hasPremium(this)) {
-            binding.adCardView.visibility = View.INVISIBLE
+    override fun toDetail(data: SharedAction.SharedItem) {
+
+        val fbEvent = when (data) {
+            is SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
+            is SharedActionFactory.VK -> FirebaseHelper.Event.SHARE_VK
+            is SharedActionFactory.Instagram -> FirebaseHelper.Event.SHARE_INSTAGRAM
+            is SharedActionFactory.Facebook -> FirebaseHelper.Event.SHARE_FACEBOOK
+            is SharedActionFactory.Messenger -> FirebaseHelper.Event.SHARE_MESSENGER
+            is SharedActionFactory.WhatsApp -> FirebaseHelper.Event.SHARE_WHATS_APP
+            is SharedActionFactory.Twitter -> FirebaseHelper.Event.SHARE_TWITTER
         }
+
+        FirebaseHelper.get().logEvent(fbEvent)
+        data.createShareIntent(path, this)
+    }
+
+    private fun updateAd(): Boolean = SettingsPreference.hasPremium(this).also { hasPremium ->
+        if (hasPremium) binding.adCardView.visibility = View.INVISIBLE
     }
 
     override fun onResume() {
         super.onResume()
         updateAd()
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.share -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_OTHERS)
-                createShareIntent(path, null)
-            }
-            R.id.vk -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_VK)
-                createShareIntent(path, VK_PACKAGE)
-            }
-            R.id.instagram -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_INSTAGRAM)
-                createShareIntent(path, INSTAGRAM_PACKAGE)
-            }
-            R.id.facebook -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_FACEBOOK)
-                createShareIntent(path, FACEBOOK_PACKAGE)
-            }
-            R.id.messenger -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_MESSENGER)
-                createShareIntent(path, MESSENGER_PACKAGE)
-            }
-            R.id.whats_app -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_WHATS_APP)
-                createShareIntent(path, WHATS_APP_PACKAGE)
-            }
-            R.id.twitter -> {
-                FirebaseHelper.get().logEvent(FirebaseHelper.Event.SHARE_TWITTER)
-                createShareIntent(path, TWITTER_PACKAGE)
-            }
-        }
-    }
-
-    private fun createShareIntent(path: String, namePackage: String?) {
-        val type = "image/*"
-        val photoURI = if (path.contains(CONTENT)) {
-            Uri.parse(path)
-        } else {
-            FileProvider.getUriForFile(
-                this,
-                applicationContext.packageName + ".provider",
-                File(path)
-            )
-        }
-
-        val share = Intent(Intent.ACTION_SEND)
-        share.type = type
-        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        share.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        share.putExtra(Intent.EXTRA_STREAM, photoURI)
-
-        if (namePackage == null) {
-            startActivity(Intent.createChooser(share, getString(R.string.another)))
-        } else {
-            share.setPackage(namePackage)
-            try {
-                startActivity(share)
-            } catch (e: ActivityNotFoundException) {
-                openGooglePlay(namePackage)
-            }
-        }
-    }
-
-    private fun openGooglePlay(namePackage: String) {
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$namePackage")))
-        } catch (ex: ActivityNotFoundException) {
-            startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$namePackage")
-                )
-            )
-        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -217,19 +152,20 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun horizontalScrollAnim() {
-        val animator = ObjectAnimator.ofInt(binding.horizontalScrollView, "scrollX", 300)
+        val animator = ObjectAnimator.ofInt(binding.recyclerView, "scrollX", 300)
         animator.duration = DURATION_EXTRA_LONG
+
         animator.doOnEnd {
-            val animatorEnd = ObjectAnimator.ofInt(binding.horizontalScrollView, "scrollX", 0)
+            val animatorEnd = ObjectAnimator.ofInt(binding.recyclerView, "scrollX", 0)
             animatorEnd.duration = DURATION_EXTRA_LONG
             animatorEnd.start()
         }
+
         animator.start()
     }
 
     private fun initAd() {
-        updateAd()
-        if (SettingsPreference.hasPremium(this)) return
+        if (updateAd()) return
 
         MobileAds.initialize(this) { }
         loadNativeAd()
@@ -256,11 +192,10 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
 
     private fun loadNativeAd() {
         val adLoader = AdLoader.Builder(this, AdKeys.TestKeys.NATIVE_AD_ID)
-            .forNativeAd {
-                nativeAdView = layoutInflater
-                    .inflate(R.layout.native_ad_layout, null) as NativeAdView
+            .forNativeAd { ad ->
+                nativeAdView = layoutInflater.inflate(R.layout.native_ad_layout, null) as NativeAdView
 
-                populateNativeAdView(it, nativeAdView ?: return@forNativeAd)
+                NativeAd.populateNativeAdView(ad, nativeAdView ?: return@forNativeAd)
                 binding.adContainer.removeAllViews()
                 binding.adContainer.addView(nativeAdView)
             }
@@ -272,15 +207,11 @@ class SaveActivity : BaseActivity(), View.OnClickListener {
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
-                    Log.d(TAG, "onAdFailedToLoad: ")
                     binding.adCardView.visibility = View.INVISIBLE
                 }
 
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    Log.d(TAG, "onAdClicked: ")
-                }
-            }).build()
+            })
+            .build()
 
         val adRequest = AdRequest.Builder().build()
         adLoader.loadAd(adRequest)

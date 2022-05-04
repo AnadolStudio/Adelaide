@@ -186,13 +186,13 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         cropView.cropRect = cropView.wholeImageRect
     }
 
-    override fun toDetail(t: FunctionItem) {
+    override fun toDetail(data: FunctionItem) {
         val cropView = parent()?.cropView()
         cropView ?: return
 
         cropView.setFixedAspectRatio(false)
 
-        when (t) {
+        when (data) {
             FunctionItem.CROP -> {
 //                rebootFlip(cropView)
                 resetCropView()
@@ -233,13 +233,13 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
     }
 
     inner class RatioDetailable : IDetailable<RatioItem> {
-        override fun toDetail(t: RatioItem) {
+        override fun toDetail(data: RatioItem) {
             val cropView = parent()?.cropView()
             cropView ?: return
 
-            currentRatioItem = t
-            cropView.setFixedAspectRatio(t != RatioItem.FREE)
-            when (t) {
+            currentRatioItem = data
+            cropView.setFixedAspectRatio(data != RatioItem.FREE)
+            when (data) {
                 RatioItem.FREE -> {
                     selectWholeRect(cropView)
                 }
@@ -250,7 +250,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
                 }
 
                 else -> {
-                    cropView.setAspectRatio(t.ratio.x, t.ratio.y)
+                    cropView.setAspectRatio(data.ratio.x, data.ratio.y)
                 }
             }
         }

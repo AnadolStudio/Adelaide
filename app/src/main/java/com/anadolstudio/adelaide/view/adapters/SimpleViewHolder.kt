@@ -13,6 +13,8 @@ open class SimpleViewHolder<Data>(
     val detailable: IDetailable<Data>,
 ) : AbstractViewHolder<Data>(view) {
 
+    //TODO Создать контролеер для View, чтобы избавиться от повторяющегося кода
+
     var imageView: ImageView? = itemView.findViewById(R.id.imageView)
     var textView: TextView? = itemView.findViewById(R.id.textView)
     val actionView: View = itemView

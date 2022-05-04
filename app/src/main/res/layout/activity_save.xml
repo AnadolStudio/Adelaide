@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -139,173 +140,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:fillViewport="true"
-            android:measureAllChildren="false"
-            android:overScrollMode="never"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical">
-
-                <LinearLayout
-                    android:id="@+id/share"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/ic_share" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/vk"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_vk" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/instagram"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_instagam" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/facebook"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_facebook" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/messenger"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_messenger" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/whats_app"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_whats_app" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/twitter"
-                    style="@style/EditItem.LinearLayoutRipple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="200dp">
-
-                        <ImageView
-                            android:layout_width="@dimen/share_image_side"
-                            android:layout_height="@dimen/share_image_side"
-                            android:src="@drawable/share_twitter" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingEnd="@dimen/padding_normal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_share"
+            android:scrollbars="none" />
 
 
     </androidx.cardview.widget.CardView>

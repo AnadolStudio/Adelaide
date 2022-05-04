@@ -1,7 +1,7 @@
 package com.anadolstudio.core.interfaces
 
-interface IDetailable<T> {
+interface IDetailable<Data> {
 
-    fun toDetail(t: T)
+    fun toDetail(data: Data)
 
 }

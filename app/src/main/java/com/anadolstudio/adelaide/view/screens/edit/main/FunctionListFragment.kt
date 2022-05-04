@@ -40,11 +40,11 @@ class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         return binding.root
     }
 
-    override fun toDetail(t: FunctionItem) {
-        parent()?.currentFunction = t
+    override fun toDetail(data: FunctionItem) {
+        parent()?.currentFunction = data
         parent()?.showWorkspace(true)
 
-        when (t) {
+        when (data) {
             FunctionItem.TRANSFORM -> {
                 parent()?.let {
                     val function = it.editProcessor.getFunction(FunctionItem.TRANSFORM.name)
