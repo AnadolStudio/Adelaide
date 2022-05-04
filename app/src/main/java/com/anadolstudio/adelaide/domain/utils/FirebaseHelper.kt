@@ -8,6 +8,7 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
 class FirebaseHelper private constructor() {
+    // TODO Сделать подобно слушателю
     companion object {
         private const val REPLACE_NAME = "name"
         private var firebaseHelper: FirebaseHelper? = null

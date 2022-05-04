@@ -13,9 +13,6 @@ public class SettingsPreference {
     public static final String FIRST_SHARE_ACTIVITY_OPEN = "first_share_activity_open";
     public static final String PREMIUM = "premium";
     public static final String NIGHT_MODE = "night_mode";
-    public static final String GRID_COLUMN = "grid_column";
-    public static final String HISTORY_PURCHASE = "history_purchase";
-    public static final String DESTROY = "destroy";
 
 
     public static boolean isFirstRunApp(Context context) {

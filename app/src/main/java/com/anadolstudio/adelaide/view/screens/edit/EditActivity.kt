@@ -145,7 +145,6 @@ class EditActivity : BaseActivity() {
     override fun onBackPressed() {
         bottomFragment?.let {
             if (!it.onBackClick()) {
-                //TODO Сделать утилиту
                 if (currentFunction == null) { // Начальное состояние
                     doubleClickExit.click { isTrue ->
                         if (isTrue)
