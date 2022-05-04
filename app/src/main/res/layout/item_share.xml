@@ -10,18 +10,14 @@
     android:layout_margin="0dp"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.imageview.ShapeableImageView
         android:layout_margin="@dimen/margin_small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="200dp">
-
-        <ImageView
-            android:id="@+id/share_icon"
-            android:layout_width="@dimen/share_image_side"
-            android:layout_height="@dimen/share_image_side"
-            tools:src="@drawable/ic_share" />
-
-    </androidx.cardview.widget.CardView>
+        android:id="@+id/share_icon"
+        android:layout_width="@dimen/share_image_side"
+        android:layout_height="@dimen/share_image_side"
+        app:shapeAppearanceOverlay="@style/ImageViewRound"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/elevation_large"
+        tools:src="@drawable/ic_share" />
 
 </LinearLayout>

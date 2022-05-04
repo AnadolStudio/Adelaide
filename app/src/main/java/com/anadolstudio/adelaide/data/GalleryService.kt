@@ -126,7 +126,7 @@ class GalleryService {
     }
 
     private fun notifyChanges() {
-        if (folders.isEmpty()) return
+//        if (folders.isEmpty()) return
 
         listeners.forEach { it.invoke(folders, images) }
     }

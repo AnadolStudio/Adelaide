@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:fontFamily="@font/amadeus_ap"
+                app:fontFamily="@font/amadeus_ap"
                 android:gravity="center"
                 android:text="@string/app_name"
                 android:textColor="@color/colorAccent"

@@ -7,7 +7,20 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorSecondary</item>
+        <item name="android:textViewStyle">@style/SerifTextViewStyle</item>
+    </style>
+
+    <style name="SerifTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">serif</item>
+        <item name="fontFamily">serif</item>
+    </style>
+
+    <style name="ImageViewRound" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="android:shadowRadius">100</item>
+        <item name="android:shadowColor">@color/gray</item>
+        <item name="backgroundOverlayColorAlpha">12</item>
     </style>
 
     <style name="SplashActivity" parent="Theme.MaterialComponents.NoActionBar">
