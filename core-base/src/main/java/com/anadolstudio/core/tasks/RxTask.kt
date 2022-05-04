@@ -16,10 +16,10 @@ interface RxTask<T> {
     fun cancel()
 
 
-    class Base<T : Any>(private val callback: RxDoMainCallback<T>) : RxTask<T> {
+    open class Base<T : Any>(private val callback: RxDoMainCallback<T>) : RxTask<T> {
 
-        private var result: Result<T> = Result.Loading()
-        private val disposable: Disposable
+        protected var result: Result<T> = Result.Loading()
+        protected val disposable: Disposable
 
         init {
             val observable: Observable<T> = Observable.create { emitter ->
@@ -43,9 +43,9 @@ interface RxTask<T> {
                 )
         }
 
-        private var valueCallback: RxCallback<T>? = null
-        private var errorCallback: RxCallback<Throwable>? = null
-        private var finalCallback: RxCallback<Boolean>? = null
+        protected var valueCallback: RxCallback<T>? = null
+        protected var errorCallback: RxCallback<Throwable>? = null
+        protected var finalCallback: RxCallback<Boolean>? = null
 
         override fun onSuccess(callback: RxCallback<T>): RxTask<T> {
             valueCallback = callback

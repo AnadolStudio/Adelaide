@@ -5,6 +5,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.anadolstudio.adelaide.R
+import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.VideoController.VideoLifecycleCallbacks
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -79,7 +82,19 @@ object NativeAd {
 
     private fun getVisibleMode(item: Any?) = item?.let { return View.VISIBLE } ?: View.GONE
 
-    class NativeAdListener() {
+    class NativeAdListener(
+        val adLoaded: () -> Unit,
+        val adFailLoaded: () -> Unit
+    ) : AdListener() {
 
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            adLoaded.invoke()
+        }
+
+        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+            super.onAdFailedToLoad(loadAdError)
+            adFailLoaded.invoke()
+        }
     }
 }

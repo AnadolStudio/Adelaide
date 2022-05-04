@@ -1,9 +1,9 @@
-package com.anadolstudio.adelaide.domain.utils
+package com.anadolstudio.adelaide.domain.editphotoprocessor
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.domain.utils.FunctionItem.*
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem.*
 
 enum class FunctionItem(
     @StringRes val textId: Int,

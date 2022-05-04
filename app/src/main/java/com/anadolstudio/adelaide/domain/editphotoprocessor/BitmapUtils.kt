@@ -25,7 +25,6 @@ import kotlin.math.round
 
 object BitmapUtils {
     private val TAG = BitmapUtils::class.java.name
-    const val DEFAULT_FORMAT = "yyyy_MM_dd_HHmmss"
     const val MIME_TYPE = "image/*"
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2

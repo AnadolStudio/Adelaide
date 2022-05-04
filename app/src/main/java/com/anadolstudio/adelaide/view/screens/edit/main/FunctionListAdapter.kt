@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.view.adapters
+package com.anadolstudio.adelaide.view.screens.edit.main
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
-import com.anadolstudio.adelaide.domain.utils.FunctionItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
+import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
+import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListAdapter(

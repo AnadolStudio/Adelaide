@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.databinding.ItemGalleryBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder

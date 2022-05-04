@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
-import com.anadolstudio.adelaide.view.adapters.FunctionListAdapter
 import com.anadolstudio.adelaide.databinding.FragmentListFunctionBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.domain.utils.FunctionItem
-import com.anadolstudio.adelaide.domain.utils.MainFunctions
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.MainFunctions
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
 import com.anadolstudio.core.interfaces.IDetailable

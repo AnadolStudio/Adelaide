@@ -49,6 +49,8 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
         }
     }
 
+    //TODO Есть баг с дубликатами
+
     private lateinit var binding: ActivityGalleryBinding
     private lateinit var galleryListAdapter: GalleryAdapter
     private var currentFolder: String? = null

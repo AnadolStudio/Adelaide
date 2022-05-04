@@ -20,6 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class ImageLoader {
+
+    private ImageLoader() {
+    }
+
     public static void loadImage(ImageView imageView, String path, ScaleType scaleType) {
         loadImage(imageView, path, scaleType, false, null);
     }
@@ -111,9 +115,6 @@ public class ImageLoader {
 
             }
         };
-    }
-
-    private ImageLoader() {
     }
 
     public enum ScaleType {

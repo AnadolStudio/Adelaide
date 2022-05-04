@@ -10,12 +10,11 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.RatioItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper
-import com.anadolstudio.adelaide.domain.utils.FunctionItem
-import com.anadolstudio.adelaide.domain.editphotoprocessor.RatioItem
-import com.anadolstudio.adelaide.view.adapters.CropListAdapter
-import com.anadolstudio.adelaide.view.adapters.FunctionListAdapter
+import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.FUNCTION
 import com.anadolstudio.core.interfaces.IDetailable
@@ -61,7 +60,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
             ?.copy()
             ?: TransformFunction()
 
-        binding.ratioRecyclerView.adapter = CropListAdapter(RatioDetailable(), func.ratioItem)
+        binding.ratioRecyclerView.adapter = CropListAdapter(RatioItem.values().toList(), RatioDetailable())
 
         parent()?.let {
             it.editProcessor.getOriginalImage()
@@ -148,7 +147,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         if (isLocalBackClick) {
             showRatioView(false)
 
-            parent()?.cropView()?.let {cropView->
+            parent()?.cropView()?.let { cropView ->
                 cropView.setImageBitmap(cropImage ?: func.process(defaultImage))
                 val flipH = cropView.isFlippedHorizontally
                 val flipV = cropView.isFlippedVertically

@@ -25,12 +25,12 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
 
     override fun getItemCount(): Int = dataList.size
 
-    fun toDetail(e: Data) = detailable.toDetail(e)
+//    fun toDetail(e: Data) = detailable.toDetail(e)
 
-    abstract class Selectable<Data, Holder : AbstractViewHolder.Selectable<Data>>(
+    abstract class Selectable<Data, Holder : AbstractViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
         detailable: IDetailable<Data>
-    ) : AbstractAdapter<Data, Holder>(dataList,detailable) {
+    ) : AbstractAdapter<Data, Holder>(dataList, detailable) {
 
         protected var selectableMode = true
             set(value) {
@@ -40,7 +40,7 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
 
         protected val selectableController: SelectableController.Abstract<Holder> =
             object : SelectableController.Abstract<Holder>() {
-                override fun updateView(t: Holder, isSelected: Boolean, state: Int) = t.onBind(isSelected)
+                override fun updateView(t: Holder, isSelected: Boolean, state: Int) = notifyItemChanged(state)
 
                 override fun saveState(t: Holder): Int = t.adapterPosition
             }

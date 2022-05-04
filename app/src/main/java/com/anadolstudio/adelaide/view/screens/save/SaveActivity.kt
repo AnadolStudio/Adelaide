@@ -1,6 +1,5 @@
 package com.anadolstudio.adelaide.view.screens.save
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -10,7 +9,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
-import androidx.core.animation.doOnEnd
 import com.anadolstudio.adelaide.BuildConfig
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.data.AdKeys
@@ -37,11 +35,10 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAdView
 
 class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
-    // TODO
-    //  1) Переделать через RecyclerView
 
     companion object {
         const val PATH = "path"
+        const val DELTA = 70
         val TAG = SaveActivity::class.java.name
 
         fun start(context: Context, path: String?) {
@@ -102,9 +99,7 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
             decodeSampledBitmapFromContentResolverPath(this, path, 400, 400)
         }.onSuccess { binding.savedImage.setImageBitmap(it) }
 
-        binding.recyclerView.apply {
-            adapter = SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
-        }
+        binding.recyclerView.adapter = SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
     }
 
     override fun toDetail(data: SharedAction.SharedItem) {
@@ -134,34 +129,31 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (binding.selfPromotionCardView.visibility != VISIBLE) {
-            showAnimX(
-                binding.selfPromotionCardView,
-                -binding.selfPromotionCardView.width.toFloat(),
-                0F,
-            )
-            if (SettingsPreference.isFirstRunShareActivity(this)) {
-                if (!BuildConfig.DEBUG)
-                    SettingsPreference.firstRunShareActivity(this)
+        with(binding.selfPromotionCardView) {
+            if (visibility != VISIBLE) {
+                showAnimX(view = this, -width.toFloat(), 0F)
+
+                if (SettingsPreference.isFirstRunShareActivity(this@SaveActivity))
+                    return
+
+                if (!BuildConfig.DEBUG) SettingsPreference.firstRunShareActivity(this@SaveActivity)
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     horizontalScrollAnim()
                 }, 2000L)
+
             }
         }
     }
 
     private fun horizontalScrollAnim() {
-        val animator = ObjectAnimator.ofInt(binding.recyclerView, "scrollX", 300)
-        animator.duration = DURATION_EXTRA_LONG
-
-        animator.doOnEnd {
-            val animatorEnd = ObjectAnimator.ofInt(binding.recyclerView, "scrollX", 0)
-            animatorEnd.duration = DURATION_EXTRA_LONG
-            animatorEnd.start()
+        binding.recyclerView.apply {
+            smoothScrollBy(DELTA, 0, null, DURATION_EXTRA_LONG.toInt())
+            postDelayed(
+                { smoothScrollBy(-DELTA, 0, null, DURATION_EXTRA_LONG.toInt()) },
+                DURATION_EXTRA_LONG + 200
+            )
         }
-
-        animator.start()
     }
 
     private fun initAd() {
@@ -199,18 +191,12 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
                 binding.adContainer.removeAllViews()
                 binding.adContainer.addView(nativeAdView)
             }
-            .withAdListener(object : AdListener() {
-                override fun onAdLoaded() {
-                    super.onAdLoaded()
-                    showAnimX(binding.adCardView, binding.adCardView.width.toFloat(), 0F)
-                }
-
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    super.onAdFailedToLoad(loadAdError)
-                    binding.adCardView.visibility = View.INVISIBLE
-                }
-
-            })
+            .withAdListener(
+                NativeAd.NativeAdListener(
+                    { showAnimX(binding.adCardView, binding.adCardView.width.toFloat(), 0F) },
+                    { binding.adCardView.visibility = View.INVISIBLE }
+                )
+            )
             .build()
 
         val adRequest = AdRequest.Builder().build()

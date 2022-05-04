@@ -6,7 +6,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.core.graphics.toRectF
-import com.anadolstudio.adelaide.domain.utils.FunctionItem
 
 abstract class AbstractFunction(override val type: String) : EditFunction {
     override fun equals(other: Any?): Boolean {
