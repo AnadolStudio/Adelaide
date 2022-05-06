@@ -1,13 +1,17 @@
 package com.anadolstudio.core.adapters
 
 import android.view.View
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractViewHolder<Data>(
     view: View,
-    var selectableMode: Boolean = true
+    val detailable: IDetailable<Data>,
 ) : RecyclerView.ViewHolder(view) {
+
+    init {
+        itemView.setOnClickListener(::onClick)
+    }
 
     protected var data: Data? = null
 
@@ -15,30 +19,14 @@ abstract class AbstractViewHolder<Data>(
         this.data = data
     }
 
-    open fun onBind(data: Data, isSelected: Boolean, selectableMode: Boolean = true) {
-        this.selectableMode = selectableMode
-        onBind(data, isSelected)
+    open fun onClick(view: View) {
+        data?.also { detailable.toDetail(it) }
     }
 
-    open fun onBind(data: Data, isSelected: Boolean) {
-        onBind(data)
-        if (selectableMode) onBind(isSelected)
+    open class Base<Data>(
+        view: View,
+        detailable: IDetailable<Data>
+    ) : AbstractViewHolder<Data>(view, detailable) {
+        // TODO недоделано
     }
-
-    open fun onBind(isSelected: Boolean) = selectView(isSelected)
-
-    abstract fun getSelectableView(): View
-
-    protected fun selectView(isSelected: Boolean) {
-        val view = getSelectableView()
-        val color = getSelectableColor(isSelected)
-
-        if (view is CardView)
-            view.setCardBackgroundColor(color)
-        else
-            view.setBackgroundColor(color)
-    }
-
-    abstract fun getSelectableColor(isSelected: Boolean): Int
-
 }

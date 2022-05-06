@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.anadolstudio.adelaide.R
+import com.anadolstudio.adelaide.databinding.ItemGalleryBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
-import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder
+import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.adapters.BaseDiffUtilCallback
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
@@ -22,22 +23,13 @@ class GalleryAdapter(
 
     fun getData() = dataList.toList()
 
-    override fun getViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<String> =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder.Base<String> =
         GalleryViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false),
             detailable
         )
 
-    override fun setData(list: MutableList<String>) {
-        //TODO Внедрить DifUtil в абстракцию
-        val diffUtilCallback = BaseDiffUtilCallback(dataList, list)
-        val diffResult = DiffUtil.calculateDiff(diffUtilCallback, false)
-
-        dataList = list
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    override fun onViewAttachedToWindow(holder: SimpleViewHolder<String>) {
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder.Base<String>) {
         super.onViewAttachedToWindow(holder)
         val position = holder.adapterPosition
 
@@ -51,8 +43,13 @@ class GalleryAdapter(
     class GalleryViewHolder(
         view: View,
         detailable: IDetailable<String>
-    ) : SimpleViewHolder<String>(view, detailable), View.OnClickListener {
+    ) : AbstractViewHolder.Base<String>(view, detailable), View.OnClickListener {
 
-        override fun scaleType() = ImageLoader.ScaleType.CENTER_CROP
+        val binding = ItemGalleryBinding.bind(view)
+
+        override fun onBind(data: String) {
+            ImageLoader.loadImage(binding.imageView, data, ImageLoader.ScaleType.CENTER_CROP)
+            super.onBind(data)
+        }
     }
 }

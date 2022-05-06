@@ -8,7 +8,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemShareBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.share_action.SharedAction
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
-import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder
+import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 
 class SharedAdapter(
@@ -16,17 +16,18 @@ class SharedAdapter(
     detailable: IDetailable<SharedAction.SharedItem>
 ) : SimpleAdapter<SharedAction.SharedItem>(data, detailable) {
 
-    override fun getViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<SharedAction.SharedItem> =
-        SharedViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
-            detailable
-        )
-
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder.Base<SharedAction.SharedItem> = SharedViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
+        detailable
+    )
 
     private class SharedViewHolder(
         view: View,
         detailable: IDetailable<SharedAction.SharedItem>
-    ) : SimpleViewHolder<SharedAction.SharedItem>(view, detailable) {
+    ) : AbstractViewHolder.Base<SharedAction.SharedItem>(view, detailable) {
 
         val binding = ItemShareBinding.bind(view)
 

@@ -16,12 +16,27 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class ImageLoader {
 
     private ImageLoader() {
+    }
+
+    public static void loadImage(ImageView imageView, @DrawableRes int id, ScaleType scaleType) {
+        RequestBuilder<Drawable> builder = Glide
+                .with(imageView)
+                .load(id);
+
+        if (scaleType == ScaleType.FIT_CENTER) {
+            builder = builder.fitCenter();
+        } else {
+            builder = builder.centerCrop();
+        }
+
+        builder.into(imageView);
     }
 
     public static void loadImage(ImageView imageView, String path, ScaleType scaleType) {

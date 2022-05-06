@@ -9,15 +9,12 @@ import com.anadolstudio.core.interfaces.IDetailable
 open class SimpleSelectableAdapter<Data>(
     data: List<Data>,
     detailable: IDetailable<Data>,
-) : AbstractAdapter.Selectable<Data, SimpleViewHolder<Data>>(data.toMutableList(), detailable) {
+) : AbstractAdapter.Selectable<Data, SelectableViewHolder<Data>>(data.toMutableList(), detailable) {
 
-    open fun getViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<Data> =
-        SimpleViewHolder.Selectable(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableViewHolder<Data> =
+        SelectableViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
-            selectableController,
-            detailable
+            detailable,
+            selectableController
         )
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<Data> =
-        getViewHolder(parent, viewType)
 }

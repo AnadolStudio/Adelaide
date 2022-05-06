@@ -9,38 +9,39 @@ import com.anadolstudio.adelaide.databinding.ItemCropBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.RatioItem
 import com.anadolstudio.adelaide.domain.utils.BitmapHelper
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
-import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder
+import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.core.view.selectablecontroller.SelectableController
+import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
 class CropListAdapter(
     data: List<RatioItem>,
     detailable: IDetailable<RatioItem>,
 ) : SimpleSelectableAdapter<RatioItem>(data, detailable) {
 
-    override fun getViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<RatioItem> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableViewHolder<RatioItem> {
         val view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.item_crop, parent, false)
         return CropViewHolder(view, selectableController, detailable)
     }
 
-    override fun onBindViewHolder(holder: SimpleViewHolder<RatioItem>, position: Int) {
+    override fun onBindViewHolder(holder: SelectableViewHolder<RatioItem>, position: Int) {
         if (dataList[position] == RatioItem.FREE && !selectableController.selectableItemIsExist()) {
             selectableController.setStartItem(holder)
+            //TODO немного неправильная логика
         }
         super.onBindViewHolder(holder, position)
     }
 
     inner class CropViewHolder(
         itemView: View,
-        controller: SelectableController.Abstract<SimpleViewHolder<RatioItem>>,
+        controller: SelectableController<SelectableViewHolder<RatioItem>>,
         detailable: IDetailable<RatioItem>
-    ) : SimpleViewHolder.Selectable<RatioItem>(itemView, controller, detailable), View.OnClickListener {
+    ) : SelectableViewHolder<RatioItem>(itemView, detailable, controller), View.OnClickListener {
 
         private val binding: ItemCropBinding = ItemCropBinding.bind(itemView)
 
-        override fun onBind(data: RatioItem, isSelected: Boolean, selectableMode: Boolean) {
-            super.onBind(data, isSelected, selectableMode)
+        override fun onBind(data: RatioItem, isSelected: Boolean) {
+            super.onBind(data, isSelected)
 
             binding.iconContainer.layoutParams.width =
                 BitmapHelper.dpToPx(itemView.context, data.density.w)
@@ -61,15 +62,14 @@ class CropListAdapter(
         override fun getSelectableColor(isSelected: Boolean): Int =
             ContextCompat.getColor(
                 itemView.context,
-                if (isSelected) R.color.colorSecondary else R.color.colorSecondaryInverse
+                if (isSelected) R.color.colorSecondaryInverse else R.color.colorSecondary
             )
 
         override fun onBind(isSelected: Boolean) {
             super.onBind(isSelected)
             binding.icon.setColorFilter(
-                itemView.context.getColor(if (isSelected) R.color.colorAccent else R.color.colorAccentInverse)
+                itemView.context.getColor(if (isSelected) R.color.colorAccentInverse else R.color.colorAccent)
             )
         }
-
     }
 }

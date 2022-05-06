@@ -8,7 +8,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
-import com.anadolstudio.adelaide.view.adapters.SimpleViewHolder
+import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListAdapter(
@@ -20,13 +20,13 @@ class FunctionListAdapter(
         val view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.item_function, parent, false)
 
-        return FunctionViewHolder(view,detailable)
+        return FunctionViewHolder(view, detailable)
     }
 
     class FunctionViewHolder(
         view: View,
         detailable: IDetailable<FunctionItem>
-    ) : SimpleViewHolder<FunctionItem>(view, detailable) {
+    ) : AbstractViewHolder.Base<FunctionItem>(view, detailable) {
 
         private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(view)
 
