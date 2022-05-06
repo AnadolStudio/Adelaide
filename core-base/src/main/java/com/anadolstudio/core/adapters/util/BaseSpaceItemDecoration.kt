@@ -1,4 +1,4 @@
-package com.anadolstudio.core.adapters
+package com.anadolstudio.core.adapters.util
 
 import android.graphics.Rect
 import android.view.View

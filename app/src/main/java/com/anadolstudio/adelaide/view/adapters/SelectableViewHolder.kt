@@ -11,14 +11,9 @@ open class SelectableViewHolder<Data>(
     view: View,
     detailable: IDetailable<Data>,
     controller: SelectableController<out AbstractSelectableViewHolder<Data>>,
-) : AbstractSelectableViewHolder<Data>(
-    view,
-    detailable,
-    controller as SelectableController<AbstractSelectableViewHolder<Data>>
-) {
+) : AbstractSelectableViewHolder.Base<Data>(view, detailable, controller) {
 
-    override fun getSelectableView(): View = itemView.findViewById(R.id.main_container)
-        ?: itemView
+    override fun getSelectableView(): View? = itemView.findViewById(R.id.main_container)
 
     override fun getSelectableColor(isSelected: Boolean): Int = ContextCompat.getColor(
         itemView.context, if (isSelected) R.color.colorAccent else R.color.colorAccentInverse

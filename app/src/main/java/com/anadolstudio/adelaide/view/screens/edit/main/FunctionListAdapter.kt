@@ -16,12 +16,11 @@ class FunctionListAdapter(
     detailable: IDetailable<FunctionItem>
 ) : SimpleAdapter<FunctionItem>(data, detailable) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder {
-        val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_function, parent, false)
-
-        return FunctionViewHolder(view, detailable)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder =
+        FunctionViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_function, parent, false),
+            detailable
+        )
 
     class FunctionViewHolder(
         view: View,

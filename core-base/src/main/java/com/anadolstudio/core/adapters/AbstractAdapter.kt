@@ -3,6 +3,7 @@ package com.anadolstudio.core.adapters
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
+import com.anadolstudio.core.adapters.util.BaseDiffUtilCallback
 import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
@@ -14,8 +15,10 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
         holder.onBind(dataList[position])
     }
 
-    open fun getDiffUtilCallback(dataList: MutableList<Data>, list: MutableList<Data>): DiffUtil.Callback? =
-        BaseDiffUtilCallback(dataList, list)
+    open fun getDiffUtilCallback(
+        dataList: MutableList<Data>,
+        list: MutableList<Data>
+    ): DiffUtil.Callback? = BaseDiffUtilCallback(dataList, list)
 
     open fun setData(list: MutableList<Data>) {
         getDiffUtilCallback(dataList, list)
@@ -33,8 +36,6 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
     }
 
     override fun getItemCount(): Int = dataList.size
-
-//    fun toDetail(e: Data) = detailable.toDetail(e)
 
     abstract class Selectable<Data, Holder : AbstractSelectableViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),

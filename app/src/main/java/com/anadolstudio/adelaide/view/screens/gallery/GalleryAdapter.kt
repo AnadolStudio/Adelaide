@@ -3,13 +3,11 @@ package com.anadolstudio.adelaide.view.screens.gallery
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemGalleryBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.adapters.BaseDiffUtilCallback
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 
@@ -21,7 +19,7 @@ class GalleryAdapter(
 
     private var isLoading = false
 
-    fun getData() = dataList.toList()
+    fun getData() = dataList.toList() // TODO Переписать подгрузку
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder.Base<String> =
         GalleryViewHolder(

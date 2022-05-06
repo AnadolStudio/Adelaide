@@ -26,7 +26,7 @@ import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnack
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
-import com.anadolstudio.core.adapters.BaseSpaceItemDecoration
+import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 import com.anadolstudio.core.tasks.Result
@@ -195,14 +195,14 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
         }
     }
 
-    override fun toDetail(path: String) {
+    override fun toDetail(data: String) {
 
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             val editType = intent.getStringExtra(TypeKey::class.java.name)
             showLoadingDialog()
-            EditActivity.start(this, editType, path)
+            EditActivity.start(this, editType, data)
         } else {
-            setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, path))
+            setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, data))
             finish()
         }
     }

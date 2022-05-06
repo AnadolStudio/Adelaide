@@ -1,4 +1,4 @@
-package com.anadolstudio.core.adapters
+package com.anadolstudio.core.adapters.util
 
 import androidx.recyclerview.widget.DiffUtil
 

@@ -12,12 +12,9 @@ open class SimpleAdapter<Data>(
     detailable: IDetailable<Data>,
 ) : AbstractAdapter<Data, AbstractViewHolder.Base<Data>>(data.toMutableList(), detailable) {
 
-    //TODO упростить ImageViewHolder<Data> через контроллер
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder.Base<Data> =
         AbstractViewHolder.Base(
             LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
             detailable,
         )
-
 }
