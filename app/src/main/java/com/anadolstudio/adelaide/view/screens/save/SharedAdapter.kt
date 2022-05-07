@@ -13,7 +13,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 class SharedAdapter(
     data: List<SharedAction.SharedItem>,
-    detailable: IDetailable<SharedAction.SharedItem>
+    detailable: IDetailable<SharedAction.SharedItem>?
 ) : SimpleAdapter<SharedAction.SharedItem>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -26,7 +26,7 @@ class SharedAdapter(
 
     private class SharedViewHolder(
         view: View,
-        detailable: IDetailable<SharedAction.SharedItem>
+        detailable: IDetailable<SharedAction.SharedItem>?
     ) : AbstractViewHolder.Base<SharedAction.SharedItem>(view, detailable) {
 
         val binding = ItemShareBinding.bind(view)

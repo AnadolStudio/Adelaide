@@ -40,7 +40,7 @@ class GalleryAdapter(
 
     class GalleryViewHolder(
         view: View,
-        detailable: IDetailable<String>
+        detailable: IDetailable<String>?
     ) : AbstractViewHolder.Base<String>(view, detailable), View.OnClickListener {
 
         val binding = ItemGalleryBinding.bind(view)

@@ -6,7 +6,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractViewHolder<Data>(
     view: View,
-    val detailable: IDetailable<Data>,
+    val detailable: IDetailable<Data>?,
 ) : RecyclerView.ViewHolder(view) {
 
     private val clickView: View by lazy { initClickView() }
@@ -24,10 +24,10 @@ abstract class AbstractViewHolder<Data>(
     }
 
     open fun onClick(view: View) {
-        data?.also { detailable.toDetail(it) }
+        data?.also { detailable?.toDetail(it) }
     }
 
-    open class Base<Data>(view: View, detailable: IDetailable<Data>) :
+    open class Base<Data>(view: View, detailable: IDetailable<Data>?) :
         AbstractViewHolder<Data>(view, detailable) {
 
         override fun initClickView(): View = itemView

@@ -9,7 +9,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 open class SelectableViewHolder<Data>(
     view: View,
-    detailable: IDetailable<Data>,
+    detailable: IDetailable<Data>?,
     controller: SelectableController<out AbstractSelectableViewHolder<Data>>,
 ) : AbstractSelectableViewHolder.Base<Data>(view, detailable, controller) {
 

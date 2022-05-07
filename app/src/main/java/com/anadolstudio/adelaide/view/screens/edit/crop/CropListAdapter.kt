@@ -15,7 +15,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 class CropListAdapter(
     data: List<RatioItem>,
-    detailable: IDetailable<RatioItem>,
+    detailable: IDetailable<RatioItem>?,
 ) : SimpleSelectableAdapter<RatioItem>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -29,7 +29,7 @@ class CropListAdapter(
 
     override fun onBindViewHolder(holder: SelectableViewHolder<RatioItem>, position: Int) {
         if (dataList[position] == RatioItem.FREE && !selectableController.selectableItemIsExist()) {
-            selectableController.setStartItem(holder)            //TODO немного неправильная логика
+            selectableController.setStartItem(holder)//TODO немного неправильная логика
         }
 
         super.onBindViewHolder(holder, position)
@@ -38,7 +38,7 @@ class CropListAdapter(
     private inner class CropViewHolder(
         itemView: View,
         controller: SelectableController<SelectableViewHolder<RatioItem>>,
-        detailable: IDetailable<RatioItem>
+        detailable: IDetailable<RatioItem>?
     ) : SelectableViewHolder<RatioItem>(itemView, detailable, controller), View.OnClickListener {
 
         private val binding: ItemCropBinding = ItemCropBinding.bind(itemView)

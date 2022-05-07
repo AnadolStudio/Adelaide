@@ -4,27 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.databinding.FragmentListFunctionBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
-import com.anadolstudio.adelaide.domain.editphotoprocessor.MainFunctions
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.FuncItem
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
+import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.core.interfaces.IDetailable
 
-class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
+class FunctionListFragment : BaseEditFragment() {
 
     companion object {
 
-        fun newInstance(key: String): FunctionListFragment = FunctionListFragment().apply {
+        fun newInstance(
+            key: String,
+            detailableListener: IDetailable<FuncItem>
+        ): FunctionListFragment = FunctionListFragment().apply {
+
             arguments = Bundle().apply {
                 putString(EDIT_TYPE, key)
             }
+
+            listener = detailableListener
         }
 
     }
 
+    private var listener: IDetailable<FuncItem>? = null
     private lateinit var binding: FragmentListFunctionBinding
 
     override fun onCreateView(
@@ -33,33 +38,9 @@ class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListFunctionBinding.inflate(inflater)
-        binding.recyclerView.adapter = FunctionListAdapter(MainFunctions.mainFunction, this)
+        binding.recyclerView.adapter = FunctionListAdapter(MainFunctions.mainFunction, listener)
+
         return binding.root
-    }
-
-    override fun toDetail(data: FunctionItem) {
-        parent()?.currentFunction = data
-        parent()?.showWorkspace(true)
-
-        when (data) {
-
-            FunctionItem.TRANSFORM -> {
-                //TODO смена через ViewModel активити
-                parent()?.let {
-                    val function = it.editProcessor.getFunction(FunctionItem.TRANSFORM.name)
-                    it.replaceFragment(
-                        CropEditFragment.newInstance(
-                            function as? TransformFunction ?: TransformFunction()
-                        )
-                    )
-                }
-            }
-
-            else -> {
-                parent()?.currentFunction = null
-                parent()?.showWorkspace(false)
-            }
-        }
     }
 
 }

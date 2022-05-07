@@ -8,7 +8,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 open class SimpleSelectableAdapter<Data>(
     data: List<Data>,
-    detailable: IDetailable<Data>,
+    detailable: IDetailable<Data>?,
 ) : AbstractAdapter.Selectable<Data, SelectableViewHolder<Data>>(data.toMutableList(), detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableViewHolder<Data> =

@@ -1,6 +1,5 @@
 package com.anadolstudio.core.adapters
 
-import android.graphics.Color
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
@@ -8,8 +7,8 @@ import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractSelectableViewHolder<Data>(
     view: View,
-    detailable: IDetailable<Data>,
-    val controller: SelectableController<AbstractSelectableViewHolder<Data>>
+    detailable: IDetailable<Data>?,
+    val controller: SelectableController<AbstractSelectableViewHolder<Data>>?
 ) : AbstractViewHolder<Data>(view, detailable) {
 
     open fun onBind(data: Data, isSelected: Boolean) {
@@ -36,20 +35,22 @@ abstract class AbstractSelectableViewHolder<Data>(
     override fun onClick(view: View) {
         super.onClick(view)
 
-        if (!controller.selectableItemIsExist() || controller.getCurrentPosition() != this.adapterPosition) {
+        if (controller != null &&
+            (!controller.selectableItemIsExist() || controller.getCurrentPosition() != this.adapterPosition)
+        ) {
             controller.setCurrentSelectedItem(this)
         }
     }
 
     abstract class Base<Data>(
         view: View,
-        detailable: IDetailable<Data>,
+        detailable: IDetailable<Data>?,
         controller: SelectableController<out AbstractSelectableViewHolder<Data>>
     ) : AbstractSelectableViewHolder<Data>(
         view,
         detailable,
         controller as SelectableController<AbstractSelectableViewHolder<Data>>
-    ){
+    ) {
         override fun initClickView(): View = itemView
     }
 }

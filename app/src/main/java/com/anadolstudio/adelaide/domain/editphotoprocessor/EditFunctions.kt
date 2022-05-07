@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.core.graphics.toRectF
 import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
 
 abstract class AbstractFunction(override val type: String) : EditFunction {
@@ -23,7 +24,7 @@ abstract class AbstractFunction(override val type: String) : EditFunction {
     }
 }
 
-class TransformFunction() : AbstractFunction(FunctionItem.TRANSFORM.name), Parcelable {
+class TransformFunction() : AbstractFunction(MainFunctions.TRANSFORM.name), Parcelable {
 
     companion object CREATOR : Parcelable.Creator<TransformFunction> {
         override fun createFromParcel(parcel: Parcel): TransformFunction {

@@ -26,17 +26,6 @@
                 android:layout_gravity="center"
                 android:gravity="end|center">
 
-                <!--
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:text="37:14"
-                                    android:gravity="center"
-                                    android:textSize="@dimen/text_title_small"
-                                    android:textColor="@color/colorAccent"/>
-                -->
-
                 <ImageButton
                     android:id="@+id/save_btn"
                     style="@style/MenuImageView"

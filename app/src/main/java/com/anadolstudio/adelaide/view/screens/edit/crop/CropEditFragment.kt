@@ -10,28 +10,23 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
-import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.domain.utils.BitmapUtil
-import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.FUNCTION
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.FuncItem
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.InnerFunctionItem
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
+import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.interfaces.IDetailable
 import com.theartofdev.edmodo.cropper.CropImageView
 
-class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
+class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
 
     companion object {
         private val TAG = CropEditFragment::class.java.name
 
-        fun newInstance(function: TransformFunction): CropEditFragment {
-            val fragment = CropEditFragment()
-            val args = Bundle()
-            args.putParcelable(FUNCTION, function)
-            fragment.arguments = args
-            return fragment
-        }
+        fun newInstance() = CropEditFragment()
     }
 
     private lateinit var defaultImage: Bitmap
@@ -39,12 +34,6 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
     private var currentRatioItem = RatioItem.FREE
     private lateinit var binding: FragmentEditCropBinding
     private lateinit var func: TransformFunction
-//    private lateinit var newFunc: TransformFunction
-
-    override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putParcelable(FUNCTION, newFunc)
-        super.onSaveInstanceState(outState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,13 +43,16 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         binding = FragmentEditCropBinding.inflate(inflater)
 
         binding.mainRecyclerView.adapter =
-            FunctionListAdapter(FunctionItem.TRANSFORM.innerFunctions, this)
+            FunctionListAdapter(MainFunctions.TRANSFORM.innerFunctions, this)
 
-        func = (arguments?.getParcelable(FUNCTION) as? TransformFunction)
+
+        //TODO Получаю из ViewModel
+        func = (arguments?.getParcelable("FUNCTION") as? TransformFunction)
             ?.copy()
             ?: TransformFunction()
 
-        binding.ratioRecyclerView.adapter = CropListAdapter(RatioItem.values().toList(), RatioDetailable())
+        binding.ratioRecyclerView.adapter =
+            CropListAdapter(RatioItem.values().toList(), RatioDetailable())
 
         parent()?.let {
             it.editProcessor.getOriginalImage()
@@ -89,10 +81,12 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
     override fun apply(): Boolean {
         if (isLocalApply) {
             val cropView = parent()?.cropView()
+
             cropView?.let {
                 saveWindowCrop(it)
                 func.ratioItem = currentRatioItem
             }
+
             parent()?.editProcessor?.let { processor ->
 
                 defaultImage = processor.getOriginalImage()
@@ -111,6 +105,8 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         }
 
         parent()?.let {
+
+            // TODO Вынести во ViewModel
             it.editProcessor.add(func)
             it.editProcessor.processPreview()
         }
@@ -175,7 +171,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
     }
 
     fun showRatioView(show: Boolean) {
-        parent()?.showWorkspace(true, needMoreSpace = show)
+        parent()?.showWorkspace(true, show)
         binding.mainRecyclerView.visibility = if (show) GONE else VISIBLE
         binding.ratioRecyclerView.visibility = if (show) VISIBLE else GONE
         parent()?.cropView()?.isShowCropOverlay = show
@@ -185,14 +181,14 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         cropView.cropRect = cropView.wholeImageRect
     }
 
-    override fun toDetail(data: FunctionItem) {
+    override fun toDetail(data: FuncItem) {
         val cropView = parent()?.cropView()
         cropView ?: return
 
         cropView.setFixedAspectRatio(false)
 
         when (data) {
-            FunctionItem.CROP -> {
+            InnerFunctionItem.CROP -> {
 //                rebootFlip(cropView)
                 resetCropView()
 
@@ -210,19 +206,19 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
                 parent()?.setupCropImage(func)
             }
 
-            FunctionItem.TURN -> {
+            InnerFunctionItem.TURN -> {
 //                func.degrees -= DEGREES_ROTATE
 //                cropView.rotatedDegrees = func.degrees
                 //TODO с flip + rotate = работает криво
 //                func.setDegree(-DEGREES_ROTATE, defaultImage.width, defaultImage.height)
             }
 
-            FunctionItem.FLIP_HORIZONTAL -> {
+            InnerFunctionItem.FLIP_HORIZONTAL -> {
                 func.flipHorizontally(defaultImage.width, defaultImage.height)
                 cropView.flipImageHorizontally()
             }
 
-            FunctionItem.FLIP_VERTICAL -> {
+            InnerFunctionItem.FLIP_VERTICAL -> {
                 func.flipVertically(defaultImage.width, defaultImage.height)
                 cropView.flipImageVertically()
             }

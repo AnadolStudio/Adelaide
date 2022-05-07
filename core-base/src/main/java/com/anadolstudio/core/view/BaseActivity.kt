@@ -7,26 +7,49 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import com.anadolstudio.core.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.anadolstudio.core.dialogs.LoadingView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 open class BaseActivity : AppCompatActivity() {
-    private var mLoadingView: LoadingView? = null
+    protected var loadingView: LoadingView? = null
 
     protected fun showLoadingDialog() {
-        mLoadingView = LoadingView.Base.view(supportFragmentManager)
-        mLoadingView?.showLoadingIndicator()
+        loadingView = LoadingView.Base.view(supportFragmentManager)
+        loadingView?.showLoadingIndicator()
     }
 
     protected fun hideLoadingDialog() {
-        mLoadingView?.hideLoadingIndicator()
+        loadingView?.hideLoadingIndicator()
     }
 
     override fun onStop() {
         super.onStop()
         hideLoadingDialog()
+    }
+
+    fun replaceFragment(fragment: Fragment, containerId: Int) {
+        replaceFragment(fragment, containerId, true)
+    }
+
+    fun replaceFragment(fragment: Fragment, containerId: Int, addToBackStack: Boolean) {
+
+        val transaction = supportFragmentManager.beginTransaction()
+            .replace(containerId, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+
+        if (addToBackStack) transaction.addToBackStack(fragment.javaClass.name)
+
+        transaction.commit()
+    }
+
+    private fun addFragment(fragment: Fragment, containerId: Int) {
+
+        supportFragmentManager.beginTransaction()
+            .add(containerId, fragment)
+            .commit()
     }
 
     protected fun showToast(@StringRes id: Int, length: Int = Toast.LENGTH_SHORT) {

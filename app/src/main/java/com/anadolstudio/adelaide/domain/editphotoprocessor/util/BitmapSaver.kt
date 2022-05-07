@@ -36,7 +36,7 @@ interface BitmapSaver {
             val resolver = context.contentResolver
 
             try {
-                progressListener?.onProgress("Get uri...")
+                progressListener?.onProgress("Get uri...")// TODO Через getString()
                 uri = getUri(resolver, context, file)
 
                 progressListener?.onProgress("Compress...")

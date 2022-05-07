@@ -30,45 +30,59 @@ interface RxTask<T> {
 
         abstract fun subscribe(observable: Observable<T>)
 
-        protected var valueCallback: RxCallback<T>? = null
-        protected var errorCallback: RxCallback<Throwable>? = null
-        protected var finalCallback: RxCallback<Boolean>? = null
+        protected var valueCallbacks: MutableList<RxCallback<T>> = mutableListOf()
+        protected var errorCallbacks: MutableList<RxCallback<Throwable>> = mutableListOf()
+        protected var finalCallbacks: MutableList<RxCallback<Boolean>> = mutableListOf()
 
         override fun onSuccess(callback: RxCallback<T>): RxTask<T> {
-            valueCallback = callback
-            notifyListener()
+            valueCallbacks.add(callback)
+
+            val result = this.result
+
+            if (result is Result.Success) callback.invoke(result.data)
+
             return this
         }
 
         override fun onError(callback: RxCallback<Throwable>): RxTask<T> {
-            errorCallback = callback
-            notifyListener()
+            errorCallbacks.add(callback)
+            val result = this.result
+
+            if (result is Result.Error) callback.invoke(result.error)
+
+            return this
+        }
+
+        override fun onFinal(callback: RxCallback<Boolean>): RxTask<T> {
+            finalCallbacks.add(callback)
+
+            when (this.result) {
+                is Result.Success -> callback.invoke(true)
+                is Result.Error -> callback.invoke(false)
+                else -> {}
+            }
+
             return this
         }
 
         override fun cancel() {
-            disposable?.let {
-                if (!it.isDisposed) it.dispose()
+            disposable?.apply {
+                if (!isDisposed) dispose()
             }
         }
 
-        protected fun notifyListener() {
+        protected fun notifyAllListeners() {
             val result = this.result
-            val callback = this.valueCallback
-            val errorCallback = this.errorCallback
+            val valueCallbacks = this.valueCallbacks
+            val errorCallbacks = this.errorCallbacks
 
-            if (result is Result.Success && callback != null) {
-                callback(result.data)
-                finalCallback?.invoke(true)
-            } else if (result is Result.Error && errorCallback != null) {
-                errorCallback(result.error)
-                finalCallback?.invoke(false)
+            if (result is Result.Success && valueCallbacks.isNotEmpty()) {
+                valueCallbacks.forEach { it.invoke(result.data) }
+                finalCallbacks.forEach { it.invoke(true) }
+            } else if (result is Result.Error && errorCallbacks.isNotEmpty()) {
+                errorCallbacks.forEach { it.invoke(result.error) }
+                finalCallbacks.forEach { it.invoke(false) }
             }
-        }
-
-        override fun onFinal(callback: RxCallback<Boolean>): RxTask<T> {
-            finalCallback = callback
-            return this
         }
     }
 
@@ -85,9 +99,9 @@ interface RxTask<T> {
                     { result = Result.Success(it) },
                     {
                         result = Result.Error(it)
-                        notifyListener()
+                        notifyAllListeners()
                     },
-                    { notifyListener() }
+                    { notifyAllListeners() }
                 )
         }
     }
@@ -114,7 +128,7 @@ interface RxTask<T> {
     open class Progress<TaskData : Any, ProgressData>(
         immediately: Boolean,
         protected val progressListener: ProgressListener<ProgressData>,
-        private val callback: RxProgressCallback<TaskData,ProgressData>
+        private val callback: RxProgressCallback<TaskData, ProgressData>
     ) : SimpleStart<TaskData>(immediately) {
 
         override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
@@ -128,12 +142,12 @@ interface RxTask<T> {
 
         class Quick<TaskData : Any, ProgressData>(
             progressListener: ProgressListener<ProgressData>,
-            callback: RxProgressCallback<TaskData,ProgressData>
-        ) : Progress<TaskData,ProgressData>(true, progressListener, callback)
+            callback: RxProgressCallback<TaskData, ProgressData>
+        ) : Progress<TaskData, ProgressData>(true, progressListener, callback)
 
         class Lazy<TaskData : Any, ProgressData>(
             progressListener: ProgressListener<ProgressData>,
-            callback: RxProgressCallback<TaskData,ProgressData>
-        ) : Progress<TaskData,ProgressData>(false, progressListener, callback)
+            callback: RxProgressCallback<TaskData, ProgressData>
+        ) : Progress<TaskData, ProgressData>(false, progressListener, callback)
     }
 }

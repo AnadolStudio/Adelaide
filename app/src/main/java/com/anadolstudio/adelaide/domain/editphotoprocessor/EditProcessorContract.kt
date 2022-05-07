@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
+import com.anadolstudio.core.tasks.ProgressListener
+import com.anadolstudio.core.tasks.RxTask
 import java.io.File
 
 interface EditProcessorContract {
@@ -12,14 +14,16 @@ interface EditProcessorContract {
 
     val applyFuncList: MutableSet<EditFunction>
 
-    fun setImage(path: String)
+    fun init(path: String): RxTask<Bitmap>
 
-    fun saveAsBitmap(listener: EditListener<Bitmap>)
+    fun saveAsBitmap():RxTask<Bitmap>
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
-    fun saveAsFile(context: Context, file: File, listener: EditListener<String>)
+    fun saveAsFile(
+        context: Context, file: File, processListener: ProgressListener<String>
+    ): RxTask<String>
 
-    fun processPreview()
+    fun processPreview(): RxTask<Bitmap>
 
     fun process(bitmap: Bitmap, func: EditFunction): Bitmap
 

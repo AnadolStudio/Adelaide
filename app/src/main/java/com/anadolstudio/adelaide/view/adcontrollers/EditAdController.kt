@@ -23,7 +23,7 @@ class EditAdController(val binding: ActivityEditBinding) : AdController.Abstract
 
             override fun onAdFailedToLoad(p0: LoadAdError) {
                 super.onAdFailedToLoad(p0)
-                binding.adView.visibility = View.GONE
+                binding.adView.visibility = View.VISIBLE
             }
         }
 

@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.FuncItem
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListAdapter(
-    data: List<FunctionItem>,
-    detailable: IDetailable<FunctionItem>
-) : SimpleAdapter<FunctionItem>(data, detailable) {
+    data: List<FuncItem>,
+    detailable: IDetailable<FuncItem>?
+) : SimpleAdapter<FuncItem>(data, detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder =
         FunctionViewHolder(
@@ -24,12 +24,12 @@ class FunctionListAdapter(
 
     class FunctionViewHolder(
         view: View,
-        detailable: IDetailable<FunctionItem>
-    ) : AbstractViewHolder.Base<FunctionItem>(view, detailable) {
+        detailable: IDetailable<FuncItem>?
+    ) : AbstractViewHolder.Base<FuncItem>(view, detailable) {
 
         private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(view)
 
-        override fun onBind(data: FunctionItem) {
+        override fun onBind(data: FuncItem) {
             super.onBind(data)
 
             binding.icon.setImageDrawable(
