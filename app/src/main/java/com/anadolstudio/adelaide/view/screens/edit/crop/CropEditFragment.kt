@@ -59,6 +59,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
             defaultImage = func.getCopyWithoutCrop().process(bitmap)
             cropImage = func.process(bitmap)
             viewModel.viewController.setupCropImage(func)
+            viewModel.viewController.showMainImage(false)
             viewModel.viewController.showCropImage(true)
         }
 
@@ -105,9 +106,6 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         viewModel.getEditProcessor().addFunction(func)
         viewModel.processPreview()
 
-        //TODO Всё будет прятатся через ViewModel/viewController
-        viewModel.viewController.showCropImage(false)
-
         return super.apply()
     }
 
@@ -150,6 +148,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
                 cropView.isFlippedVertically = flipV
                 cropView.rotatedDegrees = degrees
             }
+
             viewModel.viewController.setupCropImage(func)
 
             /*val tmp = arguments?.getParcelable(FUNCTION) ?: TransformFunction()
@@ -157,7 +156,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
             func.cropWindow = tmp.cropWindow*/
             return true
         }
-        viewModel.viewController.showCropImage(false)
+
         return super.onBackClick()
     }
 

@@ -21,9 +21,9 @@ interface EditProcessorContract {
 
     fun processAll(bitmap: Bitmap): Bitmap
 
-    fun getOriginalImage(): Bitmap // Большая сторона <= 1280
+    fun getOriginalImage(): Bitmap
 
-    fun getCurrentImage(): Bitmap?
+    fun getCurrentImage(): Bitmap?// Большая сторона <= 1280
 
     fun addFunction(func: EditFunction)
 

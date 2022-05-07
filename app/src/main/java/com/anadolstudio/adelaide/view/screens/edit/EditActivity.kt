@@ -81,88 +81,44 @@ class EditActivity : BaseEditActivity() {
         }
 
         binding.applyBtn.setOnClickListener {
-            bottomFragment?.let {
+            bottomFragment?.also {
                 if (!it.apply()) { //TODO правильно, ли такое обращение?
-                    viewController.showWorkspace(false)
                     super.onBackPressed()
                 }
             }
         }
 
-        bottomFragment =
-            supportFragmentManager.findFragmentById(R.id.toolbar_fragment) as BaseEditFragment?
-
         val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
         setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
 
         viewModel.currentBitmapCommunication.observe(this) { result ->
-            hideLoadingDialog()
-            when (result) {
-                is Result.Success -> showBitmap(result.data)
-                is Result.Error -> result.error.printStackTrace()
-                is Result.Loading -> showLoadingDialog()
-                else -> {}
-            }
-        }
+            if (result !is Result.Loading) hideLoadingDialog()
 
-        viewModel.originalBitmapCommunication.observe(this) { result ->
-            hideLoadingDialog()
             when (result) {
-                is Result.Success -> showBitmap(result.data)
-
-                is Result.Error -> {
-                    showToast(R.string.edit_error_cant_open_photo)
-                    finish()
+                is Result.Success -> {
+                    showBitmap(result.data)
+                    viewController.resetWorkSpace()
                 }
+                is Result.Error -> {
+                    result.error.printStackTrace()
 
+                }
                 is Result.Loading -> showLoadingDialog()
                 else -> {}
             }
         }
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
-        viewModel.initEditProcessor(this, path)
+
+        viewModel.initEditProcessor(this, path).onError {
+            showToast(R.string.edit_error_cant_open_photo)
+            finish()
+        }
 
         /*editHelper.initPhotoEditor(photoEditorView)
-        multiTouchListener = MyMultiTouchListener(binding.frameContentImageView, true)
-        binding.frameContentImageView.setOnTouchListener(multiTouchListener)
         if (dialogIsShow) {
             createDialog(lastDialogIsAccept)
         }*/
-    }
-
-    inner class FunctionItemClick : IDetailable<FuncItem> {
-
-        override fun toDetail(data: FuncItem) {
-            viewController.showWorkspace(true, needMoreSpace = false)
-            when (data) {
-                MainFunctions.TRANSFORM -> setEditFragment(
-                    Mode.TRANSFORM,
-                    CropEditFragment.newInstance()
-                )
-
-                else -> {}
-                /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())
-                FILTER -> setEditFragment(MODE_FILTER, FilterEditFragment.newInstance())
-                EFFECT -> setEditFragment(MODE_EFFECT, EffectEditFragment.newInstance(callback))
-                SPLASH -> setEditFragment(
-                    MODE_SPLASH, SplashEditFragment.newInstance(callback, MONOCHROME_BACK)
-                )
-                BLUR -> setEditFragment(
-                    MODE_BLUR, SplashEditFragment.newInstance(callback, BLUR_BACK)
-                )
-                BODY -> setEditFragment(MODE_BODY, BodyEditFragment.newInstance(callback))
-                TEXT -> setEditFragment(MODE_TEXT, TextEditFragment.newInstance())
-                STICKER -> setEditFragment(MODE_STICKER, StickerEditFragment.newInstance())
-                UPGRADE -> setEditFragment(
-                    MODE_UPGRADE,
-                    AdjustmentEditFragment.newInstance(callback)
-                )
-                BRUSH -> setEditFragment(MODE_BRUSH, BrushEditFragment.newInstance())
-                CROP -> setEditFragment(MODE_CROP, CropEditFragment.newInstance(callback))
-                TURN -> setEditFragment(MODE_TURN, TurnEditFragment.newInstance())*/
-            }
-        }
     }
 
     private fun setEditFragment(mode: Mode, fragment: BaseEditFragment) {
@@ -186,7 +142,7 @@ class EditActivity : BaseEditActivity() {
                 }
 
             } else {
-                viewController.showWorkspace(false)
+                viewController.resetWorkSpace()
                 super.onBackPressed()
             }
         }
@@ -223,4 +179,39 @@ class EditActivity : BaseEditActivity() {
             .onError { showToast(R.string.edit_error_failed_save_image) }
             .onFinal { hideLoadingDialog() }
     }
+
+    inner class FunctionItemClick : IDetailable<FuncItem> {
+
+        override fun toDetail(data: FuncItem) {
+            viewController.showWorkspace(true, needMoreSpace = false)
+            when (data) {
+                MainFunctions.TRANSFORM -> setEditFragment(
+                    Mode.TRANSFORM,
+                    CropEditFragment.newInstance()
+                )
+
+                else -> {}
+                /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())
+                FILTER -> setEditFragment(MODE_FILTER, FilterEditFragment.newInstance())
+                EFFECT -> setEditFragment(MODE_EFFECT, EffectEditFragment.newInstance(callback))
+                SPLASH -> setEditFragment(
+                    MODE_SPLASH, SplashEditFragment.newInstance(callback, MONOCHROME_BACK)
+                )
+                BLUR -> setEditFragment(
+                    MODE_BLUR, SplashEditFragment.newInstance(callback, BLUR_BACK)
+                )
+                BODY -> setEditFragment(MODE_BODY, BodyEditFragment.newInstance(callback))
+                TEXT -> setEditFragment(MODE_TEXT, TextEditFragment.newInstance())
+                STICKER -> setEditFragment(MODE_STICKER, StickerEditFragment.newInstance())
+                UPGRADE -> setEditFragment(
+                    MODE_UPGRADE,
+                    AdjustmentEditFragment.newInstance(callback)
+                )
+                BRUSH -> setEditFragment(MODE_BRUSH, BrushEditFragment.newInstance())
+                CROP -> setEditFragment(MODE_CROP, CropEditFragment.newInstance(callback))
+                TURN -> setEditFragment(MODE_TURN, TurnEditFragment.newInstance())*/
+            }
+        }
+    }
+
 }

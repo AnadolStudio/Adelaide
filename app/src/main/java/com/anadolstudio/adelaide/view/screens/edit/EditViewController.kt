@@ -4,10 +4,11 @@ import android.view.View
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.core.view.show
 import com.theartofdev.edmodo.cropper.CropImageView
 
 class EditViewController(private val binding: ActivityEditBinding) {
-
+//TODO нужен interface
     init {
         binding.cropImage.setMinCropResultSize(250, 250)
     }
@@ -29,18 +30,22 @@ class EditViewController(private val binding: ActivityEditBinding) {
             )
         }
 
-        binding.saveBtn.visibility = if (show) View.GONE else View.VISIBLE
-        binding.applyBtn.visibility = if (show) View.VISIBLE else View.GONE
+        binding.saveBtn.show(!show)
+        binding.applyBtn.show(show)
     }
 
+    fun showMainImage(show: Boolean) {
+        binding.mainImage.show(show)
+    }
 
-    private fun showMainImage(show: Boolean) {
-        binding.mainImage.visibility = if (show) View.GONE else View.VISIBLE
+    fun resetWorkSpace() {
+        showWorkspace(false)
+        showCropImage(false)
+        showMainImage(true)
     }
 
     fun showCropImage(show: Boolean) {
-        binding.cropImage.visibility = if (show) View.VISIBLE else View.GONE
-        showMainImage(show)
+        binding.cropImage.show(show)
 
         if (!show) {
             binding.cropImage.clearImage()

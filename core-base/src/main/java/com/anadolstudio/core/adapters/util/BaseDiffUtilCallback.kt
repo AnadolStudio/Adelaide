@@ -29,7 +29,7 @@ open class BaseDiffUtilCallback<Data>(
 
     private fun equalsItems(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
-        val newItem = oldList[newItemPosition]
+        val newItem = newList[newItemPosition]
         return oldItem?.equals(newItem) ?: false
     }
 

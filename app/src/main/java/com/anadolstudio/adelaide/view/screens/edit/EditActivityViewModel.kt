@@ -16,22 +16,27 @@ import java.io.File
 class EditActivityViewModel : ViewModel() {
 
     private val editProcessor = EditProcessorIml()
+    val currentBitmapCommunication = Communication.UiUpdate<Result<Bitmap>>()
     lateinit var viewController: EditViewController
         private set
-    val originalBitmapCommunication = Communication.UiUpdate<Result<Bitmap>>()
-    val currentBitmapCommunication = Communication.UiUpdate<Result<Bitmap>>()
 
-    fun initEditProcessor(context: Context, path: String) {
-        editProcessor.init(context, path)
-            .onSuccess { originalBitmapCommunication.map(Result.Success(it)) }
-            .onError { originalBitmapCommunication.map(Result.Error(it)) }
+    fun initEditProcessor(context: Context, path: String):RxTask<Bitmap> {
+        currentBitmapCommunication.map(Result.Loading())
+
+        return editProcessor.init(context, path)
+            .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
+            .onError { currentBitmapCommunication.map(Result.Error(it)) }
     }
 
     fun getEditProcessor(): EditProcessorContract = editProcessor
 
-    fun processPreview() = editProcessor.processPreview()
-        .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
-        .onError { currentBitmapCommunication.map(Result.Error(it)) }
+    fun processPreview(): RxTask<Bitmap> {
+        currentBitmapCommunication.map(Result.Loading())
+
+        return editProcessor.processPreview()
+            .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
+            .onError { currentBitmapCommunication.map(Result.Error(it)) }
+    }
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     fun saveAsFile(

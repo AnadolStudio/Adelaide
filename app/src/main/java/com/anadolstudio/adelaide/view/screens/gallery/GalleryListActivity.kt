@@ -47,7 +47,6 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
     }
 
     //TODO Есть баг с дубликатами
-
     private lateinit var binding: ActivityGalleryBinding
     private lateinit var galleryListAdapter: GalleryAdapter
     private var currentFolder: String? = null
@@ -190,7 +189,6 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
     }
 
     override fun toDetail(data: String) {
-
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             val editType = intent.getStringExtra(TypeKey::class.java.name)
             showLoadingDialog()
