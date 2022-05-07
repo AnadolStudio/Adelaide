@@ -2,17 +2,15 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils.MAX_SIDE_COPY
+import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File
 
-class EditProcessorIml(
-    val activity: AppCompatActivity,
-) : EditProcessorContract {
+class EditProcessorIml : EditProcessorContract.Base() {
 
     companion object {
         val TAG: String = EditProcessorIml::class.java.name
@@ -30,9 +28,9 @@ class EditProcessorIml(
 
     override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()// TODO нужен ли?
 
-    override fun init(path: String): RxTask<Bitmap> = RxTask.Base.Quick {
+    override fun init(context: Context, path: String): RxTask<Bitmap> = RxTask.Base.Quick {
         this.path = path
-        BitmapUtils.decodeBitmapFromContentResolverPath(activity, path, MAX_SIDE_COPY)
+        BitmapUtils.decodeBitmapFromContentResolverPath(context, path, MAX_SIDE_COPY)
     }.onSuccess { result -> originalBitmap = result }
 
     override fun saveAsBitmap(): RxTask<Bitmap> {
@@ -45,7 +43,7 @@ class EditProcessorIml(
         processListener: ProgressListener<String>
     ) = RxTask.Progress.Quick(processListener) { progressListener ->
 
-        var bitmap = BitmapUtils.decodeBitmapFromContentResolverPath(activity, path)
+        var bitmap = BitmapUtils.decodeBitmapFromContentResolverPath(context, path)
         bitmap = processAll(bitmap)
 
         progressListener.onProgress("Setup...")
@@ -54,8 +52,9 @@ class EditProcessorIml(
     }
 
     override fun processPreview() = RxTask.Base.Quick {
-        originalBitmap?.let { processAll(it) }
-            ?: throw InvalidateBitmapException("Bitmap is null")
+        originalBitmap
+            ?.let { processAll(it) }
+            ?: throw NullBitmapException()
     }.onSuccess { bitmap -> currentBitmap = bitmap }
 
     override fun process(bitmap: Bitmap, func: EditFunction): Bitmap {
@@ -86,7 +85,7 @@ class EditProcessorIml(
         return result ?: bitmap
     }
 
-    override fun getOriginalImage(): Bitmap? = originalBitmap
+    override fun getOriginalImage(): Bitmap = originalBitmap ?: throw NullBitmapException()
 
     override fun getCurrentImage(): Bitmap? = currentBitmap ?: originalBitmap
 
@@ -95,11 +94,10 @@ class EditProcessorIml(
         currentBitmap?.recycle()
     }
 
-    fun getFunction(type: String): EditFunction? = containerFunctions[type]
+    override fun getFunction(type: MainFunctions): EditFunction? = containerFunctions[type.name]
 
-    fun add(func: EditFunction) {
+    override fun addFunction(func: EditFunction) {
         containerFunctions.add(func)
     }
-
 
 }

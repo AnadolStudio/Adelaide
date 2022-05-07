@@ -5,16 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.EditProcessorIml
 import com.anadolstudio.adelaide.domain.editphotoprocessor.Mode
-import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
-import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
@@ -25,10 +21,10 @@ import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_T
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
-import com.theartofdev.edmodo.cropper.CropImageView
 
 class EditActivity : BaseEditActivity() {
 
@@ -47,11 +43,11 @@ class EditActivity : BaseEditActivity() {
     protected val doubleClickExit = DoubleClickExit.Base()
     private var bottomFragment: BaseEditFragment? = null
     private lateinit var currentMode: Mode
-        private set
 
-    lateinit var editProcessor: EditProcessorIml
     private lateinit var path: String
     private lateinit var binding: ActivityEditBinding
+    private lateinit var viewController: EditViewController
+    private val viewModel: EditActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +60,8 @@ class EditActivity : BaseEditActivity() {
         }
 
         binding = ActivityEditBinding.inflate(layoutInflater)
+        viewController = EditViewController(binding)
+        viewModel.setEditViewController(viewController)
         setSupportActionBar(binding.navigationToolbar)
         setContentView(binding.root)
         init()
@@ -84,8 +82,8 @@ class EditActivity : BaseEditActivity() {
 
         binding.applyBtn.setOnClickListener {
             bottomFragment?.let {
-                if (!it.apply()) { //TODO
-                    showWorkspace(false)
+                if (!it.apply()) { //TODO правильно, ли такое обращение?
+                    viewController.showWorkspace(false)
                     super.onBackPressed()
                 }
             }
@@ -97,20 +95,33 @@ class EditActivity : BaseEditActivity() {
         val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
         setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
 
-        path = intent.getStringExtra(IMAGE_PATH).toString()
-
-        showLoadingDialog()
-        editProcessor = EditProcessorIml(this)
-
-        editProcessor.init(path)
-            .onSuccess { bitmap -> showBitmap(bitmap) }
-            .onError {
-                showToast(R.string.edit_error_cant_open_photo)
-                finish()
+        viewModel.currentBitmapCommunication.observe(this) { result ->
+            hideLoadingDialog()
+            when (result) {
+                is Result.Success -> showBitmap(result.data)
+                is Result.Error -> result.error.printStackTrace()
+                is Result.Loading -> showLoadingDialog()
+                else -> {}
             }
-            .onFinal { hideLoadingDialog() }
+        }
 
-        binding.cropImage.setMinCropResultSize(250, 250)
+        viewModel.originalBitmapCommunication.observe(this) { result ->
+            hideLoadingDialog()
+            when (result) {
+                is Result.Success -> showBitmap(result.data)
+
+                is Result.Error -> {
+                    showToast(R.string.edit_error_cant_open_photo)
+                    finish()
+                }
+
+                is Result.Loading -> showLoadingDialog()
+                else -> {}
+            }
+        }
+
+        path = intent.getStringExtra(IMAGE_PATH).toString()
+        viewModel.initEditProcessor(this, path)
 
         /*editHelper.initPhotoEditor(photoEditorView)
         multiTouchListener = MyMultiTouchListener(binding.frameContentImageView, true)
@@ -123,12 +134,12 @@ class EditActivity : BaseEditActivity() {
     inner class FunctionItemClick : IDetailable<FuncItem> {
 
         override fun toDetail(data: FuncItem) {
-
+            viewController.showWorkspace(true, needMoreSpace = false)
             when (data) {
-                MainFunctions.TRANSFORM -> {
-//                    val function = editProcessor.getFunction(FunctionItem.TRANSFORM.name)
-                    setEditFragment(Mode.TRANSFORM, CropEditFragment.newInstance())
-                }
+                MainFunctions.TRANSFORM -> setEditFragment(
+                    Mode.TRANSFORM,
+                    CropEditFragment.newInstance()
+                )
 
                 else -> {}
                 /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())
@@ -151,8 +162,6 @@ class EditActivity : BaseEditActivity() {
                 CROP -> setEditFragment(MODE_CROP, CropEditFragment.newInstance(callback))
                 TURN -> setEditFragment(MODE_TURN, TurnEditFragment.newInstance())*/
             }
-
-
         }
     }
 
@@ -175,52 +184,12 @@ class EditActivity : BaseEditActivity() {
                     if (isTrue) super.onBackPressed()
                     else showToast(R.string.edit_func_double_click_for_exit)
                 }
+
             } else {
-                showWorkspace(false)
+                viewController.showWorkspace(false)
                 super.onBackPressed()
             }
         }
-    }
-
-    @Deprecated("Его место не тут")
-    fun cropView(): CropImageView = binding.cropImage
-
-    @Deprecated("Его место не тут")
-    fun showCropImage(show: Boolean) {
-        binding.cropImage.visibility = if (show) VISIBLE else GONE
-        showMainImage(show)
-
-        if (!show) {
-            binding.cropImage.clearImage()
-            binding.cropImage.resetCropRect()
-            binding.cropImage.setOnCropWindowChangedListener(null)
-            binding.cropImage.setOnSetCropOverlayMovedListener(null)
-        }
-
-        binding.cropImage.isShowCropOverlay = false
-    }
-
-    private fun showMainImage(show: Boolean) {
-        binding.mainImage.visibility = if (show) GONE else VISIBLE
-    }
-
-    fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
-        //TODO не хватает плавности для mainContainer
-        val visible = if (needMoreSpace) GONE else VISIBLE
-
-        if (binding.adView.visibility != visible && show) {
-            val height = binding.adView.height.toFloat()
-
-            AnimateUtil.showAnimY(
-                binding.adView,
-                if (needMoreSpace) 0F else -height,
-                if (needMoreSpace) -height else 0F,
-                visible
-            )
-        }
-
-        binding.saveBtn.visibility = if (show) GONE else VISIBLE
-        binding.applyBtn.visibility = if (show) VISIBLE else GONE
     }
 
     override fun onRequestPermissionsResult(
@@ -248,29 +217,10 @@ class EditActivity : BaseEditActivity() {
             return
 
         showLoadingDialog()
-        editProcessor.saveAsFile(
-            this, FileUtil.createAppDir(this), loadingView!!
-        )
+
+        viewModel.saveAsFile(this, FileUtil.createAppDir(this), loadingView!!)
             .onSuccess { imagePath -> SaveActivity.start(this@EditActivity, imagePath) }
             .onError { showToast(R.string.edit_error_failed_save_image) }
             .onFinal { hideLoadingDialog() }
-    }
-
-    fun setupCropImage(function: TransformFunction) {
-        binding.cropImage.setAspectRatio(
-            if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
-            if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
-        )
-
-        binding.cropImage.setFixedAspectRatio(false)
-        setupWindowCropImage(function)
-//        binding.cropImage.isFlippedVertically = function.flipVertical
-//        binding.cropImage.isFlippedHorizontally = function.flipHorizontal
-//        binding.cropImage.rotatedDegrees = function.degrees
-    }
-
-    @Deprecated("Его место не тут")
-    fun setupWindowCropImage(function: TransformFunction) {
-        binding.cropImage.cropRect = function.cropRect ?: binding.cropImage.wholeImageRect
     }
 }

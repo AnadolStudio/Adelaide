@@ -15,4 +15,5 @@ object TimeUtil {
 
     fun getTime(format: String = DEFAULT_FORMAT): String =
         SimpleDateFormat(format, Locale.getDefault()).format(Date())
+
 }
