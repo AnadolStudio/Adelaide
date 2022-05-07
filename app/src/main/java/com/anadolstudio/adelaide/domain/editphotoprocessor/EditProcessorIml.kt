@@ -91,6 +91,7 @@ class EditProcessorIml(
     }
 
     override fun processPreview() {
+        //TODO RxTask
         currentBitmap = originalBitmap?.let { processAll(it) }
         currentBitmap?.let { editListener?.onSuccess(it) }
     }
@@ -100,7 +101,7 @@ class EditProcessorIml(
     }
 
     override fun processAll(bitmap: Bitmap): Bitmap {
-        showLoadingDialog()
+//        showLoadingDialog()
         var result: Bitmap? = null
 
         for (f in containerFunctions.values) {
@@ -121,7 +122,7 @@ class EditProcessorIml(
             result = f.process(bitmap)
         }
 
-        hideLoadingDialog()
+//        hideLoadingDialog()
         return result ?: bitmap
     }
 

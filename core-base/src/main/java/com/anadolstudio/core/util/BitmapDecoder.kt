@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
-import java.lang.IllegalArgumentException
+import androidx.exifinterface.media.ExifInterface
+import java.io.IOException
 
 interface BitmapDecoder {
 
@@ -29,21 +29,18 @@ interface BitmapDecoder {
                 val halfHeight = height / 2
                 val halfWidth = width / 2
 
-                // Вычисляем наибольший inSampleSize, который будет кратным двум
-                // и оставит полученные размеры больше, чем требуемые
-                val inProgress =
-                    if (isHard)
-                        halfHeight / inSampleSize > reqHeight || halfWidth / inSampleSize > reqWidth
-                    else
-                        halfHeight / inSampleSize > reqHeight && halfWidth / inSampleSize > reqWidth
-
-                while (inProgress) inSampleSize *= 2
+                while (
+                    if (isHard) halfHeight / inSampleSize > reqHeight || halfWidth / inSampleSize > reqWidth
+                    else halfHeight / inSampleSize > reqHeight && halfWidth / inSampleSize > reqWidth
+                ) {
+                    inSampleSize *= 2
+                }
 
             }
             return inSampleSize
         }
 
-        protected fun getDegree(orientation: Int): Int = when (orientation) {
+        fun getDegree(orientation: Int): Int = when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -93,27 +90,25 @@ interface BitmapDecoder {
             options.inJustDecodeBounds = true
 
             // Content
-            val pfd = context.contentResolver.openFileDescriptor(Uri.parse(path), "r")
+            var pfd = context.contentResolver.openFileDescriptor(Uri.parse(path), "r")
                 ?: throw IllegalArgumentException("ParcelFileDescriptor is null")
-
-            BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
 
             val orientation = ExifInterface(pfd.fileDescriptor).getAttributeInt(
                 ExifInterface.TAG_ORIENTATION, 1
             )
-
+            pfd.close()
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, true)
             options.inJustDecodeBounds = false
 
-            val bitmap = pfd.let {
-                BitmapFactory.decodeFileDescriptor(
-                    pfd.fileDescriptor,
-                    null,
-                    options
-                )
-            }
+            pfd = context.contentResolver.openFileDescriptor(Uri.parse(path), "r")
+                    //необходимо опять его открыть
+                ?: throw IllegalArgumentException("ParcelFileDescriptor is null")
+
+            val bitmap =
+                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
 
             val degree: Int = getDegree(orientation)
+            pfd.close()
 
             return rotate(bitmap, degree.toFloat())
         }

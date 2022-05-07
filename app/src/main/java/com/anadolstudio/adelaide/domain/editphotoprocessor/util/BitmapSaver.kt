@@ -25,7 +25,7 @@ interface BitmapSaver {
 
     fun scanFile(context: Context, path: String)
 
-    abstract class Abstract(private val progressListener: ProgressListener) : BitmapSaver {
+    abstract class Abstract(private val progressListener: ProgressListener?) : BitmapSaver {
 
         fun save(
             context: Context,
@@ -36,14 +36,14 @@ interface BitmapSaver {
             val resolver = context.contentResolver
 
             try {
+                progressListener?.onProgress(40)
                 uri = getUri(resolver, context, file)
-                progressListener.onProgress(40)
 
+                progressListener?.onProgress(80)
                 val path = compress(resolver, bitmap, uri, file)
-                progressListener.onProgress(80)
 
+                progressListener?.onProgress(100)
                 scanFile(context, path)
-                progressListener.onProgress(100)
 
                 return path
 
@@ -63,7 +63,7 @@ interface BitmapSaver {
         }
     }
 
-    class BelowQ(progressListener: ProgressListener) : Abstract(progressListener) {
+    class BelowQ(progressListener: ProgressListener?) : Abstract(progressListener) {
         override fun getUri(resolver: ContentResolver, context: Context, file: File): Uri? = null
 
         override fun compress(
@@ -80,7 +80,7 @@ interface BitmapSaver {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    class AboveQ(progressListener: ProgressListener) : Abstract(progressListener) {
+    class AboveQ(progressListener: ProgressListener?) : Abstract(progressListener) {
 
         override fun getUri(resolver: ContentResolver, context: Context, file: File): Uri {
             val relativePath =
@@ -116,7 +116,7 @@ interface BitmapSaver {
     object Factory {
 
         fun save(
-            progressListener: ProgressListener,
+            progressListener: ProgressListener?,
             context: Context,
             bitmap: Bitmap,
             file: File

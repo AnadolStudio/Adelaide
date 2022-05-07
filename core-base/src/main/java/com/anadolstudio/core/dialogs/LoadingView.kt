@@ -54,11 +54,11 @@ interface LoadingView : ProgressListener {
         inner class DialogProgressListener : ProgressListener.Abstract() {
 
             override fun doMain(progress: Int) {
-                // TODO не обновляет
                 binding.textView.text = if (progress == 100) {
-                    activity?.getString(R.string.loading)
+//                    activity?.getString(R.string.loading)
+                    "Done"
                 } else {
-                    progress.toString()
+                    "$progress%"
                 }
             }
 

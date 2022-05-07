@@ -14,10 +14,10 @@ import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedAct
 import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedActionFactory
 import com.anadolstudio.adelaide.domain.utils.BitmapUtil.decodeBitmapFromPath
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
+import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
-import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.view.BaseActivity
@@ -70,7 +70,9 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
         // TODO ВЫнести во ViewModel
         RxTask.Base.Quick {
             decodeBitmapFromPath(this, path, 400, 400)
-        }.onSuccess { binding.savedImage.setImageBitmap(it) }
+        }
+            .onSuccess { binding.savedImage.setImageBitmap(it) }
+            .onError { it.printStackTrace() }
 
         binding.recyclerView.adapter =
             SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)

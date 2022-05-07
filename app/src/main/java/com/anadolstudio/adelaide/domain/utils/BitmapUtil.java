@@ -6,10 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -18,13 +16,11 @@ import android.widget.ImageView;
 
 import com.anadolstudio.core.util.BitmapDecoder;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.io.IOException;
 import java.io.InputStream;
 
-import androidx.exifinterface.media.ExifInterface;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Observable;
 
 public class BitmapUtil {
