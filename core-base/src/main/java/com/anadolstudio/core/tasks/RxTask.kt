@@ -111,13 +111,13 @@ interface RxTask<T> {
         class Lazy<T : Any>(callback: RxDoMainCallback<T>) : Base<T>(false, callback)
     }
 
-    open class Progress<T : Any>(
+    open class Progress<TaskData : Any, ProgressData>(
         immediately: Boolean,
-        protected val progressListener: ProgressListener,
-        private val callback: RxProgressCallback<T>
-    ) : SimpleStart<T>(immediately) {
+        protected val progressListener: ProgressListener<ProgressData>,
+        private val callback: RxProgressCallback<TaskData,ProgressData>
+    ) : SimpleStart<TaskData>(immediately) {
 
-        override fun createObservable(): Observable<T> = Observable.create { emitter ->
+        override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
             try {
                 emitter.onNext(callback.invoke(progressListener))
                 emitter.onComplete()
@@ -126,14 +126,14 @@ interface RxTask<T> {
             }
         }
 
-        class Quick<T : Any>(
-            progressListener: ProgressListener,
-            callback: RxProgressCallback<T>
-        ) : Progress<T>(true, progressListener, callback)
+        class Quick<TaskData : Any, ProgressData>(
+            progressListener: ProgressListener<ProgressData>,
+            callback: RxProgressCallback<TaskData,ProgressData>
+        ) : Progress<TaskData,ProgressData>(true, progressListener, callback)
 
-        class Lazy<T : Any>(
-            progressListener: ProgressListener,
-            callback: RxProgressCallback<T>
-        ) : Progress<T>(false, progressListener, callback)
+        class Lazy<TaskData : Any, ProgressData>(
+            progressListener: ProgressListener<ProgressData>,
+            callback: RxProgressCallback<TaskData,ProgressData>
+        ) : Progress<TaskData,ProgressData>(false, progressListener, callback)
     }
 }

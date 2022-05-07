@@ -3,9 +3,9 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils.MAX_SIDE_COPY
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils.MAX_SIDE_COPY
 import com.anadolstudio.core.dialogs.LoadingView
 import com.anadolstudio.core.tasks.RxTask
 import io.reactivex.disposables.Disposable
@@ -81,7 +81,7 @@ class EditProcessorIml(
             var bitmap = BitmapUtils.decodeBitmapFromContentResolverPath(activity, path)
             bitmap = processAll(bitmap)
 
-            progressListener.onProgress(25)
+            progressListener.onProgress("Decode...")
 
             BitmapSaver.Factory.save(progressListener, context, bitmap, file)
         }

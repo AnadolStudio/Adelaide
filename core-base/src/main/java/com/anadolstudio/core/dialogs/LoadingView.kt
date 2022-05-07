@@ -14,7 +14,7 @@ import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 
-interface LoadingView : ProgressListener {
+interface LoadingView : ProgressListener<String> {
 
     fun showLoadingIndicator()
 
@@ -45,21 +45,16 @@ interface LoadingView : ProgressListener {
                     HANDLER.post(HideTask(fm))
                 }
 
-                override fun onProgress(progress: Int) {
-                    dialog?.dialogProgressListener?.onProgress(progress)
+                override fun onProgress(data: String) {
+                    dialog?.dialogProgressListener?.onProgress(data)
                 }
             }
         }
 
-        inner class DialogProgressListener : ProgressListener.Abstract() {
+        inner class DialogProgressListener : ProgressListener.Abstract<String>() {
 
-            override fun doMain(progress: Int) {
-                binding.textView.text = if (progress == 100) {
-//                    activity?.getString(R.string.loading)
-                    "Done"
-                } else {
-                    "$progress%"
-                }
+            override fun doMain(data: String) {
+                binding.textView.text = data
             }
 
         }
@@ -84,7 +79,6 @@ interface LoadingView : ProgressListener {
         private class HideTask(fm: FragmentManager) : Runnable {
             private val mFmRef: Reference<FragmentManager>
 
-            // TODO убери бесконечность, используй нижнюю переменную
             private var attempts = 5
             override fun run() {
                 HANDLER.removeCallbacks(this)

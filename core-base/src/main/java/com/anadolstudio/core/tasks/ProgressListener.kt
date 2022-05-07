@@ -4,23 +4,19 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
 
-interface ProgressListener {
+interface ProgressListener<ProgressData> {
 
     @MainThread
-    fun onProgress(progress: Int)
+    fun onProgress(data: ProgressData)
 
-    abstract class Abstract : ProgressListener {
+    abstract class Abstract<ProgressData> : ProgressListener<ProgressData> {
 
-        override fun onProgress(progress: Int) {
-            if (validate(progress)) {
-                Handler(Looper.getMainLooper()).post {
-                    doMain(progress)
-                }
+        override fun onProgress(data: ProgressData) {
+            Handler(Looper.getMainLooper()).post {
+                doMain(data)
             }
         }
 
-        protected fun validate(progress: Int): Boolean = progress in 0..100
-
-        abstract fun doMain(progress: Int)
+        abstract fun doMain(data: ProgressData)
     }
 }
