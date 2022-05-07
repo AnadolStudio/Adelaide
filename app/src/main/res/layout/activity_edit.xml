@@ -100,8 +100,7 @@
 
     </FrameLayout>
 
-<!--    TODO FragmentContainer-->
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/toolbar_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -114,7 +113,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <!--        <include layout="@layout/fragment_edit_crop" />-->
-    </FrameLayout>
+    </androidx.fragment.app.FragmentContainerView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,6 @@ interface BitmapDecoder {
 
     abstract class Abstract : BitmapDecoder {
 
-
         open fun calculateInSampleSize(
             options: BitmapFactory.Options,
             reqWidth: Int,

@@ -14,27 +14,24 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.REQUEST_STORAGE_PERMISSION
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.STORAGE_PERMISSION
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.hasPermission
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.requestPermission
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnackbar
 import com.anadolstudio.adelaide.view.ViewModelFactory
+import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 import com.anadolstudio.core.tasks.Result
+import com.anadolstudio.core.util.PermissionUtil
+import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.core.view.BaseActivity
 
 import java.io.File
 
-class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
+class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
 
     companion object {
         private const val TAG = "GalleryListActivity"
@@ -72,7 +69,6 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
         binding.navigationTb.title = null
 
         init(savedInstanceState)
-
         loadData()
     }
 
@@ -119,19 +115,19 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
 
     @SuppressLint("MissingPermission")
     override fun loadMore() {
-        if (hasPermission(this@GalleryListActivity, STORAGE_PERMISSION[0])) {
+        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
             loadingMore = true
-            viewModel.loadImages(this@GalleryListActivity, currentFolder, getLastItemId())
+            viewModel.loadImages(this, currentFolder, getLastItemId())
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun loadData() {
-        if (hasPermission(this, STORAGE_PERMISSION[0])) {
+        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
             viewModel.loadData(this)
         } else {
             showEmptyText()
-            requestPermission(this, STORAGE_PERMISSION[0], REQUEST_STORAGE_PERMISSION)
+            PermissionUtil.ReadExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
         }
     }
 
@@ -157,24 +153,22 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
         return if (TextUtils.isDigitsOnly(toParseInt)) toParseInt.toLong() else -1L
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
         when (requestCode) {
-            REQUEST_STORAGE_PERMISSION ->
+            DEFAULT_REQUEST_CODE ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
                     // permission granted
                     loadData()
                 } else {
                     // permission denied
-                    val shouldShow = ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        STORAGE_PERMISSION[0]
-                    )
-                    if (!shouldShow) showSettingsSnackbar(this, binding.root)
+                    val shouldShow = PermissionUtil.ReadExternalStorage
+                        .shouldShowRequestPermissionRationale(this)
+
+                    if (!shouldShow) showSettingsSnackbar(binding.root)
                     else finish() // Закрывает activity
                 }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -223,7 +217,7 @@ class GalleryListActivity : BaseActivity(), IDetailable<String>, ILoadMore {
                 if (i == 0) null
                 else adapterView.adapter.getItem(i).toString()
 
-            if (hasPermission(this@GalleryListActivity, STORAGE_PERMISSION[0])) {
+            if (PermissionUtil.ReadExternalStorage.checkPermission(this@GalleryListActivity)) {
                 viewModel.loadImages(this@GalleryListActivity, currentFolder)
             }
         }

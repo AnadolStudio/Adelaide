@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
@@ -22,22 +21,19 @@ import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
 import com.anadolstudio.adelaide.domain.utils.BitmapUtil
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.REQUEST_STORAGE_PERMISSION
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.STORAGE_PERMISSION
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.hasPermission
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.requestPermission
-import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnackbar
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
+import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.util.DoubleClickExit
-import com.anadolstudio.core.view.BaseActivity
+import com.anadolstudio.core.util.PermissionUtil
+import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.theartofdev.edmodo.cropper.CropImageView
 
-class EditActivity : BaseActivity() {
+class EditActivity : BaseEditActivity() {
     var currentFunction: FunctionItem? = null
     private var bottomFragment: BaseEditFragment? = null
     protected val doubleClickExit = DoubleClickExit.Base()
@@ -100,10 +96,10 @@ class EditActivity : BaseActivity() {
         binding.navigationToolbar.title = null
 
         binding.saveBtn.setOnClickListener {
-            if (hasPermission(this, STORAGE_PERMISSION)) {
+            if (PermissionUtil.WriteExternalStorage.checkPermission(this)) {
                 saveImage()
             } else {
-                requestPermission(this, STORAGE_PERMISSION, REQUEST_STORAGE_PERMISSION)
+                PermissionUtil.WriteExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
             }
         }
 
@@ -229,18 +225,14 @@ class EditActivity : BaseActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            REQUEST_STORAGE_PERMISSION -> {
-                Log.d(TAG, "onRequestPermissionsResult: " + grantResults.contentToString())
-                if (grantResults.isNotEmpty()
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                ) {
+            DEFAULT_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     saveImage()
                 } else {
-                    val shouldShow = ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        STORAGE_PERMISSION[1]
-                    )
-                    if (shouldShow) showSettingsSnackbar(this, binding.root)
+                    val shouldShow = PermissionUtil.WriteExternalStorage
+                        .shouldShowRequestPermissionRationale(this)
+
+                    if (shouldShow) showSettingsSnackbar( binding.root)
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -248,22 +240,18 @@ class EditActivity : BaseActivity() {
     }
 
     private fun saveImage() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) return
+        if (!PermissionUtil.WriteExternalStorage.checkPermission(this))
+            return
 
         editProcessor.saveAsFile(
             this, FileUtil.createAppDir(this), object : EditListener<String> {
 
-                override fun onSuccess(data: String) {
-                    SaveActivity.start(this@EditActivity, data)
-                }
+                override fun onSuccess(data: String) = SaveActivity.start(this@EditActivity, data)
 
-                override fun onFailure(ex: Throwable) {
-                    showToast(R.string.edit_error_failed_save_image)
-                }
+                override fun onFailure(ex: Throwable) = showToast(
+                    R.string.edit_error_failed_save_image
+                )
+
             })
     }
 

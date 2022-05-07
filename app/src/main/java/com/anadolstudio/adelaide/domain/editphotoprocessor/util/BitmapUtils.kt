@@ -1,24 +1,12 @@
-package com.anadolstudio.adelaide.domain.editphotoprocessor
+package com.anadolstudio.adelaide.domain.editphotoprocessor.util
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.Rect
-import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.exifinterface.media.ExifInterface
-import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialog
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.lang.IllegalArgumentException
 import kotlin.math.max
 import kotlin.math.min

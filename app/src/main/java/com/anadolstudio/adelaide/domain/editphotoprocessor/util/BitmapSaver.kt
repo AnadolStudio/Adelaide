@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils
 import com.anadolstudio.core.tasks.ProgressListener
 import java.io.File
 import java.io.FileNotFoundException

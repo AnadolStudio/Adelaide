@@ -3,8 +3,9 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
-import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.MAX_SIDE_COPY
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils.MAX_SIDE_COPY
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
 import com.anadolstudio.core.dialogs.LoadingView
 import com.anadolstudio.core.tasks.RxTask
 import io.reactivex.disposables.Disposable
@@ -59,7 +60,7 @@ class EditProcessorIml(
                 activity,
                 path,
                 MAX_SIDE_COPY
-            )!!
+            )
         }.onSuccess { bitmap ->
             originalBitmap = bitmap
             editListener?.onSuccess(bitmap)
@@ -87,7 +88,6 @@ class EditProcessorIml(
             .onSuccess { imagePath -> listener.onSuccess(imagePath) }
             .onError { throwable -> listener.onFailure(throwable) }
             .onFinal { hideLoadingDialog() }
-
     }
 
     override fun processPreview() {
