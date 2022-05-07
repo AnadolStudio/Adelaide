@@ -45,7 +45,6 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
         binding = ActivitySaveBinding.inflate(layoutInflater)
         FirebaseHelper.get().logEvent(FirebaseHelper.Event.SAVE_PHOTO)
         init()
-        initAd()
         setContentView(binding.root)
     }
 
@@ -75,7 +74,11 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
 
         binding.recyclerView.adapter =
             SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
-        adController = SaveAdController(binding)
+
+        adController = SaveAdController(binding).apply {
+            if (!SettingsPreference.hasPremium(this@SaveActivity))
+                load(this@SaveActivity)
+        }
     }
 
     override fun toDetail(data: SharedAction.SharedItem) {
@@ -95,8 +98,11 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
         data.createShareIntent(path, this)
     }
 
-    private fun updateAd(): Boolean = SettingsPreference.hasPremium(this).also { hasPremium ->
-        adController.updateView(!hasPremium)
+    private fun updateAd() {
+        SettingsPreference.hasPremium(this)
+            .also { hasPremium ->
+                adController.updateView(!hasPremium)
+            }
     }
 
     override fun onResume() {
@@ -131,11 +137,6 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
                 DURATION_EXTRA_LONG + 200
             )
         }
-    }
-
-    private fun initAd() {
-        if (updateAd()) return
-        adController.load(this)
     }
 
     override fun onDestroy() {

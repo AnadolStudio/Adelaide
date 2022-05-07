@@ -13,80 +13,21 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import ExifInterface
+import androidx.exifinterface.media.ExifInterface
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialog
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.lang.IllegalArgumentException
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 
 object BitmapUtils {
-    private val TAG = BitmapUtils::class.java.name
     const val MIME_TYPE = "image/*"
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun saveBitmapAsFileQ(
-        context: Context,
-        bitmap: Bitmap,
-        fileName: String
-    ): String {
-
-        val relativePath =
-            Environment.DIRECTORY_PICTURES + File.separator + context.getString(R.string.app_name) // save directory
-
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
-        }
-
-        val resolver = context.contentResolver
-
-        var uri: Uri? = null
-
-        try {
-            val contentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            uri = resolver.insert(contentUri, contentValues)
-                ?: throw Exception("Failed to create new  MediaStore record.") // TODO Создать Exceptions
-
-            resolver.openOutputStream(uri)?.use {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-            }
-
-            scanFile(context, uri.path!!)
-
-        } catch (e: FileNotFoundException) {
-            uri?.let { resolver.delete(uri, null, null) }
-        }
-
-        return uri?.toString() ?: throw Exception("Uri is null")
-    }
-
-    fun saveBitmapAsFileBellowQ(
-        context: Context,
-        bitmap: Bitmap,
-        file: File
-    ): String {
-        FileOutputStream(file).use { fos ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            scanFile(context, file.path)
-        }
-
-        return file.path
-    }
-
-    private fun scanFile(context: Context, path: String) {
-        MediaScannerConnection.scanFile(
-            context,
-            arrayOf(path),
-            null
-        ) { _: String?, _: Uri? -> Log.d(TAG, "onSuccess") }
-    }
 
     private fun getDegree(orientation: Int) = when (orientation) {
         ExifInterface.ORIENTATION_ROTATE_90 -> 90
@@ -99,7 +40,7 @@ object BitmapUtils {
         context: Context,
         path: String,
         minSide: Int = MAX_SIDE
-    ): Bitmap? {
+    ): Bitmap {
 
         // Читаем с inJustDecodeBounds = true для определения размеров
         val options = BitmapFactory.Options()
@@ -118,69 +59,48 @@ object BitmapUtils {
         }
         val degree = getDegree(orientation)
 
-        // Вычисляем inSampleSize
         options.inSampleSize = calculateInSampleSize(options, minSide)
-        Log.d(
-            ImageDialog.TAG,
-            "decodeSampledBitmapFromResource: ${options.inSampleSize}  ${options.outWidth} ${options.outHeight}"
-        )
-        // Читаем с использованием inSampleSize коэффициента
         options.inJustDecodeBounds = false
-//            var bitmap = BitmapFactory.decodeFile(path, options)
         var bitmap: Bitmap? = null
+
         context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use { pfd ->
-            pfd?.let {
-                bitmap = BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
-            }
+            bitmap = pfd?.let {
+                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
+            } ?: throw IllegalArgumentException("PFD is null")
         }
 
-        bitmap?.also {
-            bitmap = scaleBitmap(it)
-        }
+        if (bitmap == null) throw IllegalArgumentException("Bitmap is null")
 
-        bitmap?.let { it ->
-            rotate(
-                it, degree.toFloat()
-            ).also { bitmap = it }
-        }
+        bitmap = scaleBitmap(bitmap!!)
+        bitmap = rotate(bitmap!!, degree.toFloat())
 
-        return bitmap
+
+        return bitmap!!
     }
 
-    fun scaleBitmap(src: Bitmap, ratio: Float = MAX_SIDE.toFloat()): Bitmap? {
+    fun scaleBitmap(src: Bitmap, ratio: Float = MAX_SIDE.toFloat()): Bitmap {
         val srcW = src.width.toFloat()
         val srcH = src.height.toFloat()
-        val scaleRatio =
-            getScaleRatioMin(ratio, srcW, srcH)
+        val scaleRatio = getScaleRatioMin(ratio, srcW, srcH)
         val scaleW = (srcW * scaleRatio).toInt()
         val scaleH = (srcH * scaleRatio).toInt()
+
         return Bitmap.createScaledBitmap(src, scaleW, scaleH, true)
     }
 
-    fun getScaleRatioMin(maxSide: Float, supportW: Float, supportH: Float): Float {
-        return getScaleRatioMin(maxSide, maxSide, supportW, supportH)
-    }
+    fun getScaleRatioMin(maxSide: Float, supportW: Float, supportH: Float): Float =
+        getScaleRatioMin(maxSide, maxSide, supportW, supportH)
 
-    fun getScaleRatioMin(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float {
-        return if (supportW > mainW || supportH > mainH)
-            min(
-                mainW / supportW,
-                mainH / supportH
-            ) else 1F
-    }
+    fun getScaleRatioMin(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
+        if (supportW > mainW || supportH > mainH)
+            min(mainW / supportW, mainH / supportH)
+        else 1F
 
-    fun getScaleRatio(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float {
-        return if (supportW > mainW && supportH > mainH)
-            min(
-                mainW / supportW,
-                mainH / supportH
-            ) else {
-            max(
-                mainW / supportW,
-                mainH / supportH
-            )
-        }
-    }
+    fun getScaleRatio(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
+        if (supportW > mainW && supportH > mainH)
+            min(mainW / supportW, mainH / supportH)
+        else
+            max(mainW / supportW, mainH / supportH)
 
     fun calculateInSampleSize(
         options: BitmapFactory.Options, maxSide: Int = MAX_SIDE
@@ -218,6 +138,7 @@ object BitmapUtils {
         flipVertically: Boolean
     ): Bitmap {
         var result: Bitmap? = null
+
         try {
             // adjust crop points by the sampling because the image is smaller
             result = cropBitmapObjectWithScale(
@@ -316,30 +237,23 @@ object BitmapUtils {
         aspectRatioX: Int,
         aspectRatioY: Int
     ): Rect {
-        val left =
-            round(max(0f, getRectLeft(points)))
-        val top =
-            round(max(0f, getRectTop(points)))
+        val left = round(max(0f, getRectLeft(points)))
+        val top = round(max(0f, getRectTop(points)))
+
         val right = round(
-            min(
-                imageWidth.toFloat(),
-                getRectRight(points)
-            )
+            min(imageWidth.toFloat(), getRectRight(points))
         )
+
         val bottom = round(
-            min(
-                imageHeight.toFloat(),
-                getRectBottom(points)
-            )
+            min(imageHeight.toFloat(), getRectBottom(points))
         )
+
         val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+
         if (fixAspectRatio) {
-            fixRectForAspectRatio(
-                rect,
-                aspectRatioX,
-                aspectRatioY
-            )
+            fixRectForAspectRatio(rect, aspectRatioX, aspectRatioY)
         }
+
         return rect
     }
 

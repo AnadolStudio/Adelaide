@@ -74,19 +74,20 @@ class EditProcessorIml(
 
     override fun saveAsFile(context: Context, file: File, listener: EditListener<String>) {
         showLoadingDialog()
-        var realImage = BitmapUtils.decodeBitmapFromContentResolverPath(activity, path)
 
-        realImage?.let { realImage = processAll(it) }
+        RxTask.Progress.Quick(mLoadingView!!) { progressListener ->
 
-        realImage?.let { bitmap ->
-            RxTask.Progress.Quick(mLoadingView!!) { progressListener ->
-                BitmapSaver.Factory.save(progressListener, context, bitmap, file)
-            }
-                .onSuccess { imagePath -> listener.onSuccess(imagePath) }
-                .onError { throwable -> listener.onFailure(throwable) }
-                .onFinal { hideLoadingDialog() }
+            var bitmap = BitmapUtils.decodeBitmapFromContentResolverPath(activity, path)
+            bitmap = processAll(bitmap)
 
-        } ?: hideLoadingDialog()
+            progressListener.onProgress(25)
+
+            BitmapSaver.Factory.save(progressListener, context, bitmap, file)
+        }
+            .onSuccess { imagePath -> listener.onSuccess(imagePath) }
+            .onError { throwable -> listener.onFailure(throwable) }
+            .onFinal { hideLoadingDialog() }
+
     }
 
     override fun processPreview() {

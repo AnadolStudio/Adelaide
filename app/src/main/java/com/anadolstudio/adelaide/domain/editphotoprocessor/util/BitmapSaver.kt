@@ -38,7 +38,7 @@ interface BitmapSaver {
 
             try {
                 uri = getUri(resolver, context, file)
-                progressListener.onProgress(25)
+                progressListener.onProgress(40)
 
                 val path = compress(resolver, bitmap, uri, file)
                 progressListener.onProgress(80)
