@@ -15,33 +15,20 @@ interface RxTask<T> {
 
     fun cancel()
 
-
-    open class Base<T : Any>(private val callback: RxDoMainCallback<T>) : RxTask<T> {
+    abstract class Abstract<T : Any> : RxTask<T> {
 
         protected var result: Result<T> = Result.Loading()
-        protected val disposable: Disposable
+        protected var disposable: Disposable? = null
 
-        init {
-            val observable: Observable<T> = Observable.create { emitter ->
-                try {
-                    emitter.onNext(callback.invoke())
-                    emitter.onComplete()
-                } catch (ex: Exception) {
-                    emitter.onError(ex)
-                }
-            }
-
-            disposable = observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { result = Result.Success(it) },
-                    {
-                        result = Result.Error(it)
-                        notifyListener()
-                    },
-                    { notifyListener() }
-                )
+        protected fun start(): RxTask<T> {
+            val observable = createObservable()
+            subscribe(observable)
+            return this
         }
+
+        abstract fun createObservable(): Observable<T>
+
+        abstract fun subscribe(observable: Observable<T>)
 
         protected var valueCallback: RxCallback<T>? = null
         protected var errorCallback: RxCallback<Throwable>? = null
@@ -60,10 +47,12 @@ interface RxTask<T> {
         }
 
         override fun cancel() {
-            if (!disposable.isDisposed) disposable.dispose()
+            disposable?.let {
+                if (!it.isDisposed) it.dispose()
+            }
         }
 
-        private fun notifyListener() {
+        protected fun notifyListener() {
             val result = this.result
             val callback = this.valueCallback
             val errorCallback = this.errorCallback
@@ -83,6 +72,68 @@ interface RxTask<T> {
         }
     }
 
+    abstract class SimpleStart<T : Any>(immediately: Boolean) : Abstract<T>() {
 
-    //TODO ProgressTask
+        init {
+            if (immediately) start()
+        }
+
+        override fun subscribe(observable: Observable<T>) {
+            disposable = observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result = Result.Success(it) },
+                    {
+                        result = Result.Error(it)
+                        notifyListener()
+                    },
+                    { notifyListener() }
+                )
+        }
+    }
+
+    open class Base<T : Any>(
+        immediately: Boolean,
+        private val callback: RxDoMainCallback<T>
+    ) : SimpleStart<T>(immediately) {
+
+        override fun createObservable(): Observable<T> = Observable.create { emitter ->
+            try {
+                emitter.onNext(callback.invoke())
+                emitter.onComplete()
+            } catch (ex: Exception) {
+                emitter.onError(ex)
+            }
+        }
+
+        class Quick<T : Any>(callback: RxDoMainCallback<T>) : Base<T>(true, callback)
+
+        class Lazy<T : Any>(callback: RxDoMainCallback<T>) : Base<T>(false, callback)
+    }
+
+    open class Progress<T : Any>(
+        immediately: Boolean,
+        protected val progressListener: ProgressListener,
+        private val callback: RxProgressCallback<T>
+    ) : SimpleStart<T>(immediately) {
+
+        override fun createObservable(): Observable<T> = Observable.create { emitter ->
+            try {
+                emitter.onNext(callback.invoke(progressListener))
+                emitter.onComplete()
+            } catch (ex: Exception) {
+                emitter.onError(ex)
+            }
+        }
+
+        class Quick<T : Any>(
+            progressListener: ProgressListener,
+            callback: RxProgressCallback<T>
+        ) : Progress<T>(true, progressListener, callback)
+
+        class Lazy<T : Any>(
+            progressListener: ProgressListener,
+            callback: RxProgressCallback<T>
+        ) : Progress<T>(false, progressListener, callback)
+    }
 }

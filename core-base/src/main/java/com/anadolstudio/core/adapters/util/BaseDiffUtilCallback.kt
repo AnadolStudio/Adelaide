@@ -2,14 +2,21 @@ package com.anadolstudio.core.adapters.util
 
 import androidx.recyclerview.widget.DiffUtil
 
-open class BaseDiffUtilCallback<T>(
-    private val oldList: List<T>,
-    private val newList: List<T>
+open class BaseDiffUtilCallback<Data>(
+    var oldList: List<Data>,
+    var newList: List<Data>
 ) : DiffUtil.Callback() {
+
+    constructor() : this(emptyList(), emptyList())
 
     override fun getOldListSize(): Int = oldList.size
 
     override fun getNewListSize(): Int = newList.size
+
+    fun updateData(oldList: List<Data>, newList: List<Data>) {
+        this.oldList = oldList
+        this.newList = newList
+    }
 
     /**
      * По умолчанию в обоих вариантах полностью сравнивает обьекты

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -19,33 +18,24 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.EditListener
 import com.anadolstudio.adelaide.domain.editphotoprocessor.EditProcessorIml
-import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.domain.utils.BitmapHelper
 import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
+import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.REQUEST_STORAGE_PERMISSION
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.STORAGE_PERMISSION
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.hasPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.requestPermission
 import com.anadolstudio.adelaide.domain.utils.PermissionHelper.showSettingsSnackbar
-import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.util.DoubleClickExit
-import com.anadolstudio.core.util.TimeUtil
 import com.anadolstudio.core.view.BaseActivity
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
 import com.theartofdev.edmodo.cropper.CropImageView
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class EditActivity : BaseActivity() {
     var currentFunction: FunctionItem? = null
@@ -66,16 +56,20 @@ class EditActivity : BaseActivity() {
     }
 
     inner class EditListenerCallback : EditListener<Bitmap> {
+        // TODO стремное решение
         override fun onSuccess(data: Bitmap) {
             hideLoadingDialog()
-            BitmapHelper.getInfoOfBitmap(data)
+            BitmapUtil.getInfoOfBitmap(data)
             binding.mainImage.setImageBitmap(data)
         }
 
         override fun onFailure(ex: Throwable) {
             hideLoadingDialog()
-            Log.d(TAG, "onLoadFailed: Can\\'t open file")
-            Toast.makeText(this@EditActivity, getText(R.string.cant_open_photo), Toast.LENGTH_SHORT).show()
+
+            Toast.makeText(
+                this@EditActivity, getText(R.string.edit_error_cant_open_photo), Toast.LENGTH_SHORT
+            ).show()
+
             finish()
         }
     }
@@ -98,7 +92,7 @@ class EditActivity : BaseActivity() {
         setSupportActionBar(binding.navigationToolbar)
         setContentView(binding.root)
         init()
-        initAd()
+        EditAdController(binding).load(this)
     }
 
     private fun init() {
@@ -122,11 +116,12 @@ class EditActivity : BaseActivity() {
             }
         }
 
-        val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
         bottomFragment =
             supportFragmentManager.findFragmentById(R.id.toolbar_fragment) as BaseEditFragment?
 
+        val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
         addFragment(FunctionListFragment.newInstance(key))
+
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
         showLoadingDialog()
@@ -143,14 +138,15 @@ class EditActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
+
+        // TODO Переписать логику навигации
         bottomFragment?.let {
             if (!it.onBackClick()) {
+
                 if (currentFunction == null) { // Начальное состояние
                     doubleClickExit.click { isTrue ->
-                        if (isTrue)
-                            super.onBackPressed()
-                        else
-                            showToast(R.string.double_click_for_exit)
+                        if (isTrue) super.onBackPressed()
+                        else showToast(R.string.edit_func_double_click_for_exit)
                     }
 
                 } else {
@@ -161,8 +157,10 @@ class EditActivity : BaseActivity() {
         }
     }
 
+    @Deprecated("Его место не тут")
     fun cropView(): CropImageView = binding.cropImage
 
+    @Deprecated("Его место не тут")
     fun showCropImage(show: Boolean) {
         binding.cropImage.visibility = if (show) VISIBLE else GONE
         showMainImage(show)
@@ -182,6 +180,7 @@ class EditActivity : BaseActivity() {
     }
 
     fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
+        //TODO не хватает плавности
         if (!show) currentFunction = null
 
         binding.adView.visibility = if (needMoreSpace) GONE else VISIBLE
@@ -191,10 +190,12 @@ class EditActivity : BaseActivity() {
         binding.applyBtn.visibility = if (show) VISIBLE else GONE
     }
 
+    @Deprecated("В класс Base")
     fun replaceFragment(fragment: Fragment) {
         replaceFragment(fragment, true)
     }
 
+    @Deprecated("В класс Base")
     fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
         if (bottomFragment == fragment) return
         bottomFragment = fragment as BaseEditFragment
@@ -206,10 +207,12 @@ class EditActivity : BaseActivity() {
         transaction.commit()
     }
 
+    @Deprecated("В класс Base")
     fun addFragment(fragment: Fragment) {
         addFragment(supportFragmentManager, fragment)
     }
 
+    @Deprecated("В класс Base")
     private fun addFragment(fm: FragmentManager, fragment: Fragment) {
         if (bottomFragment == fragment) return
 
@@ -219,6 +222,7 @@ class EditActivity : BaseActivity() {
             .commit()
     }
 
+    //TODO ООП Решение
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
@@ -236,7 +240,7 @@ class EditActivity : BaseActivity() {
                         this,
                         STORAGE_PERMISSION[1]
                     )
-                    showSettingsSnackbar(this, binding.root)
+                    if (shouldShow) showSettingsSnackbar(this, binding.root)
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -250,60 +254,17 @@ class EditActivity : BaseActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) return
 
-        editProcessor.saveAsFile(this, createAppDir(), object : EditListener<String> {
-            override fun onSuccess(path: String) {
-                SaveActivity.start(this@EditActivity, path)
-            }
+        editProcessor.saveAsFile(
+            this, FileUtil.createAppDir(this), object : EditListener<String> {
 
-            override fun onFailure(ex: Throwable) {
-                //TODO обработка исключения
-                Log.d(TAG, "onFailure: ${ex.message}")
-            }
-        })
-    }
+                override fun onSuccess(data: String) {
+                    SaveActivity.start(this@EditActivity, data)
+                }
 
-    @Deprecated("Его место не тут")
-    private fun getFileName(): String {
-        val currentDate = Date()
-        val timeFormat: DateFormat =
-            SimpleDateFormat(TimeUtil.DEFAULT_FORMAT, Locale.getDefault())
-
-        return "IMG_${timeFormat.format(currentDate)}.jpeg" // TODO JPEG?
-    }
-
-    @Deprecated("Его место не тут")
-    private fun createAppDir(): File {
-        val directory = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                .toString() + File.separator + getString(
-                R.string.app_name
-            )
-        )
-
-        if (!directory.exists() && !directory.isDirectory) {
-            // create empty directory
-            if (!directory.mkdirs()) Log.d(TAG, "Unable to create app dir!")
-        }
-
-        return File(directory, getFileName())
-    }
-
-    private fun initAd() {
-        MobileAds.initialize(this) {}
-        val adRequest = AdRequest.Builder()
-            .build()
-        binding.adView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                AnimateUtil.showAnimY(binding.adView, -binding.adView.height.toFloat(), 0F)
-            }
-
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                super.onAdFailedToLoad(p0)
-                binding.adView.visibility = GONE
-            }
-        }
-        binding.adView.loadAd(adRequest)
+                override fun onFailure(ex: Throwable) {
+                    showToast(R.string.edit_error_failed_save_image)
+                }
+            })
     }
 
     fun setupCropImage(function: TransformFunction) {
@@ -319,6 +280,7 @@ class EditActivity : BaseActivity() {
 //        binding.cropImage.rotatedDegrees = function.degrees
     }
 
+    @Deprecated("Его место не тут")
     fun setupWindowCropImage(function: TransformFunction) {
         binding.cropImage.cropRect = function.cropRect ?: binding.cropImage.wholeImageRect
     }

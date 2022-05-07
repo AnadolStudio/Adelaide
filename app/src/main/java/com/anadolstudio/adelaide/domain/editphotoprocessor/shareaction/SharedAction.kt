@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.editphotoprocessor.share_action
+package com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -7,7 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.domain.utils.BitmapHelper
+import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import java.io.File
 
 interface SharedAction {
@@ -18,7 +18,7 @@ interface SharedAction {
 
         override fun createShareIntent(path: String, activity: AppCompatActivity) {
             val type = "image/*"
-            val photoURI = if (path.contains(BitmapHelper.CONTENT)) {
+            val photoURI = if (path.contains(BitmapUtil.CONTENT)) {
                 Uri.parse(path)
             } else {
                 FileProvider.getUriForFile(
@@ -35,7 +35,7 @@ interface SharedAction {
             share.putExtra(Intent.EXTRA_STREAM, photoURI)
 
             if (appPackage == null) {
-                activity.startActivity(Intent.createChooser(share, activity.getString(R.string.another)))
+                activity.startActivity(Intent.createChooser(share, activity.getString(R.string.save_func_another)))
             } else {
                 share.setPackage(appPackage.appPackage)
 

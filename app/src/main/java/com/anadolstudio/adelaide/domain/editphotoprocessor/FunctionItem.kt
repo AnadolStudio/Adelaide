@@ -13,38 +13,38 @@ enum class FunctionItem(
 
     //TODO Разделить на InnerFunc and MainFunc
     //Тут описанны все функции
-    CROP(R.string.crop, R.drawable.ic_crop),
-    TURN(R.string.turn, R.drawable.ic_rotate),
-    FLIP_HORIZONTAL(R.string.flip_h, R.drawable.ic_flip_horizontal),
-    FLIP_VERTICAL(R.string.flip_v, R.drawable.ic_flip_vertical),
+    CROP(R.string.edit_func_crop, R.drawable.ic_crop),
+    TURN(R.string.crop_func_turn, R.drawable.ic_rotate),
+    FLIP_HORIZONTAL(R.string.crop_func_flip_h, R.drawable.ic_flip_horizontal),
+    FLIP_VERTICAL(R.string.crop_func_flip_v, R.drawable.ic_flip_vertical),
 
     TRANSFORM(
-        R.string.transform,
+        R.string.crop_func_transform,
         R.drawable.ic_transform,
         listOf(CROP, TURN, FLIP_HORIZONTAL, FLIP_VERTICAL)
     ),
 
-    FILTER(R.string.filter, R.drawable.ic_filter),
+    FILTER(R.string.edit_func_filter, R.drawable.ic_filter),
 
-    EFFECT(R.string.effect, R.drawable.ic_effect),
+    EFFECT(R.string.edit_func_effect, R.drawable.ic_effect),
 
-    BLUR(R.string.blur, R.drawable.ic_blur),
+    BLUR(R.string.edit_func_blur, R.drawable.ic_blur),
 
-    EXPOSITION(R.string.exposition, R.drawable.ic_overlap),
+    EXPOSITION(R.string.edit_func_exposition, R.drawable.ic_overlap),
 
-    FIT(R.string.fit, R.drawable.ic_fit),
+    FIT(R.string.edit_func_fit, R.drawable.ic_fit),
 
-    CUT(R.string.cut, R.drawable.ic_cut),
+    CUT(R.string.edit_func_cut, R.drawable.ic_cut),
 
-    MIRROR(R.string.mirror, R.drawable.ic_mirror),
+    MIRROR(R.string.edit_func_mirror, R.drawable.ic_mirror),
 
-    TEXT(R.string.text, R.drawable.ic_text),
+    TEXT(R.string.edit_func_text, R.drawable.ic_text),
 
-    STICKER(R.string.sticker, R.drawable.ic_sticker),
+    STICKER(R.string.edit_func_sticker, R.drawable.ic_sticker),
 
-    ADD_IMAGE(R.string.add, R.drawable.ic_add_image),
+    ADD_IMAGE(R.string.edit_func_add, R.drawable.ic_add_image),
 
-    BRUSH(R.string.brush, R.drawable.ic_brush)
+    BRUSH(R.string.edit_func_brush, R.drawable.ic_brush)
 }
 
 class MainFunctions {

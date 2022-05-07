@@ -14,13 +14,13 @@ import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
+
     companion object {
-        fun newInstance(key: String): FunctionListFragment {
-            val args = Bundle()
-            args.putString(EDIT_TYPE, key)
-            val fragment = FunctionListFragment()
-            fragment.arguments = args
-            return fragment
+
+        fun newInstance(key: String): FunctionListFragment = FunctionListFragment().apply {
+            arguments = Bundle().apply {
+                putString(EDIT_TYPE, key)
+            }
         }
 
     }
@@ -33,9 +33,7 @@ class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListFunctionBinding.inflate(inflater)
-
         binding.recyclerView.adapter = FunctionListAdapter(MainFunctions.mainFunction, this)
-
         return binding.root
     }
 
@@ -44,7 +42,9 @@ class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
         parent()?.showWorkspace(true)
 
         when (data) {
+
             FunctionItem.TRANSFORM -> {
+                //TODO смена через ViewModel активити
                 parent()?.let {
                     val function = it.editProcessor.getFunction(FunctionItem.TRANSFORM.name)
                     it.replaceFragment(
@@ -54,6 +54,7 @@ class FunctionListFragment : BaseEditFragment(), IDetailable<FunctionItem> {
                     )
                 }
             }
+
             else -> {
                 parent()?.currentFunction = null
                 parent()?.showWorkspace(false)

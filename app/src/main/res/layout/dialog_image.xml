@@ -66,7 +66,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginBottom="@dimen/margin_normal"
                 android:gravity="center"
-                android:text="@string/thank_you"
+                android:text="@string/save_title_thank_you"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_subtitle" />
 

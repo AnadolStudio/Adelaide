@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
 import com.anadolstudio.adelaide.domain.editphotoprocessor.FunctionItem
-import com.anadolstudio.adelaide.domain.editphotoprocessor.RatioItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
-import com.anadolstudio.adelaide.domain.utils.BitmapHelper
+import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.FUNCTION
@@ -244,7 +244,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FunctionItem> {
                 }
 
                 RatioItem.RATIO_AUTO -> {
-                    val size = BitmapHelper.getRealSize(activity as AppCompatActivity?)
+                    val size = BitmapUtil.getRealSize(activity as AppCompatActivity?)
                     cropView.setAspectRatio(size.widthPixels, size.heightPixels)
                 }
 

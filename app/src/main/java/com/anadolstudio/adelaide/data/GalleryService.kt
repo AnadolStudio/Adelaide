@@ -32,7 +32,7 @@ class GalleryService {
         activity: AppCompatActivity,
         folder: String? = null,
         lastItemId: Long = NULL
-    ): RxTask<Unit> = RxTask.Base {
+    ): RxTask<Unit> = RxTask.Base.Quick {
         val images = mutableListOf<String>()
         val uri: Uri = Media.EXTERNAL_CONTENT_URI
 
@@ -86,7 +86,7 @@ class GalleryService {
     }
 
     @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun loadFolders(activity: AppCompatActivity): RxTask<Unit> = RxTask.Base {
+    fun loadFolders(activity: AppCompatActivity): RxTask<Unit> = RxTask.Base.Quick {
         val folders: MutableSet<String> = HashSet()
         val uri: Uri = Media.EXTERNAL_CONTENT_URI
 

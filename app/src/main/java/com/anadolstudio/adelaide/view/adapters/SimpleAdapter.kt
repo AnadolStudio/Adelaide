@@ -10,7 +10,7 @@ import com.anadolstudio.core.interfaces.IDetailable
 open class SimpleAdapter<Data>(
     data: List<Data>,
     detailable: IDetailable<Data>,
-) : AbstractAdapter<Data, AbstractViewHolder.Base<Data>>(data.toMutableList(), detailable) {
+) : AbstractAdapter.Base<Data, AbstractViewHolder.Base<Data>>(data.toMutableList(), detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder.Base<Data> =
         AbstractViewHolder.Base(

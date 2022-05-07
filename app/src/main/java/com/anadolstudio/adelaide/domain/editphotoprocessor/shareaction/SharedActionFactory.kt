@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.editphotoprocessor.share_action
+package com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction
 
 import com.anadolstudio.adelaide.R
 

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemShareBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.share_action.SharedAction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedAction
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable

@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide.view.screens.dialogs;
 
-import static com.anadolstudio.adelaide.domain.utils.BitmapHelper.decodeSampledBitmapFromContentResolverPath;
+import static com.anadolstudio.adelaide.domain.utils.BitmapUtil.decodeBitmapFromPath;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,7 +34,7 @@ public class ImageDialog extends AppCompatDialogFragment {
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
         int min = Math.min(size.x, size.y);
-        Bitmap bitmap = decodeSampledBitmapFromContentResolverPath(getActivity(), path, min, min);
+        Bitmap bitmap = decodeBitmapFromPath(getActivity(), path, min, min);
         binding.imagePhoto.getLayoutParams().height = bitmap.getHeight();
         binding.imagePhoto.requestLayout();
 

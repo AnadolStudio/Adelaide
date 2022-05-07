@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.DisplayMetrics;
@@ -17,19 +16,19 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
+import com.anadolstudio.core.util.BitmapDecoder;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.exifinterface.media.ExifInterface;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import androidx.exifinterface.media.ExifInterface;
 import io.reactivex.Observable;
 
-public class BitmapHelper {
-    public static final String TAG = BitmapHelper.class.getName();
+public class BitmapUtil {
+    public static final String TAG = BitmapUtil.class.getName();
 
     public static final float TURN_LEFT_90 = -90f;
     public static final float TURN_RIGHT_90 = 90f;
@@ -53,7 +52,9 @@ public class BitmapHelper {
     }
 
     public static Bitmap centerCrop(Bitmap source) {
-        if (source == null) return null; // TODO ?
+        if (source == null) {
+            return null; // TODO ?
+        }
 
         int h = source.getHeight();
         int w = source.getWidth();
@@ -215,7 +216,9 @@ public class BitmapHelper {
     }
 
     public static void fitImageToEdge(int widthContainer, int heightContainer, Bitmap source, ImageView scaledImageView) {
-        if (source == null) return;
+        if (source == null) {
+            return;
+        }
 
         float ratio = Math.min(
                 getScaleRatio(source.getHeight(), heightContainer),
@@ -238,7 +241,9 @@ public class BitmapHelper {
 
     public static Bitmap captureView(int width, int height, View... views) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        if (views == null) return bitmap;
+        if (views == null) {
+            return bitmap;
+        }
 
         Canvas canvas = new Canvas(bitmap);
         for (View v : views) {
@@ -261,26 +266,6 @@ public class BitmapHelper {
         return bitmap;
     }
 
-    public static Bitmap flip(Bitmap source, @NonNull FlipType type) {
-        Matrix matrix = new Matrix();
-        int xFlip = type.equals(FlipType.VERTICAL) ? -1 : 1;
-        int yFlip = type.equals(FlipType.VERTICAL) ? 1 : -1;
-        matrix.postScale(xFlip, yFlip, source.getWidth() / 2f, source.getHeight() / 2f);
-
-        return Bitmap.createBitmap(source, 0, 0,
-                source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
-    public static Bitmap rotate(Bitmap source, float degree) {
-        if (degree == 0) return source;
-        //Если хочешь кастомный градус, то используй editor().setScaleType(ImageView.ScaleType.MATRIX);
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(source, 0, 0,
-                source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
 
     private static int getCorrectColor(int color) {
         int r = getColorIfThisMax(Color.red(color));
@@ -298,7 +283,9 @@ public class BitmapHelper {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics;
-    }@NonNull
+    }
+
+    @NonNull
 
     public static DisplayMetrics getRealSize(AppCompatActivity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -341,104 +328,19 @@ public class BitmapHelper {
         return mimeType;
     }
 
-    public static Bitmap decodeSampledBitmapFromContentResolverPath(Context context, String path,
-                                                                    int reqWidth, int reqHeight) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        int orientation = 1;
-        Bitmap bitmap = null;
+    public static Bitmap decodeBitmapFromPath(Context context, String path,
+                                              int reqWidth, int reqHeight) {
+        BitmapDecoder decoder;
 
-        options.inJustDecodeBounds = true;
-        if (path.contains(CONTENT)) {// Content
-            try {
-                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-                if (pfd != null) {
-                    BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
-                    orientation = new ExifInterface(pfd.getFileDescriptor()).getAttributeInt(
-                            ExifInterface.TAG_ORIENTATION, 1);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int degree = getDegree(orientation);
-
-            // Вычисляем inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, true);
-
-            // Читаем с использованием inSampleSize коэффициента
-            options.inJustDecodeBounds = false;
-//            var bitmap = BitmapFactory.decodeFile(path, options)
-
-            try {
-                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-                if (pfd != null) {
-                    bitmap = BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (bitmap != null) {
-                bitmap = rotate(bitmap, degree);
-            }
+        if (path.contains(CONTENT)) {
+            decoder = new BitmapDecoder.FromContentPath(context);
         } else {//RealPath
-            try {
-                BitmapFactory.decodeFile(path, options);
-                orientation = new ExifInterface(path).getAttributeInt(
-                        ExifInterface.TAG_ORIENTATION, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int degree = getDegree(orientation);
-
-            // Вычисляем inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, true);
-
-            // Читаем с использованием inSampleSize коэффициента
-            options.inJustDecodeBounds = false;
-//            var bitmap = BitmapFactory.decodeFile(path, options)
-            bitmap = BitmapFactory.decodeFile(path, options);
-
-            if (bitmap != null) {
-                bitmap = rotate(bitmap, degree);
-            }
-        }
-        return bitmap;
-    }
-
-
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight, boolean isHard) {
-        // Реальные размеры изображения
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        Log.d(TAG, "calculateInSampleSize: " + reqWidth + " " + reqHeight);
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            //TODO Переписать по людски
-
-            // Вычисляем наибольший inSampleSize, который будет кратным двум
-            // и оставит полученные размеры больше, чем требуемые
-            if (isHard) {
-                while ((halfHeight / inSampleSize) > reqHeight || (halfWidth / inSampleSize) > reqWidth) {
-                    inSampleSize *= 2;
-                }
-            } else {
-                while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
-                    inSampleSize *= 2;
-                }
-
-            }
+            decoder = new BitmapDecoder.FromRealPath();
         }
 
-        return inSampleSize;
+        return decoder.decode(path, reqWidth, reqHeight);
     }
+
 
     private static void logMemory() {
         Log.i(TAG, String.format("Used memory = %s",
@@ -446,22 +348,4 @@ public class BitmapHelper {
         Log.i(TAG, String.format("Total memory = %s",
                 (int) ((Runtime.getRuntime().totalMemory()) / 1024)));
     }
-
-    public static int getDegree(int orientation) {
-        int degree = 0;
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                degree = 90;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                degree = 180;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                degree = 270;
-                break;
-        }
-        return degree;
-    }
-
-    public enum FlipType {HORIZONTAL, VERTICAL}
 }

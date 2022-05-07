@@ -2,11 +2,10 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.domain.editphotoprocessor.BitmapUtils.MAX_SIDE_COPY
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
 import com.anadolstudio.core.dialogs.LoadingView
-import com.anadolstudio.core.tasks.RxCallback
 import com.anadolstudio.core.tasks.RxTask
 import io.reactivex.disposables.Disposable
 import java.io.File
@@ -15,7 +14,7 @@ class EditProcessorIml(
     val activity: AppCompatActivity,
     path: String,
     val editListener: EditListener<Bitmap>?
-) :    EditProcessorContract {
+) : EditProcessorContract {
     constructor(
         activity: AppCompatActivity,
         path: String,
@@ -55,12 +54,18 @@ class EditProcessorIml(
     override fun setImage(path: String) {
         this.path = path
 
-        RxTask.Base { BitmapUtils.decodeBitmapFromContentResolverPath(activity, path, MAX_SIDE_COPY)!! }
-            .onSuccess {bitmap->
-                originalBitmap = bitmap
-                editListener?.onSuccess(bitmap)
-            }
-            .onError { editListener?.onFailure(it) }
+        RxTask.Base.Quick {
+            BitmapUtils.decodeBitmapFromContentResolverPath(
+                activity,
+                path,
+                MAX_SIDE_COPY
+            )!!
+        }.onSuccess { bitmap ->
+            originalBitmap = bitmap
+            editListener?.onSuccess(bitmap)
+        }.onError { ex ->
+            editListener?.onFailure(ex)
+        }
     }
 
     override fun saveAsBitmap(listener: EditListener<Bitmap>) {
@@ -73,13 +78,9 @@ class EditProcessorIml(
 
         realImage?.let { realImage = processAll(it) }
 
-        realImage?.let {
-            RxTask.Base {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    BitmapUtils.saveBitmapAsFileQ(context, it, file.name)
-                } else {
-                    BitmapUtils.saveBitmapAsFileBellowQ(context, it, file)
-                }
+        realImage?.let { bitmap ->
+            RxTask.Progress.Quick(mLoadingView!!) { progressListener ->
+                BitmapSaver.Factory.save(progressListener, context, bitmap, file)
             }
                 .onSuccess { imagePath -> listener.onSuccess(imagePath) }
                 .onError { throwable -> listener.onFailure(throwable) }
@@ -115,6 +116,7 @@ class EditProcessorIml(
 
                 }
             }
+
             result = f.process(bitmap)
         }
 

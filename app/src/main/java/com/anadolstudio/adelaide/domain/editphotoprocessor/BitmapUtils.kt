@@ -13,7 +13,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.exifinterface.media.ExifInterface
+import ExifInterface
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialog
 import java.io.File
@@ -35,6 +35,7 @@ object BitmapUtils {
         bitmap: Bitmap,
         fileName: String
     ): String {
+
         val relativePath =
             Environment.DIRECTORY_PICTURES + File.separator + context.getString(R.string.app_name) // save directory
 
@@ -51,7 +52,7 @@ object BitmapUtils {
         try {
             val contentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             uri = resolver.insert(contentUri, contentValues)
-            uri ?: throw Exception("Failed to create new  MediaStore record.") // TODO Создать Exceptions
+                ?: throw Exception("Failed to create new  MediaStore record.") // TODO Создать Exceptions
 
             resolver.openOutputStream(uri)?.use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)

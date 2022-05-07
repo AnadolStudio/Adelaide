@@ -15,14 +15,12 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
         holder.onBind(dataList[position])
     }
 
-    open fun getDiffUtilCallback(
-        dataList: MutableList<Data>,
-        list: MutableList<Data>
-    ): DiffUtil.Callback? = BaseDiffUtilCallback(dataList, list)
+    abstract val diffUtilCallback: BaseDiffUtilCallback<Data>?
 
     open fun setData(list: MutableList<Data>) {
-        getDiffUtilCallback(dataList, list)
+        diffUtilCallback
             ?.let { callback ->
+                callback.updateData(dataList, list)
                 val diffResult = DiffUtil.calculateDiff(callback, false)
                 dataList = list
                 diffResult.dispatchUpdatesTo(this)
@@ -37,10 +35,19 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
 
     override fun getItemCount(): Int = dataList.size
 
-    abstract class Selectable<Data, Holder : AbstractSelectableViewHolder<Data>>(
+    abstract class Base<Data, Holder : AbstractViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
         detailable: IDetailable<Data>,
     ) : AbstractAdapter<Data, Holder>(dataList, detailable) {
+
+        override val diffUtilCallback: BaseDiffUtilCallback<Data>?
+            get() = BaseDiffUtilCallback()
+    }
+
+    abstract class Selectable<Data, Holder : AbstractSelectableViewHolder<Data>>(
+        dataList: MutableList<Data> = mutableListOf(),
+        detailable: IDetailable<Data>,
+    ) : Base<Data, Holder>(dataList, detailable) {
 
         protected open val selectableController: SelectableController<Holder> =
             object : SelectableController.Abstract<Data, Holder>() {

@@ -6,70 +6,62 @@
     <string name="photo">Photo</string>
     <string name="collage">Collage</string>
     <string name="loading">Loading…</string>
+
     <!--    GalleryActivity-->
     <string name="gallery_snack_bar_settings">Settings</string>
-    <string name="gallery_error_miss_permission">Please, give permission</string>
     <string name="gallery_spinner_title">Gallery</string>
+    <string name="gallery_error_miss_permission">Please, give permission</string>
     <string name="gallery_error_nothing_found">There is nothing here</string>
 
     <!--    SaveActivity-->
-    <string name="another">Another</string>
-    <string name="instagram">Instagram</string>
-    <string name="facebook">Facebook</string>
-    <string name="whatsapp">WhatsApp</string>
-    <string name="thank_you">Thank you for choosing us!</string>
+    <string name="save_func_another">Another</string>
+    <string name="save_func_instagram">Instagram</string>
+    <string name="save_func_facebook">Facebook</string>
+    <string name="save_func_whatsapp">WhatsApp</string>
+    <string name="save_title_thank_you">Thank you for choosing us!</string>
     <string name="ad_attribution" translatable="false">Ad</string>
 
     <!--    EditActivity-->
-    <string name="double_click_for_exit">Double click for exit</string>
-    <string name="cant_open_photo">Can\'t open the photo</string>
-    <string name="saved">Saved</string>
-    <string name="instagram_1x1">IG 1:1</string>
-    <string name="instagram_4x5">IG 4:5</string>
-    <string name="instagram_story">Inst Story</string>
-    <string name="movie">Movie</string>
-    <string name="ratio5x4">5:4</string>
-    <string name="A4">A4</string>
-    <string name="header">Header</string>
-    <string name="post">Post</string>
-    <string name="cover">Cover</string>
-    <string name="display">Display</string>
-    <string name="ratio16x9">16:9</string>
-    <string name="ratio9x16">9:16</string>
-    <string name="ratio2x3">2:3</string>
-    <string name="ratio3x2">3:2</string>
-    <string name="ratio4x3">4:3</string>
-    <string name="ratio3x4">3:4</string>
-    <string name="free_size">Free</string>
-    <string name="transform">Transform</string>
-    <string name="turn">Turn</string>
-    <string name="flip_h">Horizontal</string>
-    <string name="flip_v">Vertical</string>
-    <string name="filter">Filter</string>
-    <string name="effect">Effect</string>
-    <string name="fit">Fit</string>
-    <string name="cut">Cut</string>
-    <string name="blur">Blur</string>
-    <string name="mirror">Mirror</string>
-    <string name="text">Text</string>
-    <string name="sticker">Sticker</string>
-    <string name="exposition">Exposition</string>
-    <string name="add">Add</string>
-    <string name="brush">Brush</string>
-    <string name="crop">Crop</string>
+    <string name="edit_func_double_click_for_exit">Double click for exit</string>
 
-    <string name="crop_image_activity_title"></string>
-    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
-    <string name="crop_image_menu_rotate_right">Rotate</string>
-    <string name="crop_image_menu_crop">Crop</string>
-    <string name="crop_image_menu_flip">Flip</string>
-    <string name="crop_image_menu_flip_horizontally">Flip horizontally</string>
-    <string name="crop_image_menu_flip_vertically">Flip vertically</string>
+    <string name="edit_func_filter">Filter</string>
+    <string name="edit_func_effect">Effect</string>
+    <string name="edit_func_fit">Fit</string>
+    <string name="edit_func_cut">Cut</string>
+    <string name="edit_func_blur">Blur</string>
+    <string name="edit_func_mirror">Mirror</string>
+    <string name="edit_func_text">Text</string>
+    <string name="edit_func_sticker">Sticker</string>
+    <string name="edit_func_exposition">Exposition</string>
+    <string name="edit_func_add">Add</string>
+    <string name="edit_func_brush">Brush</string>
+    <string name="edit_func_crop">Crop</string>
+    <string name="edit_error_cant_open_photo">Can\'t open the photo</string>
+    <string name="edit_error_failed_save_image" translatable="false">Failed to save Image</string>
+
+    <string name="crop_func_free">Free</string>
+    <string name="crop_func_instagram_1x1">IG 1:1</string>
+    <string name="crop_func_instagram_4x5">IG 4:5</string>
+    <string name="crop_func_instagram_story">Inst Story</string>
+    <string name="crop_func_movie">Movie</string>
+    <string name="crop_func_A4">A4</string>
+    <string name="crop_func_post">Post</string>
+    <string name="crop_func_twitter_header">Header</string>
+    <string name="crop_func_facebook_cover">Cover</string>
+    <string name="crop_func_display">Display</string>
+    <string name="crop_func_ratio2x3">2:3</string>
+    <string name="crop_func_ratio3x2">3:2</string>
+    <string name="crop_func_ratio4x3">4:3</string>
+    <string name="crop_func_ratio3x4">3:4</string>
+    <string name="crop_func_ratio5x4">5:4</string>
+    <string name="crop_func_ratio16x9">16:9</string>
+    <string name="crop_func_ratio9x16">9:16</string>
+    <string name="crop_func_transform">Transform</string>
+    <string name="crop_func_turn">Turn</string>
+    <string name="crop_func_flip_h">Horizontal</string>
+    <string name="crop_func_flip_v">Vertical</string>
 
     <string name="pick_image_intent_chooser_title">Select source</string>
-
     <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>
-
-
 
 </resources>
