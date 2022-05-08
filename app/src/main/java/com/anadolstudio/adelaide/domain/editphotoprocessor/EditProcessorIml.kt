@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil.MAX_SIDE_COPY
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File
@@ -94,7 +93,7 @@ class EditProcessorIml : EditProcessorContract.Base() {
         currentBitmap?.recycle()
     }
 
-    override fun getFunction(type: MainFunctions): EditFunction? = containerFunctions[type.name]
+    override fun getFunction(type: FuncItem.MainFunctions): EditFunction? = containerFunctions[type.name]
 
     override fun addFunction(func: EditFunction) {
         containerFunctions.add(func)

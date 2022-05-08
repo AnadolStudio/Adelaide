@@ -337,7 +337,6 @@ public class BitmapUtil {
         return decoder.decode(path, reqWidth, reqHeight);
     }
 
-
     private static void logMemory() {
         Log.i(TAG, String.format("Used memory = %s",
                 (int) ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)));

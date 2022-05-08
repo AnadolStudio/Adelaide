@@ -2,7 +2,6 @@ package com.anadolstudio.adelaide.view.screens.edit.crop
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -16,9 +15,7 @@ import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.FuncItem
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.InnerFunctionItem
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.interfaces.IDetailable
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -46,10 +43,10 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         binding = FragmentEditCropBinding.inflate(inflater)
 
         binding.mainRecyclerView.adapter =
-            FunctionListAdapter(MainFunctions.TRANSFORM.innerFunctions, this)
+            FunctionListAdapter(FuncItem.MainFunctions.TRANSFORM.innerFunctions, this)
 
         func = viewModel.getEditProcessor()
-            .getFunction(MainFunctions.TRANSFORM) as TransformFunction?
+            .getFunction(FuncItem.MainFunctions.TRANSFORM) as TransformFunction?
             ?: TransformFunction()
 
         binding.ratioRecyclerView.adapter =
@@ -176,7 +173,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         cropView.setFixedAspectRatio(false)
 
         when (data) {
-            InnerFunctionItem.CROP -> {
+            FuncItem.InnerFunctionItem.CROP -> {
 //                rebootFlip(cropView)
                 resetCropView()
 
@@ -193,19 +190,19 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
                 viewModel.viewController.setupCropImage(func)
             }
 
-            InnerFunctionItem.TURN -> {
+            FuncItem.InnerFunctionItem.TURN -> {
 //                func.degrees -= DEGREES_ROTATE
 //                cropView.rotatedDegrees = func.degrees
                 //TODO с flip + rotate = работает криво
 //                func.setDegree(-DEGREES_ROTATE, defaultImage.width, defaultImage.height)
             }
 
-            InnerFunctionItem.FLIP_HORIZONTAL -> {
+            FuncItem.InnerFunctionItem.FLIP_HORIZONTAL -> {
                 func.flipHorizontally(defaultImage.width, defaultImage.height)
                 cropView.flipImageHorizontally()
             }
 
-            InnerFunctionItem.FLIP_VERTICAL -> {
+            FuncItem.InnerFunctionItem.FLIP_VERTICAL -> {
                 func.flipVertically(defaultImage.width, defaultImage.height)
                 cropView.flipImageVertically()
             }

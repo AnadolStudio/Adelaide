@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File
@@ -27,7 +26,7 @@ interface EditProcessorContract {
 
     fun addFunction(func: EditFunction)
 
-    fun getFunction(type: MainFunctions): EditFunction?
+    fun getFunction(type: FuncItem.MainFunctions): EditFunction?
 
 
     abstract class Base : EditProcessorContract {

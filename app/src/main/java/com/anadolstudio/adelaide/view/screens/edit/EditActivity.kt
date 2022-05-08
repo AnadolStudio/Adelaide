@@ -14,8 +14,7 @@ import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.FuncItem
-import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
@@ -184,7 +183,7 @@ class EditActivity : BaseEditActivity() {
         override fun toDetail(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
             when (data) {
-                MainFunctions.TRANSFORM -> setEditFragment(
+                FuncItem.MainFunctions.TRANSFORM -> setEditFragment(
                     Mode.TRANSFORM,
                     CropEditFragment.newInstance()
                 )

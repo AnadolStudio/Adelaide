@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import com.anadolstudio.adelaide.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
@@ -86,6 +87,8 @@ public class ImageLoader {
     private static RequestBuilder<Bitmap> getBaseRequestBuilder(Context context, String path, ScaleType scaleType, boolean skipMemoryCache) {
         RequestBuilder<Bitmap> builder = Glide.with(context)
                 .asBitmap()
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_broken_image)
                 .load(path);
 
         if (scaleType == ScaleType.FIT_CENTER) {
