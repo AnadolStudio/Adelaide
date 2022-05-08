@@ -66,22 +66,21 @@ class EditProcessorIml : EditProcessorContract.Base() {
     override fun processAll(bitmap: Bitmap): Bitmap {
         var result: Bitmap? = null
 
-        for (f in containerFunctions.values) {
+        for (func in containerFunctions.values) {
 
-            (f as? TransformFunction)?.let {
-                originalBitmap?.let {
-
-                    f.scale = BitmapUtil.getScaleRatio(
+            when (func) {
+                is TransformFunction -> originalBitmap?.let {
+                    func.scale = BitmapUtil.getScaleRatio(
                         bitmap.width.toFloat(),
                         bitmap.height.toFloat(),
                         it.width.toFloat(),
                         it.height.toFloat()
                     )
-
                 }
-            }
+                else->{}
 
-            result = f.process(bitmap)
+            }
+            result = func.process(bitmap)
         }
 
         return result ?: bitmap
@@ -96,7 +95,8 @@ class EditProcessorIml : EditProcessorContract.Base() {
         currentBitmap?.recycle()
     }
 
-    override fun getFunction(type: FuncItem.MainFunctions): EditFunction? = containerFunctions[type.name]
+    override fun getFunction(type: FuncItem.MainFunctions): EditFunction? =
+        containerFunctions[type.name]
 
     override fun addFunction(func: EditFunction) {
         containerFunctions.add(func)
