@@ -8,13 +8,13 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
+import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.Mode
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
@@ -153,7 +153,9 @@ class EditActivity : BaseEditActivity() {
     ) {
         when (requestCode) {
             DEFAULT_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
                     saveImage()
                 } else {
                     val shouldShow = PermissionUtil.WriteExternalStorage

@@ -6,7 +6,7 @@
     android:id="@+id/share"
     style="@style/EditItem.LinearLayoutRipple"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:orientation="vertical">
 
