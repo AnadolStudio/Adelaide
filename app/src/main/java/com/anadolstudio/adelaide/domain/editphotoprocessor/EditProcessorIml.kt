@@ -2,6 +2,9 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.EditFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.implementation.TransformFunction
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil.MAX_SIDE_COPY
@@ -22,7 +25,7 @@ class EditProcessorIml : EditProcessorContract.Base() {
     override val containerFunctions: LinkedHashMap<String, EditFunction> = LinkedHashMap()
 
     private fun LinkedHashMap<String, EditFunction>.add(func: EditFunction) {
-        put(func.type, func)
+        put(func.type.name, func)
     }
 
     override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()// TODO нужен ли?

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable

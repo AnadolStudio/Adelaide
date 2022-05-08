@@ -1,27 +1,16 @@
-package com.anadolstudio.adelaide.domain.editphotoprocessor
+package com.anadolstudio.adelaide.domain.editphotoprocessor.functions.implementation
 
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Parcel
 import android.os.Parcelable
-import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.core.graphics.toRectF
 import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.EditFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
 
-abstract class AbstractFunction(override val type: String) : EditFunction {
-    override fun equals(other: Any?): Boolean {
-        other ?: return false
-        return if ((other as? EditFunction) == null) false
-        else this.type == other.type
-    }
-
-    abstract fun reboot()
-
-    override fun hashCode(): Int = type.hashCode()
-}
-
-class TransformFunction() : AbstractFunction(FuncItem.MainFunctions.TRANSFORM.name), Parcelable {
+class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFORM), Parcelable {
 
     companion object CREATOR : Parcelable.Creator<TransformFunction> {
         override fun createFromParcel(parcel: Parcel): TransformFunction {
@@ -56,7 +45,7 @@ class TransformFunction() : AbstractFunction(FuncItem.MainFunctions.TRANSFORM.na
         parcel?.writeFloatArray(cropPoints)
         parcel?.writeInt(degrees)
         parcel?.writeString(ratioItem.name)
-        parcel?.writeParcelable(cropRect, PARCELABLE_WRITE_RETURN_VALUE)
+        parcel?.writeParcelable(cropRect, Parcelable.PARCELABLE_WRITE_RETURN_VALUE)
     }
 
     constructor(parcel: Parcel) : this() {
@@ -189,4 +178,3 @@ class TransformFunction() : AbstractFunction(FuncItem.MainFunctions.TRANSFORM.na
         return function
     }
 }
-

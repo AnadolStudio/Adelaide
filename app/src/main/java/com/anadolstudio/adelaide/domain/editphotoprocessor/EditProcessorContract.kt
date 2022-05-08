@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.EditFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File

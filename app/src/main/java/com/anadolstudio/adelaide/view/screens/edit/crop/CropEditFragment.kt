@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.implementation.TransformFunction
 import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.interfaces.IDetailable
 import com.theartofdev.edmodo.cropper.CropImageView

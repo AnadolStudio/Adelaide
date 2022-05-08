@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.databinding.FragmentListFunctionBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.core.interfaces.IDetailable
 

@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.FuncItem
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.domain.editphotoprocessor.Mode
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController

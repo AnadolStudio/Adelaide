@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.editphotoprocessor
+package com.anadolstudio.adelaide.domain.editphotoprocessor.functions
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

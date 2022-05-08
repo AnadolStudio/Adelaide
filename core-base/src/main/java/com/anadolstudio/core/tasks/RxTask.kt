@@ -4,6 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 interface RxTask<T> {
 
@@ -106,12 +107,12 @@ interface RxTask<T> {
         }
     }
 
-    open class Base<T : Any>(
+    open class Base<TaskData : Any>(
         immediately: Boolean,
-        private val callback: RxDoMainCallback<T>
-    ) : SimpleStart<T>(immediately) {
+        protected val callback: RxDoMainCallback<TaskData>
+    ) : SimpleStart<TaskData>(immediately) {
 
-        override fun createObservable(): Observable<T> = Observable.create { emitter ->
+        override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
             try {
                 emitter.onNext(callback.invoke())
                 emitter.onComplete()
@@ -120,15 +121,17 @@ interface RxTask<T> {
             }
         }
 
-        class Quick<T : Any>(callback: RxDoMainCallback<T>) : Base<T>(true, callback)
+        class Quick<TaskData : Any>(callback: RxDoMainCallback<TaskData>) :
+            Base<TaskData>(true, callback)
 
-        class Lazy<T : Any>(callback: RxDoMainCallback<T>) : Base<T>(false, callback)
+        class Lazy<TaskData : Any>(callback: RxDoMainCallback<TaskData>) :
+            Base<TaskData>(false, callback)
     }
 
     open class Progress<TaskData : Any, ProgressData>(
         immediately: Boolean,
         protected val progressListener: ProgressListener<ProgressData>,
-        private val callback: RxProgressCallback<TaskData, ProgressData>
+        protected val callback: RxProgressCallback<TaskData, ProgressData>
     ) : SimpleStart<TaskData>(immediately) {
 
         override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
@@ -150,4 +153,28 @@ interface RxTask<T> {
             callback: RxProgressCallback<TaskData, ProgressData>
         ) : Progress<TaskData, ProgressData>(false, progressListener, callback)
     }
+
+    open class Delay<TaskData : Any>(
+        protected val delay: Long,
+        protected val unit: TimeUnit,
+        immediately: Boolean,
+        callback: RxDoMainCallback<TaskData>
+    ) : Base<TaskData>(immediately, callback) {
+
+        override fun createObservable(): Observable<TaskData> =
+            super.createObservable().delay(delay, unit)
+
+        class Quick<TaskData : Any>(
+            delay: Long,
+            unit: TimeUnit,
+            callback: RxDoMainCallback<TaskData>
+        ) : Delay<TaskData>(delay, unit, true, callback)
+
+        class Lazy<TaskData : Any>(
+            delay: Long,
+            unit: TimeUnit,
+            callback: RxDoMainCallback<TaskData>
+        ) : Delay<TaskData>(delay, unit, false, callback)
+    }
+
 }

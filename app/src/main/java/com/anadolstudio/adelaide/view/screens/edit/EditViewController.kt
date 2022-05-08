@@ -2,7 +2,7 @@ package com.anadolstudio.adelaide.view.screens.edit
 
 import android.view.View
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.TransformFunction
+import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.implementation.TransformFunction
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
 import com.theartofdev.edmodo.cropper.CropImageView
