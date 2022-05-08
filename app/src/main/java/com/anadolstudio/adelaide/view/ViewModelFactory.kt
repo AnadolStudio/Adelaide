@@ -7,13 +7,9 @@ import com.anadolstudio.adelaide.view.screens.gallery.GalleryListViewModel
 
 class ViewModelFactory : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val viewModel = when (modelClass) {
-            GalleryListViewModel::class.java -> {
-                GalleryListViewModel(GalleryService())
-            }
-            else -> throw IllegalArgumentException()
-        }
-        return viewModel as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
+        GalleryListViewModel::class.java -> GalleryListViewModel(GalleryService())
+        else -> throw IllegalArgumentException()
+    } as T
+
 }
