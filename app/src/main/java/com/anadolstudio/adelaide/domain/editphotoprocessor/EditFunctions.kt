@@ -8,7 +8,7 @@ import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.core.graphics.toRectF
 import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
 import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
 
 abstract class AbstractFunction(override val type: String) : EditFunction {
     override fun equals(other: Any?): Boolean {
@@ -90,7 +90,7 @@ class TransformFunction() : AbstractFunction(MainFunctions.TRANSFORM.name), Parc
             points[i] *= scale
         }
 
-        return BitmapUtils.cropBitmap(
+        return BitmapUtil.cropBitmap(
             bitmap,
             points,
             degrees,

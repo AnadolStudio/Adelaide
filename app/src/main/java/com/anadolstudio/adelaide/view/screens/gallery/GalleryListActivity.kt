@@ -17,6 +17,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
@@ -27,7 +28,6 @@ import com.anadolstudio.core.interfaces.ILoadMore
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
-import com.anadolstudio.core.view.BaseActivity
 
 import java.io.File
 
@@ -188,10 +188,18 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
         }
     }
 
+
     override fun toDetail(data: String) {
+        showLoadingDialog()
+
+        if(!BitmapUtil.validateUri(this,data)) {
+            hideLoadingDialog()
+            showToast(R.string.edit_error_cant_open_photo)
+            return
+        }
+
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             val editType = intent.getStringExtra(TypeKey::class.java.name)
-            showLoadingDialog()
             EditActivity.start(this, editType, data)
         } else {
             setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, data))

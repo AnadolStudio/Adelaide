@@ -99,10 +99,7 @@ class EditActivity : BaseEditActivity() {
                     showBitmap(result.data)
                     viewController.resetWorkSpace()
                 }
-                is Result.Error -> {
-                    result.error.printStackTrace()
-
-                }
+                is Result.Error -> result.error.printStackTrace()
                 is Result.Loading -> showLoadingDialog()
                 else -> {}
             }
@@ -110,10 +107,12 @@ class EditActivity : BaseEditActivity() {
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
-        viewModel.initEditProcessor(this, path).onError {
-            showToast(R.string.edit_error_cant_open_photo)
-            finish()
-        }
+        viewModel.initEditProcessor(this, path)
+            .onError { ex ->
+                ex.printStackTrace()
+                showToast(R.string.edit_error_cant_open_photo)
+                finish()
+            }
 
         /*editHelper.initPhotoEditor(photoEditorView)
         if (dialogIsShow) {

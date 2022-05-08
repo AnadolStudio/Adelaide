@@ -88,7 +88,7 @@ interface BitmapSaver {
 
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-                put(MediaStore.MediaColumns.MIME_TYPE, BitmapUtils.MIME_TYPE)
+                put(MediaStore.MediaColumns.MIME_TYPE, BitmapUtil.MIME_TYPE)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
             }
 

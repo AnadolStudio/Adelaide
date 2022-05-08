@@ -31,7 +31,7 @@ class SaveAdController(val binding: ActivitySaveBinding) : AdController.Abstract
         activity: AppCompatActivity,
         adRequest: AdRequest
     ) {
-        val adLoader = AdLoader.Builder(activity, AdKeys.TestKeys.NATIVE_AD_ID)
+        val adLoader = AdLoader.Builder(activity, AdKeys.KeyManager.nativeId)
             .forNativeAd { ad ->
                 nativeAdView = activity.layoutInflater
                     .inflate(R.layout.native_ad_layout, null) as NativeAdView
@@ -73,7 +73,7 @@ class SaveAdController(val binding: ActivitySaveBinding) : AdController.Abstract
                 }
             }
 
-        InterstitialAd.load(activity, AdKeys.TestKeys.INTERSTITIAL_AD_ID, adRequest,
+        InterstitialAd.load(activity, AdKeys.KeyManager.interstitialId, adRequest,
 
             object : InterstitialAdLoadCallback() {
 

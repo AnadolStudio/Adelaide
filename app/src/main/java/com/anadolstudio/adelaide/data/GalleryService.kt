@@ -1,6 +1,8 @@
 package com.anadolstudio.adelaide.data
 
 import android.Manifest
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore.Images.Media
 import android.provider.MediaStore.MediaColumns.MIME_TYPE
@@ -73,6 +75,7 @@ class GalleryService {
                 //image/jpeg
                 val format = cursor.getString(indexMT).split("/".toRegex()).toTypedArray()[1]
 
+                Log.d(TAG, "loadImages: $pathOfImage")
                 if (!legalFormat.contains(format)) continue
 
                 images.add(pathOfImage)
@@ -81,6 +84,7 @@ class GalleryService {
 
             cursor.close()
         }
+
         this.images = images
         notifyChanges()
     }
@@ -131,3 +135,4 @@ class GalleryService {
         listeners.forEach { it.invoke(folders, images) }
     }
 }
+

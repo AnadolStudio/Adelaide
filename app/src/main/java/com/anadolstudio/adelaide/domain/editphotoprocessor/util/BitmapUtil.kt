@@ -7,12 +7,11 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
-import java.lang.IllegalArgumentException
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 
-object BitmapUtils {
+object BitmapUtil {
     const val MIME_TYPE = "image/*"
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2
@@ -22,6 +21,14 @@ object BitmapUtils {
         ExifInterface.ORIENTATION_ROTATE_180 -> 180
         ExifInterface.ORIENTATION_ROTATE_270 -> 270
         else -> 0
+    }
+
+    fun validateUri(context: Context, path: String): Boolean {
+        return context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = false
+            BitmapFactory.decodeFileDescriptor(it?.fileDescriptor, null, options) != null
+        }
     }
 
     fun decodeBitmapFromContentResolverPath(
@@ -54,7 +61,7 @@ object BitmapUtils {
         context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use { pfd ->
             bitmap = pfd?.let {
                 BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
-            } ?: throw IllegalArgumentException("PFD is null")
+            } ?: throw IllegalArgumentException("PFD from path $path is null ")
         }
 
         if (bitmap == null) throw IllegalArgumentException("Bitmap is null")

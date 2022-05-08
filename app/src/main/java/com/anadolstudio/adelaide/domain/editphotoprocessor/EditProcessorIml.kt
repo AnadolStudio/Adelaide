@@ -3,8 +3,8 @@ package com.anadolstudio.adelaide.domain.editphotoprocessor
 import android.content.Context
 import android.graphics.Bitmap
 import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapSaver
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtils.MAX_SIDE_COPY
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
+import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil.MAX_SIDE_COPY
 import com.anadolstudio.adelaide.view.screens.edit.enumeration.MainFunctions
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
@@ -30,7 +30,7 @@ class EditProcessorIml : EditProcessorContract.Base() {
 
     override fun init(context: Context, path: String): RxTask<Bitmap> = RxTask.Base.Quick {
         this.path = path
-        BitmapUtils.decodeBitmapFromContentResolverPath(context, path, MAX_SIDE_COPY)
+        BitmapUtil.decodeBitmapFromContentResolverPath(context, path, MAX_SIDE_COPY)
     }.onSuccess { result -> originalBitmap = result }
 
     override fun saveAsBitmap(): RxTask<Bitmap> {
@@ -43,7 +43,7 @@ class EditProcessorIml : EditProcessorContract.Base() {
         processListener: ProgressListener<String>
     ) = RxTask.Progress.Quick(processListener) { progressListener ->
 
-        var bitmap = BitmapUtils.decodeBitmapFromContentResolverPath(context, path)
+        var bitmap = BitmapUtil.decodeBitmapFromContentResolverPath(context, path)
         bitmap = processAll(bitmap)
 
         progressListener.onProgress("Setup...")
@@ -69,7 +69,7 @@ class EditProcessorIml : EditProcessorContract.Base() {
             (f as? TransformFunction)?.let {
                 originalBitmap?.let {
 
-                    f.scale = BitmapUtils.getScaleRatio(
+                    f.scale = BitmapUtil.getScaleRatio(
                         bitmap.width.toFloat(),
                         bitmap.height.toFloat(),
                         it.width.toFloat(),
