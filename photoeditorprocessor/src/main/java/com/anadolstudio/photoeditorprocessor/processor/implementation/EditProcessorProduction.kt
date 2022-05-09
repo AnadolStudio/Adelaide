@@ -3,7 +3,7 @@ package com.anadolstudio.photoeditorprocessor.processor.implementation
 import android.content.Context
 import android.graphics.Bitmap
 import com.anadolstudio.core.tasks.RxTask
-import com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction
+import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
 import com.anadolstudio.photoeditorprocessor.processor.NullBitmapException
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil

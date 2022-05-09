@@ -10,7 +10,7 @@ import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.photoeditorprocessor.crop.RatioItem
+import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 
 class CropListAdapter(

@@ -1,4 +1,4 @@
-package com.anadolstudio.photoeditorprocessor.crop
+package com.anadolstudio.photoeditorprocessor.functions.transform
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -29,15 +29,9 @@ enum class RatioItem(
     RATIO_4X3(R.string.crop_func_ratio4x3, null, Ratio(4, 3), Density(53, 40)),
     RATIO_5X4(R.string.crop_func_ratio5x4, null, Ratio(5, 4), Density(50, 40)),
     RATIO_9X16(R.string.crop_func_ratio9x16, null, Ratio(9, 16), Density(40, 71)),
-    RATIO_16X9(R.string.crop_func_ratio16x9, null, Ratio(16, 9), Density(71, 40))
+    RATIO_16X9(R.string.crop_func_ratio16x9, null, Ratio(16, 9), Density(71, 40));
+
+    data class Ratio(var x: Int = 0, var y: Int = 0)
+
+    data class Density(val w: Int = 40, val h: Int = 40)
 }
-
-data class Ratio(
-    var x: Int = 0,
-    var y: Int = 0
-)
-
-data class Density(
-    val w: Int = 40,
-    val h: Int = 40
-)

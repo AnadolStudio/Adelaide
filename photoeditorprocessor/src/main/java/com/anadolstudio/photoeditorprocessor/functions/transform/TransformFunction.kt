@@ -1,11 +1,10 @@
-package com.anadolstudio.photoeditorprocessor.functions.implementation
+package com.anadolstudio.photoeditorprocessor.functions.transform
 
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.graphics.toRectF
-import com.anadolstudio.photoeditorprocessor.crop.RatioItem
 import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.util.BitmapCropUtil

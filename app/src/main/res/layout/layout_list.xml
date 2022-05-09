@@ -10,6 +10,16 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <com.anadolstudio.adelaide.view.customview.EditSliderView
+        android:id="@+id/editSliderView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:state ="onlySlider"
+        app:valueFrom ="0"
+        app:valueTo ="100"
+        tools:visibility="visible"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="wrap_content"
@@ -22,14 +32,5 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_function" />
 
-    <com.anadolstudio.adelaide.view.customview.EditSliderView
-        android:id="@+id/editSliderView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:state ="onlySlider"
-        app:valueFrom ="0"
-        app:valueTo ="100"
-        tools:visibility="visible"/>
 
 </LinearLayout>

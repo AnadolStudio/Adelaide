@@ -2,6 +2,7 @@ package com.anadolstudio.photoeditorprocessor.functions
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.util.Log
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
 interface EditFunction {
@@ -46,6 +47,13 @@ interface EditFunction {
                 supportScale?.recycle()
                 this
             }
+
+        open class Base(type: FuncItem.MainFunctions) : Abstract(type) {
+
+            override fun reboot() {
+                Log.d("EditFunction", "reboot: $type")
+            }
+        }
     }
 
 }

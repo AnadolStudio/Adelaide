@@ -14,9 +14,9 @@ import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.photoeditorprocessor.crop.RatioItem
+import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction
+import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 

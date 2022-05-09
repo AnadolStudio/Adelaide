@@ -17,7 +17,7 @@ import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.implementation.EffectFunction
+import com.anadolstudio.photoeditorprocessor.functions.effect.EffectFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.google.android.material.slider.Slider
 import kotlin.math.roundToInt
@@ -106,10 +106,7 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
     }
 
     override fun apply(): Boolean {
-        if (!isReadyToApply) {
-
-            return false
-        }
+        if (!isReadyToApply) return false
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview(
@@ -117,6 +114,7 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
                 activityViewModel.viewController.supportImage
             )
         )
+
         return super.apply()
     }
 
@@ -128,7 +126,6 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
 
         return super.isReadyToApply()
     }
-
 
     @SuppressLint("RestrictedApi")
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {

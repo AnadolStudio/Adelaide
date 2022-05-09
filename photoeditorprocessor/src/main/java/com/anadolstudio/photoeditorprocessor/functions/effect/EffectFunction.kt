@@ -1,4 +1,4 @@
-package com.anadolstudio.photoeditorprocessor.functions.implementation
+package com.anadolstudio.photoeditorprocessor.functions.effect
 
 import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem

@@ -12,6 +12,7 @@ import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
+import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.theartofdev.edmodo.cropper.CropImageView
 
 class EditViewController(private val binding: ActivityEditBinding) {
@@ -66,7 +67,7 @@ class EditViewController(private val binding: ActivityEditBinding) {
         binding.cropImage.isShowCropOverlay = false
     }
 
-    fun setupCropImage(function: com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction) {
+    fun setupCropImage(function: TransformFunction) {
         binding.cropImage.setAspectRatio(
             if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
             if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
@@ -79,7 +80,7 @@ class EditViewController(private val binding: ActivityEditBinding) {
 //        binding.cropImage.rotatedDegrees = function.degrees
     }
 
-    fun setupWindowCropImage(function: com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction) {
+    fun setupWindowCropImage(function: TransformFunction) {
         binding.cropImage.cropRect = function.cropRect ?: binding.cropImage.wholeImageRect
     }
 
