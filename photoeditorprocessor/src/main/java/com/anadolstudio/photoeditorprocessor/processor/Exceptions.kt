@@ -1,4 +1,4 @@
-package com.anadolstudio.photoeditorprocessor
+package com.anadolstudio.photoeditorprocessor.processor
 
 sealed class PhotoEditException(message: String) : Exception(message)
 

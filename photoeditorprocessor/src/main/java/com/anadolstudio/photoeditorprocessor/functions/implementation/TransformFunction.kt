@@ -13,13 +13,9 @@ import com.anadolstudio.photoeditorprocessor.util.BitmapCropUtil
 class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFORM), Parcelable {
 
     companion object CREATOR : Parcelable.Creator<TransformFunction> {
-        override fun createFromParcel(parcel: Parcel): TransformFunction {
-            return TransformFunction(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): TransformFunction = TransformFunction(parcel)
 
-        override fun newArray(size: Int): Array<TransformFunction?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<TransformFunction?> = arrayOfNulls(size)
 
         const val DEGREES_ROTATE = 90
     }
@@ -72,6 +68,7 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
 
     override fun process(bitmap: Bitmap): Bitmap {
         val points = cropPoints.clone()
+
         for (i in points.indices) {
             points[i] *= scale
         }
@@ -164,7 +161,6 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
         function.ratioItem = ratioItem
         return function
     }
-
 
     fun copy(): TransformFunction {
         val function = TransformFunction()

@@ -19,6 +19,9 @@ interface EditFunction {
         abstract fun reboot()
 
         override fun hashCode(): Int = type.hashCode()
+
+        override fun toString(): String = "EditFunction(type=$type)"
+
     }
 
 }

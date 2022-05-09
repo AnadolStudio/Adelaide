@@ -1,6 +1,5 @@
 package com.anadolstudio.photoeditorprocessor.util
 
-import android.content.Context
 import android.os.Environment
 import android.util.Log
 import com.anadolstudio.core.util.TimeUtil
@@ -19,7 +18,7 @@ object FileUtil {
         return "IMG_${timeFormat.format(Date())}.jpeg" // TODO JPEG?
     }
 
-    fun createAppDir(nameDir:String, fileName:String = getFileName()): File {
+    fun createAppDir(nameDir: String, fileName: String = getFileName()): File {
         val directory = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 .toString() + File.separator + nameDir

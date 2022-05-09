@@ -8,9 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.photoeditorprocessor.Mode
-import com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction
-import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
+import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
@@ -107,12 +105,12 @@ class EditViewController(private val binding: ActivityEditBinding) {
         )
     }
 
-    fun setupSupportImage(modeEdit: com.anadolstudio.photoeditorprocessor.Mode) {
+    fun setupSupportImage(modeEdit: Mode) {
         binding.supportImage.run {
             visibility = View.VISIBLE
 
             when (modeEdit) {
-                com.anadolstudio.photoeditorprocessor.Mode.EFFECT -> {
+                Mode.EFFECT -> {
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     adjustViewBounds = false
 

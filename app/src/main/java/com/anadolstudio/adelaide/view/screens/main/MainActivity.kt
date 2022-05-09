@@ -36,14 +36,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    private fun startActivity(type: String) {
-        if (type != TypeKey.COLLAGE_KEY && type != TypeKey.PHOTO_KEY) return
+    private fun startActivity(data: String) {
+        if (data != TypeKey.COLLAGE_KEY && data != TypeKey.PHOTO_KEY) return
 
         FirebaseHelper.get().logEvent(
-            if (type == TypeKey.PHOTO_KEY) Event.PHOTO_EDIT_OPEN else Event.COLLAGE_EDIT_OPEN
+            if (data == TypeKey.PHOTO_KEY) Event.PHOTO_EDIT_OPEN else Event.COLLAGE_EDIT_OPEN
         )
 
-        GalleryListActivity.start(this, type)
+        GalleryListActivity.start(this, data)
     }
 
     override fun recreate() {

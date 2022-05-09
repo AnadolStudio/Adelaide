@@ -9,13 +9,13 @@ import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.viewmodel.Communication
-import com.anadolstudio.photoeditorprocessor.EditProcessorContract
-import com.anadolstudio.photoeditorprocessor.EditProcessorIml
+import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
+import com.anadolstudio.photoeditorprocessor.processor.implementation.EditProcessorStudy
 import java.io.File
 
 class EditActivityViewModel : ViewModel() {
 
-    private val editProcessor = EditProcessorIml()
+    private val editProcessor = EditProcessorStudy()
     val currentBitmapCommunication = Communication.UiUpdate<Result<Bitmap>>()
     lateinit var viewController: EditViewController
         private set
@@ -47,6 +47,11 @@ class EditActivityViewModel : ViewModel() {
 
     fun setEditViewController(viewController: EditViewController) {
         this.viewController = viewController
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        editProcessor.clear()
     }
 
 }
