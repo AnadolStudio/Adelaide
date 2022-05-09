@@ -66,7 +66,7 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
 //        cropRect = updateCropWindow(w, h, false, true)
     }
 
-    override fun process(bitmap: Bitmap): Bitmap {
+    override fun process(main: Bitmap, support: Bitmap?): Bitmap {
         val points = cropPoints.clone()
 
         for (i in points.indices) {
@@ -74,7 +74,7 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
         }
 
         return BitmapCropUtil.cropBitmap(
-            bitmap,
+            main,
             points,
             degrees,
             fixAspectRatio,

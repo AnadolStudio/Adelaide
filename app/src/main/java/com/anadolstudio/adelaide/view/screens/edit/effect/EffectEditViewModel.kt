@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.anadolstudio.adelaide.data.AssetData
 import com.anadolstudio.adelaide.data.AssetsDirections
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.viewmodel.Communication
@@ -20,8 +20,8 @@ class EffectEditViewModel : ViewModel() {
         adapterDataCommunication.map(Result.Loading())
 
         RxTask.Base.Quick {
-            val crop = BitmapUtil.centerCrop(bitmap)
-            val thumbnail = BitmapUtil.scaleBitmap(400F, 400F, crop, true)
+            val crop = BitmapCommonUtil.centerCrop(bitmap)
+            val thumbnail = BitmapCommonUtil.scaleBitmap(400F, 400F, crop, true)
             crop.recycle()
 
             val paths: MutableList<String> = mutableListOf<String>().apply {

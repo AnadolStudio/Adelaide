@@ -21,6 +21,7 @@ class EditViewController(private val binding: ActivityEditBinding) {
     }
 
     val cropView: CropImageView = binding.cropImage
+    val supportImage: ImageView = binding.supportImage
 
     fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
         //TODO не хватает плавности для mainContainer

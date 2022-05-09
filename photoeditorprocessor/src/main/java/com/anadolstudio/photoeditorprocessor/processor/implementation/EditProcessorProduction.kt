@@ -6,16 +6,16 @@ import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.photoeditorprocessor.functions.implementation.TransformFunction
 import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
 import com.anadolstudio.photoeditorprocessor.processor.NullBitmapException
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
 class EditProcessorProduction : EditProcessorContract.Abstract() {
 
     override fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap =
         processAll(
-            BitmapUtil.decodeBitmapFromContentResolverPath(context, path)
+            BitmapCommonUtil.decodeBitmapFromContentResolverPath(context, path)
         )
 
-    override fun processPreview() = RxTask.Base.Quick {
+    override fun processPreview(support: Bitmap?) = RxTask.Base.Quick {
         originalBitmap
             ?.let { processAll(it) }
             ?: throw NullBitmapException()
@@ -28,7 +28,7 @@ class EditProcessorProduction : EditProcessorContract.Abstract() {
 
             when (func) {
                 is TransformFunction -> originalBitmap?.let {
-                    func.scale = BitmapUtil.getScaleRatio(
+                    func.scale = BitmapCommonUtil.getScaleRatio(
                         bitmap.width.toFloat(),
                         bitmap.height.toFloat(),
                         it.width.toFloat(),

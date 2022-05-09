@@ -1,12 +1,15 @@
 package com.anadolstudio.photoeditorprocessor.functions
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
 interface EditFunction {
 
     val type: FuncItem.MainFunctions
 
-    fun process(bitmap: Bitmap): Bitmap
+    fun process(main: Bitmap, support: Bitmap? = null): Bitmap
+    //TODO support - временное решение, только в рамках задания университета
 
     abstract class Abstract(override val type: FuncItem.MainFunctions) : EditFunction {
 
@@ -22,6 +25,27 @@ interface EditFunction {
 
         override fun toString(): String = "EditFunction(type=$type)"
 
+        override fun process(main: Bitmap, support: Bitmap?): Bitmap =
+            with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
+
+                val supportScale = support?.let { BitmapCommonUtil.scaleBitmap(main, it)}
+                val canvas = Canvas(this)
+                canvas.drawBitmap(main, 0f, 0f, null)
+
+                supportScale?.also {
+                    canvas.drawBitmap(
+                        BitmapCommonUtil.cropFromSource(
+                            main.height, main.width,
+                            BitmapCommonUtil.getXSpace(main, it),
+                            BitmapCommonUtil.getYSpace(main, it), it
+                        ), 0f, 0f, null
+                    )
+                    it.recycle()
+                }
+                support?.recycle()
+                supportScale?.recycle()
+                this
+            }
     }
 
 }

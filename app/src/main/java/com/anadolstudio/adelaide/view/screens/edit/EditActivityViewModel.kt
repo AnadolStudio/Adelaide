@@ -30,10 +30,10 @@ class EditActivityViewModel : ViewModel() {
 
     fun getEditProcessor(): EditProcessorContract = editProcessor
 
-    fun processPreview(): RxTask<Bitmap> {
+    fun processPreview(support: Bitmap? = null): RxTask<Bitmap> {
         currentBitmapCommunication.map(Result.Loading())
 
-        return editProcessor.processPreview()
+        return editProcessor.processPreview(support)
             .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
             .onError { currentBitmapCommunication.map(Result.Error(it)) }
     }

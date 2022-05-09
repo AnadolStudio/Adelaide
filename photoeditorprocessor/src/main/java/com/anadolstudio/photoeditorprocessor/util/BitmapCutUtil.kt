@@ -10,7 +10,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.Shader
 import com.anadolstudio.photoeditorprocessor.util.BitmapRenderEffects.blur
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil.scaleBitmap
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.scaleBitmap
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt

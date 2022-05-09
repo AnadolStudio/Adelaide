@@ -11,13 +11,11 @@ class EditProcessorStudy : EditProcessorContract.Abstract() {
     override fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap =
         getCurrentImage()
 
-    override fun processPreview() = RxTask.Base.Quick {
+    override fun processPreview(support: Bitmap?) = RxTask.Base.Quick {
         val func = containerFunctions[containerFunctions.keys.last()]
             ?: throw IllegalArgumentException("Function is null")
 
-        originalBitmap
-            ?.let { process(it, func) }
-            ?: throw NullBitmapException()
+        getCurrentImage().let { func.process(it, support) }
     }.onSuccess { bitmap -> currentBitmap = bitmap }
 
     override fun processAll(bitmap: Bitmap): Bitmap = TODO("Not implement")

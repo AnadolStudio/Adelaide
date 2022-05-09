@@ -3,14 +3,16 @@ package com.anadolstudio.photoeditorprocessor.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
+import android.view.View
 import androidx.exifinterface.media.ExifInterface
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-object BitmapUtil {
+object BitmapCommonUtil {
     const val MIME_TYPE = "image/*"
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2
@@ -210,5 +212,15 @@ object BitmapUtil {
         val y = if (width >= height) 0 else maxSide / 2 - minSide / 2
         Bitmap.createBitmap(source, x, y, minSide, minSide)
     }
+
+    fun captureView(view: View) = captureView(view.width, view.height, view)
+
+    fun captureView(width: Int, height: Int, vararg views: View): Bitmap =
+        with(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)) {
+            val canvas = Canvas(this)
+            views.forEach { it.draw(canvas) }
+            this
+        }
+
 
 }

@@ -5,7 +5,6 @@ import android.graphics.Point
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -26,7 +25,7 @@ object ViewSizeUtil {
     private fun getSupportPair(
         widthInto: Int, heightInto: Int, widthOut: Int, heightOut: Int
     ): Pair<Int, Int> {
-        val ratio: Float = com.anadolstudio.photoeditorprocessor.util.BitmapUtil.getScaleRatioMax(widthInto, heightInto, widthOut, heightOut)
+        val ratio: Float = com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatioMax(widthInto, heightInto, widthOut, heightOut)
         val delaW: Int = abs(widthInto - widthOut * ratio).toInt()
         val deltaH: Int = abs(heightInto - heightOut * ratio).toInt()
 
@@ -64,8 +63,8 @@ object ViewSizeUtil {
         view: View
     ) {
         val ratio = min(
-            com.anadolstudio.photoeditorprocessor.util.BitmapUtil.getScaleRatio(source.height.toFloat(), heightContainer.toFloat()),
-            com.anadolstudio.photoeditorprocessor.util.BitmapUtil.getScaleRatio(source.width.toFloat(), widthContainer.toFloat())
+            com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatio(source.height.toFloat(), heightContainer.toFloat()),
+            com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatio(source.width.toFloat(), widthContainer.toFloat())
         )
 
         val realWidthBitmap = source.width * if (ratio >= 1) 1 / ratio else ratio

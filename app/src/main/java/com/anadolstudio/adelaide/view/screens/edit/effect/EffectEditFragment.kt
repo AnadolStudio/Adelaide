@@ -16,6 +16,9 @@ import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.tasks.Result
+import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.functions.implementation.EffectFunction
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.google.android.material.slider.Slider
 import kotlin.math.roundToInt
 
@@ -30,6 +33,7 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
     private var currentEffect: Drawable? = null
     private var currentAlpha = 0
     private lateinit var binding: LayoutListBinding
+    private lateinit var func: EffectFunction
     private val activityViewModel: EditActivityViewModel by activityViewModels()
     private val effectViewModel: EffectEditViewModel by viewModels()
 
@@ -68,6 +72,10 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
         currentAlpha = DEFAULT_ALPHA.toInt()
         setupSlider(false)
         binding.editSliderView.setSliderListener(this)
+
+        func = activityViewModel.getEditProcessor()
+            .getFunction(FuncItem.MainFunctions.EFFECT) as EffectFunction?
+            ?: EffectFunction()
     }
 
     private fun setupSlider(isEnable: Boolean) {
@@ -82,6 +90,7 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
             return
         }
 
+        func.setPath(data)
         ImageLoader.loadImageWithoutCache(requireContext(), data) { bitmap -> setEffect(bitmap) }
     }
 
@@ -98,10 +107,16 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
 
     override fun apply(): Boolean {
         if (!isReadyToApply) {
-            //TODO
+
             return false
         }
 
+        activityViewModel.getEditProcessor().addFunction(func)
+        activityViewModel.processPreview(
+            BitmapCommonUtil.captureView(
+                activityViewModel.viewController.supportImage
+            )
+        )
         return super.apply()
     }
 
