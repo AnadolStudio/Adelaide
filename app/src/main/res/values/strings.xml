@@ -23,43 +23,11 @@
 
     <!--    EditActivity-->
     <string name="edit_func_double_click_for_exit">Double click for exit</string>
-
-    <string name="edit_func_filter">Filter</string>
-    <string name="edit_func_effect">Effect</string>
-    <string name="edit_func_fit">Fit</string>
-    <string name="edit_func_cut">Cut</string>
-    <string name="edit_func_blur">Blur</string>
-    <string name="edit_func_mirror">Mirror</string>
-    <string name="edit_func_text">Text</string>
-    <string name="edit_func_sticker">Sticker</string>
-    <string name="edit_func_exposition">Exposition</string>
-    <string name="edit_func_add">Add</string>
-    <string name="edit_func_brush">Brush</string>
-    <string name="edit_func_crop">Crop</string>
     <string name="edit_error_cant_open_photo">Can\'t open the photo</string>
     <string name="edit_error_failed_save_image" translatable="false">Failed to save Image</string>
+    <string name="edit_error_nothing_selected">Nothing is selected</string>
 
-    <string name="crop_func_free">Free</string>
-    <string name="crop_func_instagram_1x1">IG 1:1</string>
-    <string name="crop_func_instagram_4x5">IG 4:5</string>
-    <string name="crop_func_instagram_story">Inst Story</string>
-    <string name="crop_func_movie">Movie</string>
-    <string name="crop_func_A4">A4</string>
-    <string name="crop_func_post">Post</string>
-    <string name="crop_func_twitter_header">Header</string>
-    <string name="crop_func_facebook_cover">Cover</string>
-    <string name="crop_func_display">Display</string>
-    <string name="crop_func_ratio2x3">2:3</string>
-    <string name="crop_func_ratio3x2">3:2</string>
-    <string name="crop_func_ratio4x3">4:3</string>
-    <string name="crop_func_ratio3x4">3:4</string>
-    <string name="crop_func_ratio5x4">5:4</string>
-    <string name="crop_func_ratio16x9">16:9</string>
-    <string name="crop_func_ratio9x16">9:16</string>
-    <string name="crop_func_transform">Transform</string>
-    <string name="crop_func_turn">Turn</string>
-    <string name="crop_func_flip_h">Horizontal</string>
-    <string name="crop_func_flip_v">Vertical</string>
+
 
     <string name="pick_image_intent_chooser_title">Select source</string>
     <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>

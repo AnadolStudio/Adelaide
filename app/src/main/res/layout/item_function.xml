@@ -59,7 +59,7 @@
             android:layout_margin="@dimen/margin_small"
             android:visibility="gone"
             app:cardBackgroundColor="@color/notification"
-            app:cardCornerRadius="250dp"
+            app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="@+id/icon_container"
             app:layout_constraintTop_toTopOf="@+id/icon_container" />
 

@@ -6,7 +6,7 @@ import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.util.BaseDiffUtilCallback
 import com.anadolstudio.core.interfaces.IDetailable
 
-abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
+abstract class AbstractAdapter<Data : Any, Holder : AbstractViewHolder<Data>>(
     protected var dataList: MutableList<Data> = mutableListOf(),
     protected val detailable: IDetailable<Data>?
 ) : RecyclerView.Adapter<Holder>() {
@@ -35,7 +35,7 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
 
     override fun getItemCount(): Int = dataList.size
 
-    abstract class Base<Data, Holder : AbstractViewHolder<Data>>(
+    abstract class Base<Data : Any, Holder : AbstractViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
         detailable: IDetailable<Data>?,
     ) : AbstractAdapter<Data, Holder>(dataList, detailable) {
@@ -44,7 +44,7 @@ abstract class AbstractAdapter<Data, Holder : AbstractViewHolder<Data>>(
             get() = BaseDiffUtilCallback()
     }
 
-    abstract class Selectable<Data, Holder : AbstractSelectableViewHolder<Data>>(
+    abstract class Selectable<Data : Any, Holder : AbstractSelectableViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
         detailable: IDetailable<Data>?,
     ) : Base<Data, Holder>(dataList, detailable) {

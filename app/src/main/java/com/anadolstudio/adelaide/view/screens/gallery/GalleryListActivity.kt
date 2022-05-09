@@ -17,7 +17,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.BitmapUtil
+import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
@@ -192,7 +192,7 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
     override fun toDetail(data: String) {
         showLoadingDialog()
 
-        if(!BitmapUtil.validateUri(this,data)) {
+        if(!com.anadolstudio.photoeditorprocessor.util.BitmapUtil.validateUri(this,data)) {
             hideLoadingDialog()
             showToast(R.string.edit_error_cant_open_photo)
             return

@@ -6,7 +6,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.adapters.AbstractAdapter
 import com.anadolstudio.core.interfaces.IDetailable
 
-open class SimpleSelectableAdapter<Data>(
+open class SimpleSelectableAdapter<Data : Any>(
     data: List<Data>,
     detailable: IDetailable<Data>?,
 ) : AbstractAdapter.Selectable<Data, SelectableViewHolder<Data>>(data.toMutableList(), detailable) {

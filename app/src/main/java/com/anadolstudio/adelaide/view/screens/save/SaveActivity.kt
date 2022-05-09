@@ -10,9 +10,6 @@ import android.view.View.VISIBLE
 import com.anadolstudio.adelaide.BuildConfig
 import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedAction
-import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedActionFactory
-import com.anadolstudio.adelaide.domain.utils.BitmapUtil.decodeBitmapFromPath
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
@@ -20,9 +17,10 @@ import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.tasks.RxTask
+import com.anadolstudio.core.util.BitmapDecoder
 import com.anadolstudio.core.view.BaseActivity
 
-class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
+class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem> {
 
     companion object {
         private const val PATH = "path"
@@ -69,13 +67,13 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
 
         // TODO ВЫнести во ViewModel
         RxTask.Base.Quick {
-            decodeBitmapFromPath(this, path, 400, 400)
+            BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400)
         }
             .onSuccess { binding.savedImage.setImageBitmap(it) }
             .onError { it.printStackTrace() }
 
         binding.recyclerView.adapter =
-            SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
+            SharedAdapter(com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.instance(), this@SaveActivity)
 
         adController = SaveAdController(binding).apply {
             if (!SettingsPreference.hasPremium(this@SaveActivity))
@@ -83,17 +81,17 @@ class SaveActivity : BaseActivity(), IDetailable<SharedAction.SharedItem> {
         }
     }
 
-    override fun toDetail(data: SharedAction.SharedItem) {
+    override fun toDetail(data: com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem) {
 
         //TODO FB listener
         val fbEvent = when (data) {
-            is SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
-            is SharedActionFactory.VK -> FirebaseHelper.Event.SHARE_VK
-            is SharedActionFactory.Instagram -> FirebaseHelper.Event.SHARE_INSTAGRAM
-            is SharedActionFactory.Facebook -> FirebaseHelper.Event.SHARE_FACEBOOK
-            is SharedActionFactory.Messenger -> FirebaseHelper.Event.SHARE_MESSENGER
-            is SharedActionFactory.WhatsApp -> FirebaseHelper.Event.SHARE_WHATS_APP
-            is SharedActionFactory.Twitter -> FirebaseHelper.Event.SHARE_TWITTER
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.VK -> FirebaseHelper.Event.SHARE_VK
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Instagram -> FirebaseHelper.Event.SHARE_INSTAGRAM
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Facebook -> FirebaseHelper.Event.SHARE_FACEBOOK
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Messenger -> FirebaseHelper.Event.SHARE_MESSENGER
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.WhatsApp -> FirebaseHelper.Event.SHARE_WHATS_APP
+            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Twitter -> FirebaseHelper.Event.SHARE_TWITTER
         }
 
         FirebaseHelper.get().logEvent(fbEvent)

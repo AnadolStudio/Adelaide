@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.core.interfaces.IDetailable
 
-abstract class AbstractViewHolder<Data>(
+abstract class AbstractViewHolder<Data : Any>(
     view: View,
     val detailable: IDetailable<Data>?,
 ) : RecyclerView.ViewHolder(view) {
@@ -27,7 +27,7 @@ abstract class AbstractViewHolder<Data>(
         data?.also { detailable?.toDetail(it) }
     }
 
-    open class Base<Data>(view: View, detailable: IDetailable<Data>?) :
+    open class Base<Data : Any>(view: View, detailable: IDetailable<Data>?) :
         AbstractViewHolder<Data>(view, detailable) {
 
         override fun initClickView(): View = itemView

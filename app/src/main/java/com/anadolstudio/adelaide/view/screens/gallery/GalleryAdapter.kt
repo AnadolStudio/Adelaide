@@ -21,7 +21,10 @@ class GalleryAdapter(
 
     fun getData() = dataList.toList() // TODO Переписать подгрузку
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder.Base<String> =
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder.Base<String> =
         GalleryViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false),
             detailable
@@ -46,7 +49,7 @@ class GalleryAdapter(
         val binding = ItemGalleryBinding.bind(view)
 
         override fun onBind(data: String) {
-            ImageLoader.loadImage(binding.imageView, data, ImageLoader.ScaleType.CENTER_CROP)
+            ImageLoader.loadImage(binding.imageView, data, ImageLoader.ScaleType.CENTER_CROP, true)
             super.onBind(data)
         }
     }

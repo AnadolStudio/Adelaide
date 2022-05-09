@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.anadolstudio.adelaide.databinding.FragmentListFunctionBinding
+import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.core.interfaces.IDetailable
 
@@ -16,7 +16,7 @@ class FunctionListFragment : BaseEditFragment() {
 
         fun newInstance(
             key: String,
-            detailableListener: IDetailable<FuncItem>
+            detailableListener: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>
         ): FunctionListFragment = FunctionListFragment().apply {
 
             arguments = Bundle().apply {
@@ -28,17 +28,17 @@ class FunctionListFragment : BaseEditFragment() {
 
     }
 
-    private var listener: IDetailable<FuncItem>? = null
-    private lateinit var binding: FragmentListFunctionBinding
+    private var listener: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>? = null
+    private lateinit var binding: LayoutListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentListFunctionBinding.inflate(inflater)
+        binding = LayoutListBinding.inflate(inflater)
         binding.recyclerView.adapter =
-            FunctionListAdapter(FuncItem.MainFunctions.values().toList(), listener)
+            FunctionListAdapter(com.anadolstudio.photoeditorprocessor.functions.FuncItem.MainFunctions.values().toList(), listener)
 
         return binding.root
     }

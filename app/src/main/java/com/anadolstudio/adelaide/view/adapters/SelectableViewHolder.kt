@@ -7,7 +7,7 @@ import com.anadolstudio.core.adapters.AbstractSelectableViewHolder
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.interfaces.IDetailable
 
-open class SelectableViewHolder<Data>(
+open class SelectableViewHolder<Data : Any>(
     view: View,
     detailable: IDetailable<Data>?,
     controller: SelectableController<out AbstractSelectableViewHolder<Data>>,

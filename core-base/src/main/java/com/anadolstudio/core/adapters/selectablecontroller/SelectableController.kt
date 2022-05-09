@@ -19,7 +19,8 @@ interface SelectableController<Holder : RecyclerView.ViewHolder> {
 
     fun clear()
 
-    abstract class Abstract<Data, Holder : AbstractSelectableViewHolder<Data>> : SelectableController<Holder> {
+    abstract class Abstract<Data : Any, Holder : AbstractSelectableViewHolder<Data>> :
+        SelectableController<Holder> {
 
         protected var selectedItem: Holder? = null
         protected var state = -1
@@ -59,7 +60,7 @@ interface SelectableController<Holder : RecyclerView.ViewHolder> {
         override fun selectableItemIsExist() = selectedItem != null
     }
 
-    class Base<Data, Holder : AbstractSelectableViewHolder<Data>> : Abstract<Data, Holder>() {
+    class Base<Data : Any, Holder : AbstractSelectableViewHolder<Data>> : Abstract<Data, Holder>() {
 
         override fun updateView(holder: Holder, isSelected: Boolean, state: Int) {
             holder.onBind(isSelected)

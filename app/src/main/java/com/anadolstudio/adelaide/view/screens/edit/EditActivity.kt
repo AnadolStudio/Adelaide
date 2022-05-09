@@ -3,18 +3,16 @@ package com.anadolstudio.adelaide.view.screens.edit
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.functions.FuncItem
-import com.anadolstudio.adelaide.domain.editphotoprocessor.Mode
-import com.anadolstudio.adelaide.domain.editphotoprocessor.util.FileUtil
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
+import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
@@ -24,6 +22,9 @@ import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
+import com.anadolstudio.photoeditorprocessor.Mode
+import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.util.FileUtil
 
 class EditActivity : BaseEditActivity() {
 
@@ -81,7 +82,8 @@ class EditActivity : BaseEditActivity() {
 
         binding.applyBtn.setOnClickListener {
             bottomFragment?.also {
-                if (!it.apply()) { //TODO правильно, ли такое обращение?
+                if (it.apply()) { //TODO правильно, ли такое обращение?
+                    viewController.resetWorkSpace()
                     super.onBackPressed()
                 }
             }
@@ -95,7 +97,7 @@ class EditActivity : BaseEditActivity() {
 
             when (result) {
                 is Result.Success -> {
-                    showBitmap(result.data)
+                    viewController.setMainBitmap(this, result.data)
                     viewController.resetWorkSpace()
                 }
                 is Result.Error -> result.error.printStackTrace()
@@ -125,12 +127,8 @@ class EditActivity : BaseEditActivity() {
         replaceFragment(fragment, R.id.toolbar_fragment, mode != Mode.MAIN)
     }
 
-    private fun showBitmap(bitmap: Bitmap) {
-        binding.mainImage.setImageBitmap(bitmap)
-    }
-
     override fun onBackPressed() {
-        if (bottomFragment != null && !bottomFragment!!.onBackClick()) {
+        if (bottomFragment != null && bottomFragment!!.backClick()) {
 
             if (currentMode == Mode.MAIN) { // Начальное состояние
 
@@ -174,7 +172,9 @@ class EditActivity : BaseEditActivity() {
 
         showLoadingDialog()
 
-        viewModel.saveAsFile(this, FileUtil.createAppDir(this), loadingView!!)
+        val file = FileUtil.createAppDir(getString(R.string.app_name))
+
+        viewModel.saveAsFile(this, file, loadingView!!)
             .onSuccess { imagePath -> SaveActivity.start(this@EditActivity, imagePath) }
             .onError { showToast(R.string.edit_error_failed_save_image) }
             .onFinal { hideLoadingDialog() }
@@ -189,11 +189,17 @@ class EditActivity : BaseEditActivity() {
                     Mode.TRANSFORM,
                     CropEditFragment.newInstance()
                 )
-
+                FuncItem.MainFunctions.EFFECT -> {
+                    setEditFragment(
+                        Mode.EFFECT,
+                        EffectEditFragment.newInstance()
+                    )
+                    viewController.setupSupportImage(currentMode)
+                }
                 else -> {}
                 /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())
                 FILTER -> setEditFragment(MODE_FILTER, FilterEditFragment.newInstance())
-                EFFECT -> setEditFragment(MODE_EFFECT, EffectEditFragment.newInstance(callback))
+
                 SPLASH -> setEditFragment(
                     MODE_SPLASH, SplashEditFragment.newInstance(callback, MONOCHROME_BACK)
                 )

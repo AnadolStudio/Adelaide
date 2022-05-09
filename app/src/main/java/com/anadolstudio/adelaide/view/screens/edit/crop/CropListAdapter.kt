@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemCropBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.crop.RatioItem
-import com.anadolstudio.adelaide.domain.utils.BitmapUtil
 import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.photoeditorprocessor.crop.RatioItem
+import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 
 class CropListAdapter(
     data: List<RatioItem>,
@@ -47,10 +47,10 @@ class CropListAdapter(
             super.onBind(data, isSelected)
 
             binding.iconContainer.layoutParams.width =
-                BitmapUtil.dpToPx(itemView.context, data.density.w)
+                DisplayUtil.dpToPx(itemView.context, data.density.w)
 
             binding.iconContainer.layoutParams.height =
-                BitmapUtil.dpToPx(itemView.context, data.density.h)
+                DisplayUtil.dpToPx(itemView.context, data.density.h)
             binding.iconContainer.requestLayout()
 
             binding.icon.setImageDrawable(

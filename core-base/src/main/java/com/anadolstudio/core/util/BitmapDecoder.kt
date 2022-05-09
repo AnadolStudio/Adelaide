@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
-import java.io.IOException
 
 interface BitmapDecoder {
 
@@ -112,6 +111,20 @@ interface BitmapDecoder {
 
             return rotate(bitmap, degree.toFloat())
         }
+
+    }
+
+    object Manager {
+        const val CONTENT = "content:"
+
+        fun decodeBitmapFromPath(
+            context: Context?, path: String,
+            reqWidth: Int, reqHeight: Int
+        ): Bitmap = if (path.contains(CONTENT)) {
+            FromContentPath(context!!)
+        } else { //RealPath
+            FromRealPath()
+        }.decode(path, reqWidth, reqHeight)
 
     }
 

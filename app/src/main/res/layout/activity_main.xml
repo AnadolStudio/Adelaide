@@ -126,6 +126,7 @@
     </androidx.cardview.widget.CardView>
 
 
+<!--
     <androidx.cardview.widget.CardView
         android:id="@+id/collage_card_view"
         style="@style/SimpleCardView"
@@ -161,16 +162,18 @@
 
 
     </androidx.cardview.widget.CardView>
+-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/photo_card_view"
         style="@style/SimpleCardView"
-        android:layout_marginStart="@dimen/margin_large"
         android:layout_marginBottom="@dimen/margin_xlarge"
+        android:layout_marginStart="@dimen/margin_large"
         android:clickable="true"
         android:focusable="true"
         android:stateListAnimator="@animator/item_card_large"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline">
 
         <LinearLayout

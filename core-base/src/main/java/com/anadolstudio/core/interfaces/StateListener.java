@@ -2,11 +2,11 @@ package com.anadolstudio.core.interfaces;
 
 public interface StateListener {
 
-    boolean onBackClick(); // Возвращает true, если перехватывается, иначе(стандартное поведение выполняется после метода) - false
+    boolean backClick(); // Возвращает false, если перехватывается, иначе(стандартное поведение выполняется после метода) - true
 
-    boolean isLocalBackClick();
+    boolean isReadyToBackClick();
 
-    boolean isLocalApply();
+    boolean isReadyToApply();
 
     boolean apply();
 }
