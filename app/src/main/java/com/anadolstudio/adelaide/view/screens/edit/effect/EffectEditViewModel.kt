@@ -12,6 +12,8 @@ import com.anadolstudio.core.viewmodel.Communication
 
 class EffectEditViewModel : ViewModel() {
 
+
+
     data class AdapterData(val thumbnail: Bitmap, val paths: MutableList<String>)
 
     val adapterDataCommunication = Communication.UiUpdate<Result<AdapterData>>()

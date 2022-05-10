@@ -1,12 +1,12 @@
 package com.anadolstudio.adelaide
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import com.anadolstudio.adelaide.data.AssetData
+import com.anadolstudio.adelaide.data.AssetsDirections
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,5 +20,11 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.anadolstudio.adelaide", appContext.packageName)
+
+
+        assertTrue(
+            AssetData.getAllFilesInDir(appContext, AssetsDirections.BACKGROUND_DIR).isNotEmpty()
+        )
+
     }
 }

@@ -3,8 +3,11 @@ package com.anadolstudio.adelaide.view.screens.edit
 import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
+import android.widget.ImageView
 import androidx.annotation.RequiresPermission
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
+import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.tasks.RxTask
@@ -49,9 +52,29 @@ class EditActivityViewModel : ViewModel() {
         this.viewController = viewController
     }
 
+    fun setCurrentImage(
+        activity: AppCompatActivity, path: String, scaleType: ImageView.ScaleType?
+    ) {
+        val size = viewController.workspaceSize(activity)
+
+        currentBitmapCommunication.map(Result.Loading())
+
+        ImageLoader.loadImageWithoutCache(activity, path, size.x, size.y) { bitmap: Bitmap ->
+//            viewController.mainImage.setImageBitmap(bitmap)
+            currentBitmapCommunication.map(Result.Success(bitmap))
+            editProcessor.setCurrentImage(bitmap)
+            if (scaleType != null) viewController.mainImage.scaleType = scaleType
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         editProcessor.clear()
+    }
+
+    fun rebootCurrentImage() {
+        editProcessor.reboot()
+        currentBitmapCommunication.map(Result.Success(editProcessor.getCurrentImage()))
     }
 
 }

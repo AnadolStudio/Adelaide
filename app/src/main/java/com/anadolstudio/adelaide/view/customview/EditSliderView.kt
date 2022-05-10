@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ViewSliderEditBinding
@@ -117,6 +118,14 @@ class EditSliderView(
 
     fun setCancelListener(listener: View.OnClickListener) {
         binding.cancelButton.setOnClickListener(listener)
+    }
+
+    fun setApplyIcon(@DrawableRes id: Int) {
+        binding.applyButton.setImageResource(id)
+    }
+
+    fun setCancelIcon(@DrawableRes id: Int) {
+        binding.cancelButton.setImageResource(id)
     }
 
     fun setSliderVisible(visibility: Int) {

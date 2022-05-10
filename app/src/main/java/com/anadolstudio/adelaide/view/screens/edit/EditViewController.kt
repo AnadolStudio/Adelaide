@@ -1,21 +1,25 @@
 package com.anadolstudio.adelaide.view.screens.edit
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.photoeditorprocessor.processor.Mode
+import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
+import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.theartofdev.edmodo.cropper.CropImageView
+import ja.burhanrashid52.photoeditor.PhotoEditor
 
-class EditViewController(private val binding: ActivityEditBinding) {
+class EditViewController(context: Context, private val binding: ActivityEditBinding) {
     //TODO нужен interface
     init {
         binding.cropImage.setMinCropResultSize(250, 250)
@@ -23,6 +27,12 @@ class EditViewController(private val binding: ActivityEditBinding) {
 
     val cropView: CropImageView = binding.cropImage
     val supportImage: ImageView = binding.supportImage
+    val mainImage: ImageView = binding.photoEditorView.source
+    val photoEditorView = binding.photoEditorView
+
+    val photoEditor = PhotoEditor.Builder(context, binding.photoEditorView)
+        .setClipSourceImage(true)
+        .build()
 
     fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
         //TODO не хватает плавности для mainContainer
@@ -44,7 +54,7 @@ class EditViewController(private val binding: ActivityEditBinding) {
     }
 
     fun showMainImageView(show: Boolean) {
-        binding.mainImage.show(show)
+        binding.photoEditorView.source.show(show)
     }
 
     fun resetWorkSpace() {
@@ -52,6 +62,9 @@ class EditViewController(private val binding: ActivityEditBinding) {
         showCropImageView(false)
         showMainImageView(true)
         setSupportImage(null)
+        photoEditor.clearAllViews()
+        photoEditor.setBrushDrawingMode(false)
+        binding.photoEditorView.source.clearColorFilter()
     }
 
     fun showCropImageView(show: Boolean) {
@@ -85,25 +98,21 @@ class EditViewController(private val binding: ActivityEditBinding) {
     }
 
     fun setupMainImage(activity: AppCompatActivity, bitmap: Bitmap) {
-        val mainImage = binding.mainImage
+        val mainImage = binding.photoEditorView.source
         ViewSizeUtil.changeViewSize(bitmap, mainImage, workspaceSize(activity))
         mainImage.scaleType = ImageView.ScaleType.FIT_CENTER
-        Log.d(
-            "EditViewController",
-            "setupMainImage: ${mainImage.layoutParams.width} ${mainImage.layoutParams.height}"
-        )
     }
 
     fun setMainBitmap(activity: AppCompatActivity, bitmap: Bitmap) {
-        binding.mainImage.setImageBitmap(bitmap)
+        binding.photoEditorView.source.setImageBitmap(bitmap)
         setupMainImage(activity, bitmap)
     }
 
     fun setupSupportImage() {
         ViewSizeUtil.changeViewSize(
             binding.supportImage,
-            binding.mainImage.width,
-            binding.mainImage.height
+            binding.photoEditorView.source.width,
+            binding.photoEditorView.source.height
         )
     }
 
@@ -118,8 +127,8 @@ class EditViewController(private val binding: ActivityEditBinding) {
 
                     ViewSizeUtil.changeViewSize(
                         this,
-                        binding.mainImage.width,
-                        binding.mainImage.height
+                        binding.photoEditorView.source.width,
+                        binding.photoEditorView.source.height
                     )
 
                 }
@@ -155,7 +164,10 @@ class EditViewController(private val binding: ActivityEditBinding) {
     }
 */
 
-    private fun workspaceSize(activity: AppCompatActivity): Point = com.anadolstudio.photoeditorprocessor.util.DisplayUtil.workspaceSize(
-        activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
-    )
+    fun workspaceSize(activity: AppCompatActivity): Point =
+        com.anadolstudio.photoeditorprocessor.util.DisplayUtil.workspaceSize(
+            activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
+        )
+
+    fun currentSizeOfMainePanel() = PointF(mainImage.width.toFloat(), mainImage.height.toFloat())
 }

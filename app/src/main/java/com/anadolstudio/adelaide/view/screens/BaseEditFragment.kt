@@ -9,6 +9,17 @@ import com.anadolstudio.core.interfaces.StateListener
 
 abstract class BaseEditFragment : Fragment(), StateListener {
 
+    private var mLoadingView: LoadingView? = null
+
+    fun showLoadingDialog() {
+        requireActivity().let { mLoadingView = LoadingView.Base.view(it.supportFragmentManager) }
+        mLoadingView?.showLoadingIndicator()
+    }
+
+    fun hideLoadingDialog() {
+        mLoadingView?.hideLoadingIndicator()
+    }
+
     override fun isReadyToApply() = true
 
     override fun apply(): Boolean = true

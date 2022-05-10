@@ -29,22 +29,24 @@ interface EditFunction {
         override fun process(main: Bitmap, support: Bitmap?): Bitmap =
             with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
 
-                val supportScale = support?.let { BitmapCommonUtil.scaleBitmap(main, it)}
+//                val supportScale = support?.let { BitmapCommonUtil.scaleBitmap(main, it)}//
+//                TODO для прода
                 val canvas = Canvas(this)
                 canvas.drawBitmap(main, 0f, 0f, null)
 
-                supportScale?.also {
+                support?.also {
                     canvas.drawBitmap(
                         BitmapCommonUtil.cropFromSource(
                             main.height, main.width,
                             BitmapCommonUtil.getXSpace(main, it),
-                            BitmapCommonUtil.getYSpace(main, it), it
+                            BitmapCommonUtil.getYSpace(main, it),
+                            it
                         ), 0f, 0f, null
                     )
                     it.recycle()
                 }
                 support?.recycle()
-                supportScale?.recycle()
+//                supportScale?.recycle()
                 this
             }
 

@@ -10,3 +10,4 @@ rootProject.name = "Adelaide"
 include ':app'
 include ':core-base'
 include ':photoeditorprocessor'
+include ':photoeditor'
