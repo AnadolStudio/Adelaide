@@ -11,6 +11,7 @@ import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
+import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
@@ -21,8 +22,8 @@ import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
-import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.anadolstudio.photoeditorprocessor.util.FileUtil
 
 class EditActivity : BaseEditActivity() {
@@ -46,6 +47,7 @@ class EditActivity : BaseEditActivity() {
     private lateinit var path: String
     private lateinit var binding: ActivityEditBinding
     private lateinit var viewController: EditViewController
+
     private val viewModel: EditActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +61,7 @@ class EditActivity : BaseEditActivity() {
         }
 
         binding = ActivityEditBinding.inflate(layoutInflater)
-        viewController = EditViewController(binding)
+        viewController = EditViewController(this, binding)
         viewModel.setEditViewController(viewController)
         setSupportActionBar(binding.navigationToolbar)
         setContentView(binding.root)
@@ -81,7 +83,9 @@ class EditActivity : BaseEditActivity() {
 
         binding.applyBtn.setOnClickListener {
             bottomFragment?.also {
-                if (it.apply()) { //TODO правильно, ли такое обращение?
+                if (it.isReadyToApply) { //TODO правильно, ли такое обращение?
+                    currentMode = Mode.MAIN
+                    it.apply()
                     viewController.resetWorkSpace()
                     super.onBackPressed()
                 }
@@ -92,17 +96,21 @@ class EditActivity : BaseEditActivity() {
         setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
 
         viewModel.currentBitmapCommunication.observe(this) { result ->
-            if (result !is Result.Loading) hideLoadingDialog()
-
             when (result) {
                 is Result.Success -> {
                     viewController.setMainBitmap(this, result.data)
-                    viewController.resetWorkSpace()
+
+                    if (currentMode == Mode.CUT) {
+                        viewController.setupMainImage(this, result.data)
+                    }else {
+                        viewController.resetWorkSpace()
+                    }
                 }
                 is Result.Error -> result.error.printStackTrace()
                 is Result.Loading -> showLoadingDialog()
                 else -> {}
             }
+            if (result !is Result.Loading) hideLoadingDialog()
         }
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
@@ -114,10 +122,6 @@ class EditActivity : BaseEditActivity() {
                 finish()
             }
 
-        /*editHelper.initPhotoEditor(photoEditorView)
-        if (dialogIsShow) {
-            createDialog(lastDialogIsAccept)
-        }*/
     }
 
     private fun setEditFragment(mode: Mode, fragment: BaseEditFragment) {
@@ -183,7 +187,7 @@ class EditActivity : BaseEditActivity() {
 
         override fun toDetail(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
-            when (data) {
+            when (data) {//TODO упростить через Pair<Mode, Fragment>
                 FuncItem.MainFunctions.TRANSFORM -> setEditFragment(
                     Mode.TRANSFORM,
                     CropEditFragment.newInstance()
@@ -194,6 +198,12 @@ class EditActivity : BaseEditActivity() {
                         EffectEditFragment.newInstance()
                     )
                     viewController.setupSupportImage(currentMode)
+                }
+                FuncItem.MainFunctions.CUT -> {
+                    setEditFragment(
+                        Mode.CUT,
+                        CutEditFragment.newInstance()
+                    )
                 }
                 else -> {}
                 /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())

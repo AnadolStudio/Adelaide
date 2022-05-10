@@ -15,7 +15,17 @@ class ViewState(val view: View) {
         view.scaleX = scaleX
         view.scaleY = scaleY
         view.rotation = rotation
-        view.visibility = View.VISIBLE
+    }
+
+    fun rebootToDefaultWithAnim() {
+        view.animate()
+            .translationX(translationX)
+            .translationY(translationY)
+            .scaleX(scaleX)
+            .scaleY(scaleY)
+            .rotation(rotation)
+
+        view.clearAnimation()
     }
 
     fun rebootToDefaultTranslation() {

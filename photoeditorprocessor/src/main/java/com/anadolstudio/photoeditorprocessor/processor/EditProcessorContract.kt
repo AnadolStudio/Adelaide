@@ -8,8 +8,8 @@ import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.util.BitmapSaver
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorprocessor.util.BitmapSaver
 import java.io.File
 
 interface EditProcessorContract {
@@ -49,7 +49,11 @@ interface EditProcessorContract {
 
         override fun init(context: Context, path: String): RxTask<Bitmap> = RxTask.Base.Quick {
             this.path = path
-            BitmapCommonUtil.decodeBitmapFromContentResolverPath(context, path, BitmapCommonUtil.MAX_SIDE_COPY)
+            BitmapCommonUtil.decodeBitmapFromContentResolverPath(
+                context,
+                path,
+                BitmapCommonUtil.MAX_SIDE_COPY
+            )
         }.onSuccess { result -> originalBitmap = result }
 
         override fun getOriginalImage(): Bitmap = originalBitmap ?: throw NullBitmapException()
@@ -85,7 +89,11 @@ interface EditProcessorContract {
 
         override fun process(bitmap: Bitmap, func: EditFunction): Bitmap = func.process(bitmap)
 
-        abstract fun processPreview(support:Bitmap? = null): RxTask<Bitmap>
+        open fun reboot() {
+            currentBitmap = originalBitmap
+        }
+
+        abstract fun processPreview(support: Bitmap? = null): RxTask<Bitmap>
 
         abstract fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap
     }

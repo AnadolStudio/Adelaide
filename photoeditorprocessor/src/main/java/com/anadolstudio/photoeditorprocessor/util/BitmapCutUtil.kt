@@ -294,13 +294,15 @@ object BitmapCutUtil {
         return bitmap
     }
 
-    fun createNullBackground(point: Point): Bitmap? {
+    fun createNullBackground(point: Point): Bitmap {
         val background = createNullSquare(SIDE_OF_SQUARE)
         val bitmap = Bitmap.createBitmap(point.x, point.y, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
         paint.shader = BitmapShader(background, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
         canvas.drawRect(Rect(0, 0, point.x, point.y), paint)
+
         return bitmap
     }
 
@@ -322,42 +324,43 @@ object BitmapCutUtil {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
     }
 
-    @Deprecated("")
-    fun blur(context: Context?, main: IntArray?, w: Int, h: Int, radius: Int): Bitmap {
-        val mainBitmap = Bitmap.createBitmap(main!!, w, h, Bitmap.Config.ARGB_8888)
-        return blur(context!!, mainBitmap, radius.toFloat())
+    fun blur(context: Context, main: IntArray, w: Int, h: Int, radius: Int): Bitmap {
+        val mainBitmap = Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888)
+
+        return blur(context, mainBitmap, radius.toFloat())
     }
 
-    @Deprecated("")
     fun blur(
-        context: Context?,
-        main: IntArray?,
-        edge: IntArray?,
+        context: Context,
+        main: IntArray,
+        edge: IntArray,
         w: Int,
         h: Int,
         radius: Int
     ): Bitmap {
-        val edgeBitmap = Bitmap.createBitmap(edge!!, w, h, Bitmap.Config.ARGB_8888)
-        val blur = blur(context!!, edgeBitmap, radius.toFloat())
-        val mainBitmap = Bitmap.createBitmap(main!!, w, h, Bitmap.Config.ARGB_8888)
+        val edgeBitmap = Bitmap.createBitmap(edge, w, h, Bitmap.Config.ARGB_8888)
+        val mainBitmap = Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888)
         val result = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(result)
+
+        val blur = blur(context, edgeBitmap, radius.toFloat())
         canvas.drawBitmap(blur, 0f, 0f, null)
         canvas.drawBitmap(mainBitmap, 0f, 0f, null)
+
         mainBitmap.recycle()
         blur.recycle()
         edgeBitmap.recycle()
+
         return result
     }
 
-    @Deprecated("")
     fun cutAndSet(
-        context: Context?,
+        context: Context,
         mainBitmap: Bitmap,
-        drawBitmap: Bitmap?
+        drawBitmap: Bitmap
     ): Bitmap {
 
-        val bitmap = scaleBitmap(mainBitmap, drawBitmap!!)
+        val bitmap = scaleBitmap(mainBitmap, drawBitmap)
 
         val main = Point(mainBitmap.width, mainBitmap.height)
         val support = Point(bitmap.width, bitmap.height)

@@ -14,8 +14,8 @@ import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -74,12 +74,9 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
     }
 
     override fun isReadyToApply(): Boolean {
-        //TODO Можно разбить по стейтам
-        return currentState == State.TRANSFORM
-    }
+        val isReady = currentState == State.TRANSFORM
 
-    override fun apply(): Boolean {
-        if (!isReadyToApply) {
+        if (!isReady) {
             val cropView = activityViewModel.viewController.cropView
 
             cropView.let {
@@ -101,8 +98,12 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
 //            changeFlipHorizontal = false
 //            changeFlipVertical = false
             showRatioView(false)
-            return false
         }
+
+        return isReady
+    }
+
+    override fun apply(): Boolean {
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview()
@@ -217,8 +218,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         }
     }
 
-    inner class RatioDetailable :
-        IDetailable<RatioItem> {
+    inner class RatioDetailable : IDetailable<RatioItem> {
 
         override fun toDetail(data: RatioItem) {
             val cropView = activityViewModel.viewController.cropView

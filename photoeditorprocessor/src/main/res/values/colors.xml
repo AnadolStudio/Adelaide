@@ -6,4 +6,6 @@
     <color name="colorSecondary">#FFFF00</color>
     <color name="colorAccent">#F00000</color>
 
+    <color name="colorMask">#991976D2</color>
+
 </resources>

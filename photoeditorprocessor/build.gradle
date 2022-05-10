@@ -12,6 +12,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
 
     buildTypes {
@@ -38,6 +45,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
 
     implementation 'org.wysaid:gpuimage-plus:2.6.3'
+
+    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

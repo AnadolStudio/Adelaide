@@ -1,8 +1,10 @@
 package com.anadolstudio.adelaide
 
-import android.util.Log
-import com.anadolstudio.core.tasks.Result
+import com.anadolstudio.adelaide.data.AssetData
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import org.junit.Test
+import java.util.regex.Pattern
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,18 +14,12 @@ import org.junit.Test
 class ResultTest {
 
     @Test
-    fun addition_isCorrect() {
-        val result: Result<String> = Result.Success("")
-
-        when (result) {
-            is Result.Final-> {
-                println("Final")
-                when(result){
-                    is Result.Success -> println("Success")
-                    is Result.Error -> println("Error")
-                }
-            }
-            is Result.Loading -> println( "Loading")
-        }
+    fun patternTest() {
+        val pattern = Pattern.compile(".*[.].*")
+        assertTrue(pattern.matcher("dvl.txt").find())
+        assertTrue(pattern.matcher("sfa.dvl.txt").find())
+        assertFalse(pattern.matcher("dvltxt").find())
+        assertFalse(pattern.matcher("dvl/txt").find())
     }
+
 }
