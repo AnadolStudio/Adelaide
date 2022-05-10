@@ -16,16 +16,14 @@ class GalleryListViewModel(
     val folders = Communication.UiUpdate<Result<Set<String>>>()
     val images = Communication.UiUpdate<Result<List<String>>>()
 
-    private var imagesResult: Result<List<String>> =
-        Result.Empty()
+    private var imagesResult: Result<List<String>> = Result.Empty()
         set(value) {
             val b = field != value
             field = value
             if (b) notifyImageUpdates()
         }
 
-    private var foldersResult: Result<Set<String>> =
-        Result.Empty()
+    private var foldersResult: Result<Set<String>> = Result.Empty()
         set(value) {
             val b = field != value
             field = value
