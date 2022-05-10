@@ -14,6 +14,7 @@ import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
+import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
 import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
@@ -86,7 +87,6 @@ class EditActivity : BaseEditActivity() {
                 if (it.isReadyToApply) { //TODO правильно, ли такое обращение?
                     currentMode = Mode.MAIN
                     it.apply()
-                    viewController.resetWorkSpace()
                     super.onBackPressed()
                 }
             }
@@ -205,26 +205,13 @@ class EditActivity : BaseEditActivity() {
                         CutEditFragment.newInstance()
                     )
                 }
+                FuncItem.MainFunctions.STICKER -> {
+                    setEditFragment(
+                        Mode.STICKER,
+                        StickerEditFragment.newInstance()
+                    )
+                }
                 else -> {}
-                /*CUT -> setEditFragment(MODE_CUT, CutEditFragment.newInstance())
-                FILTER -> setEditFragment(MODE_FILTER, FilterEditFragment.newInstance())
-
-                SPLASH -> setEditFragment(
-                    MODE_SPLASH, SplashEditFragment.newInstance(callback, MONOCHROME_BACK)
-                )
-                BLUR -> setEditFragment(
-                    MODE_BLUR, SplashEditFragment.newInstance(callback, BLUR_BACK)
-                )
-                BODY -> setEditFragment(MODE_BODY, BodyEditFragment.newInstance(callback))
-                TEXT -> setEditFragment(MODE_TEXT, TextEditFragment.newInstance())
-                STICKER -> setEditFragment(MODE_STICKER, StickerEditFragment.newInstance())
-                UPGRADE -> setEditFragment(
-                    MODE_UPGRADE,
-                    AdjustmentEditFragment.newInstance(callback)
-                )
-                BRUSH -> setEditFragment(MODE_BRUSH, BrushEditFragment.newInstance())
-                CROP -> setEditFragment(MODE_CROP, CropEditFragment.newInstance(callback))
-                TURN -> setEditFragment(MODE_TURN, TurnEditFragment.newInstance())*/
             }
         }
     }
