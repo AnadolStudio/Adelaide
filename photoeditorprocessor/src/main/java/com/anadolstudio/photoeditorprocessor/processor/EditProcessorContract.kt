@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.RxTask
+import com.anadolstudio.core.util.BitmapDecoder
 import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -49,10 +50,8 @@ interface EditProcessorContract {
 
         override fun init(context: Context, path: String): RxTask<Bitmap> = RxTask.Base.Quick {
             this.path = path
-            BitmapCommonUtil.decodeBitmapFromContentResolverPath(
-                context,
-                path,
-                BitmapCommonUtil.MAX_SIDE_COPY
+            BitmapDecoder.Manager.decodeBitmapFromPath(
+                context, path, BitmapCommonUtil.MAX_SIDE, BitmapCommonUtil.MAX_SIDE
             )
         }.onSuccess { result -> originalBitmap = result }
 
@@ -80,7 +79,7 @@ interface EditProcessorContract {
         ) = RxTask.Progress.Quick(processListener) { progressListener ->
 
             val bitmap = decodeOriginalBitmapWithProcess(context, path)
-            progressListener.onProgress("Setup...")
+            progressListener?.onProgress("Setup...")
             val parent = file.parent ?: throw FileParentException()
             val nameDir = parent.substring(parent.lastIndexOf("/"), parent.length)
 

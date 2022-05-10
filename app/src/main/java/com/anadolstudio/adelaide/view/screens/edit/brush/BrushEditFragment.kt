@@ -14,6 +14,8 @@ import com.anadolstudio.adelaide.view.adapters.ColorAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
+import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.brush.BrushFunction
@@ -43,6 +45,7 @@ class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
         photoEditor = activityViewModel.viewController.photoEditor
 
         binding.editSliderView.setCancelIcon(R.drawable.ic_color_lens)
+        binding.editSliderView.setCancelTint(viewModel.settings.color)
         binding.editSliderView.setCancelListener { setState(State.COLOR_PICK) }
 
         binding.editSliderView.setApplyIcon(R.drawable.ic_brush)
@@ -55,16 +58,16 @@ class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
             )
 
             viewModel.settings.isBrush = !isBrush
-            viewModel.setupBrush(photoEditor)
+            activityViewModel.viewController.setupBrush(viewModel.settings)
         }
 
         binding.editSliderView.setupSlider(
-            DrawingViewModel.XSMALL, DrawingViewModel.XLARGE, viewModel.settings.size
+            XSMALL, XLARGE, viewModel.settings.size
         )
 
         binding.editSliderView.setSliderListener { _, value, _ ->
             if (value != viewModel.settings.size) {
-                viewModel.setupBrush(photoEditor, value)
+                activityViewModel.viewController.setupBrush(viewModel.settings, value)
             }
         }
 
@@ -73,7 +76,7 @@ class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
             ?: BrushFunction()
 
         binding.recyclerView.adapter = ColorAdapter(Colors.getColors().toMutableList(), this)
-        viewModel.setupBrush(photoEditor)
+        activityViewModel.viewController.setupBrush(viewModel.settings)
         return binding.root
     }
 
@@ -88,7 +91,7 @@ class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
     override fun toDetail(data: String) {
         viewModel.settings.color = Color.parseColor(data)
         binding.editSliderView.setCancelTint(viewModel.settings.color)
-        viewModel.setupBrush(photoEditor)
+        activityViewModel.viewController.setupBrush(viewModel.settings)
     }
 
     private enum class State {

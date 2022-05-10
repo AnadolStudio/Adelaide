@@ -20,6 +20,7 @@ import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_T
 import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
@@ -183,6 +184,8 @@ class EditActivity : BaseEditActivity() {
             .onError { showToast(R.string.edit_error_failed_save_image) }
             .onFinal { hideLoadingDialog() }
     }
+
+    fun getProgressListener(): ProgressListener<String>? = loadingView
 
     inner class FunctionItemClick : IDetailable<FuncItem> {
 

@@ -29,6 +29,7 @@ class ColorAdapter(data: MutableList<String>, detailable: IDetailable<String>?) 
             selectableController.setStartItem(holder)
         }
         super.onBindViewHolder(holder, position)
+
     }
 
     private class ColorPathViewHolder(

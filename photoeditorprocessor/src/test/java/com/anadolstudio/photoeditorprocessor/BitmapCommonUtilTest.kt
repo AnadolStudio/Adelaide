@@ -27,6 +27,12 @@ class BitmapCommonUtilTest {
         assertCircumscribed(mainW, supportW, mainH, supportH)
 
         // Не пропорциональные
+        mainW = 1080F
+        mainH = 1350F
+        supportW = 1080F
+        supportH = 1717F
+        assertCircumscribed(mainW, supportW, mainH, supportH)
+
         mainW = 700F
         mainH = 1200F
         supportW = 300F
@@ -53,9 +59,13 @@ class BitmapCommonUtilTest {
     }
 
     private fun assertCircumscribed(mainW: Float, supportW: Float, mainH: Float, supportH: Float) {
-        val scale = BitmapCommonUtil.scaleRatioToInscribed(mainW, mainH, supportW, supportH)
+        val scale = BitmapCommonUtil.scaleRatioCircumscribed(mainW, mainH, supportW, supportH)
         println("$scale $mainW $mainH ${supportW * scale} ${supportH * scale}")
-        assertTrue(mainW == supportW * scale || mainH == supportH * scale)
+        assertTrue(
+            mainW.toInt() == (supportW * scale).toInt() && mainH.toInt() <= (supportH * scale).toInt()
+                    || (mainW.toInt() <= (supportW * scale).toInt() && mainH.toInt() == (supportH * scale).toInt())
+        )
+
     }
 
     @Test
@@ -106,7 +116,7 @@ class BitmapCommonUtilTest {
         mainH: Float,
         supportH: Float
     ) {
-        val scale = BitmapCommonUtil.scaleRatioToInscribed(mainW, mainH, supportW, supportH)
+        val scale = BitmapCommonUtil.scaleRatioInscribed(mainW, mainH, supportW, supportH)
         println("$scale $mainW $mainH ${supportW * scale} ${supportH * scale}")
 
         assertTrue(

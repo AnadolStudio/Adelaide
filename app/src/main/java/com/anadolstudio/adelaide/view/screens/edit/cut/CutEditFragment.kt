@@ -18,8 +18,10 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.FragmentEditCutBinding
 import com.anadolstudio.adelaide.domain.touchlisteners.ImageTouchListener
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
+import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
+import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 import com.anadolstudio.core.interfaces.IDetailable
@@ -127,17 +129,15 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
                 if (isBrush) R.drawable.ic_eraser else R.drawable.ic_brush
             )
             viewModel.settings.isBrush = !isBrush
-            viewModel.setupBrush(photoEditor)
+            activityViewModel.viewController.setupBrush(viewModel.settings)
         }
 
         val currentSize = viewModel.settings.size
-        binding.editSliderView.setupSlider(
-            DrawingViewModel.XSMALL, DrawingViewModel.XLARGE, currentSize
-        )
+        binding.editSliderView.setupSlider(XSMALL, XLARGE, currentSize)
 
         binding.editSliderView.setSliderListener { _, value, _ ->
             if (value != viewModel.settings.size) {
-                viewModel.setupBrush(photoEditor, value)
+                activityViewModel.viewController.setupBrush(viewModel.settings, value)
             }
         }
 
@@ -152,7 +152,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
         photoEditor.drawingView.setDefaultBitmap(bitmap)
         photoEditor.drawingView.invalidate()
         photoEditor.setBrushDrawingMode(false)
-        viewModel.setupBrush(photoEditor)
+        activityViewModel.viewController.setupBrush(viewModel.settings)
     }
 
     private fun defaultStateScalePanel() {
@@ -221,8 +221,8 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
             .captureView(viewController.photoEditorView.drawingView)
 
         activityViewModel.currentBitmapCommunication.map(Result.Loading())
-
-        viewModel.cutByMask(requireContext(), mainBitmap, drawBitmap)
+        val processListener = (activity as EditActivity?)?.getProgressListener()
+        viewModel.cutByMask(requireContext(), processListener, mainBitmap, drawBitmap)
             .onSuccess { cutBitmap ->
                 clearDrawingPanel()
 

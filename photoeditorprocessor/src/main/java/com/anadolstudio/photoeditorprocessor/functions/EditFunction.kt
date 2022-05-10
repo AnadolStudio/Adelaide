@@ -28,11 +28,19 @@ interface EditFunction {
 
         override fun process(main: Bitmap, support: Bitmap?): Bitmap =
             with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
-//                val supportScale = scale(support, main)
+                val supportScale = scale(support, main)
                 val canvas = Canvas(this)
                 canvas.drawBitmap(main, 0f, 0f, null)
+                Log.d(
+                    "EditFunction",
+                    "process: ${support?.width} ${support?.height}"
+                )
+                supportScale?.also {
+                    Log.d(
+                        "EditFunction",
+                        "process: ${main.width} ${main.height} ${it.width} ${it.height}"
+                    )
 
-                support?.also {
                     canvas.drawBitmap(
                         BitmapCommonUtil.cropFromSource(
                             main.width, main.height,
@@ -44,21 +52,23 @@ interface EditFunction {
                     it.recycle()
                 }
                 support?.recycle()
+                supportScale?.recycle()
                 this
             }
 
         private fun scale(support: Bitmap?, main: Bitmap): Bitmap? {
-
             val supportScale = support?.let {
-                val scale = if (main.width > main.height) {//Land
-                    BitmapCommonUtil.getScaleRatio(it.width.toFloat(), main.width.toFloat())
-                } else {//Port
-                    BitmapCommonUtil.getScaleRatio(it.height.toFloat(), main.height.toFloat())
-                }
-                if (scale > 1) Bitmap.createScaledBitmap(
-                    it, (it.width * scale).toInt(), (it.height * scale).toInt(), true
+                val scale = BitmapCommonUtil.scaleRatioCircumscribed(
+                    main.width.toFloat(),
+                    main.height.toFloat(),
+                    support.width.toFloat(),
+                    support.height.toFloat(),
                 )
-                else it
+
+                val scaleW = (it.width * scale).toInt()
+                val scaleH = (it.height * scale).toInt()
+
+                Bitmap.createScaledBitmap(it, scaleW, scaleH, true)
             }
             return supportScale
         }

@@ -2,10 +2,13 @@ package com.anadolstudio.adelaide.view.screens.edit.cut
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Point
 import android.graphics.PointF
 import com.anadolstudio.adelaide.data.AssetData
 import com.anadolstudio.adelaide.data.AssetsDirections
 import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
+import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.viewmodel.Communication
@@ -55,10 +58,58 @@ class CutViewModel : DrawingViewModel() {
 
     fun cutByMask(
         context: Context,
+        processListener: ProgressListener<String>?,
         mainBitmap: Bitmap,
         drawBitmap: Bitmap
-    ): RxTask<Bitmap> = RxTask.Base.Quick {
-        BitmapCutUtil.cutAndSet(context, mainBitmap, drawBitmap)
+    ): RxTask<Bitmap> = RxTask.Progress.Quick(processListener) {
+        processListener?.onProgress("Setup...")
+
+        val bitmap = BitmapCommonUtil.scaleBitmap(mainBitmap, drawBitmap)
+
+        val main = Point(mainBitmap.width, mainBitmap.height)
+        val support = Point(bitmap.width, bitmap.height)
+
+        val pixelsOriginal = IntArray(main.x * main.y)
+        val pixelsInverseOriginal = IntArray(main.x * main.y)
+        val pixelsBitmap = IntArray(support.x * support.y)
+
+        processListener?.onProgress("Cutting...")
+
+        if (pixelsBitmap.size != pixelsOriginal.size) throw IllegalArgumentException()
+
+        mainBitmap.getPixels(pixelsOriginal, 0, main.x, 0, 0, main.x, main.y)
+        bitmap.getPixels(pixelsBitmap, 0, support.x, 0, 0, support.x, support.y)
+        val edgePixels = BitmapCutUtil.getEdgePixels(bitmap)
+
+        for (i in pixelsOriginal.indices) {
+            if (pixelsBitmap[i] == Color.TRANSPARENT) {
+                pixelsInverseOriginal[i] = pixelsOriginal[i]
+                pixelsOriginal[i] = Color.TRANSPARENT
+            }
+        }
+
+        val edgePixelsArray = pixelsOriginal.clone()
+
+        for (i in edgePixels.keys) {
+            pixelsOriginal[i] = Color.TRANSPARENT
+        }
+
+        processListener?.onProgress("Blurring...")
+
+        val result = BitmapCutUtil.blur(context, pixelsOriginal, edgePixelsArray, main.x, main.y)
+        result.getPixels(pixelsOriginal, 0, main.x, 0, 0, main.x, main.y)
+
+        val inverseBlur = BitmapCutUtil.blur(context, pixelsInverseOriginal, main.x, main.y)
+        inverseBlur.getPixels(pixelsInverseOriginal, 0, main.x, 0, 0, main.x, main.y)
+
+        processListener?.onProgress("Done")
+
+        for (i in pixelsInverseOriginal.indices) {
+            val alpha = 255 - Color.alpha(pixelsInverseOriginal[i])
+            pixelsOriginal[i] = BitmapCutUtil.getColorWithAlpha(pixelsOriginal[i], alpha)
+        }
+
+        Bitmap.createBitmap(pixelsOriginal, main.x, main.y, Bitmap.Config.ARGB_8888)
     }
 
     override fun onCleared() {

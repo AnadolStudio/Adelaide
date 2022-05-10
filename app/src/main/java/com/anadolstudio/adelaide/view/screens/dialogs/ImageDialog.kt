@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.DialogImageBinding
-import com.anadolstudio.core.util.BitmapDecoder.Manager.decodeBitmapFromPath
+import com.anadolstudio.core.util.BitmapDecoder
 import kotlin.math.min
 
 class ImageDialog : AppCompatDialogFragment() {
@@ -16,14 +16,13 @@ class ImageDialog : AppCompatDialogFragment() {
 
         private const val PHOTO_FILE = "photo_file"
 
-        fun newInstance(path: String?): ImageDialog =ImageDialog().apply {
+        fun newInstance(path: String?): ImageDialog = ImageDialog().apply {
             val args = Bundle()
             args.putString(PHOTO_FILE, path)
             arguments = args
         }
 
     }
-
 
     private lateinit var binding: DialogImageBinding
     private var path: String? = null
@@ -37,7 +36,7 @@ class ImageDialog : AppCompatDialogFragment() {
         requireActivity().windowManager.defaultDisplay.getSize(size)
         val min = min(size.x, size.y)
 
-        val bitmap = decodeBitmapFromPath(
+        val bitmap = BitmapDecoder.Manager.decodeBitmapFromPath(
             activity,
             path!!, min, min
         )

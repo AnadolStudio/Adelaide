@@ -125,7 +125,5 @@ interface BitmapDecoder {
         } else { //RealPath
             FromRealPath()
         }.decode(path, reqWidth, reqHeight)
-
     }
-
 }

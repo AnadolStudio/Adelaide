@@ -1,7 +1,7 @@
 package com.anadolstudio.adelaide.domain.utils
 
 object Colors {
-    const val COLOR_DEFAULT = "#ffffff"
+    const val COLOR_DEFAULT = "#1976D2"
 
     fun getColors(): Array<String> {
         return arrayOf(
@@ -10,6 +10,7 @@ object Colors {
             "#757575",
             "#bdbdbd",
             "#eeeeee",
+            "#991976D2",
             "#ffffff",
             "#3e2723",
             "#5d4138",

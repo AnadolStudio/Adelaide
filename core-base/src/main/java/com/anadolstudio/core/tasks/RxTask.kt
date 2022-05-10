@@ -130,7 +130,7 @@ interface RxTask<T> {
 
     open class Progress<TaskData : Any, ProgressData>(
         immediately: Boolean,
-        protected val progressListener: ProgressListener<ProgressData>,
+        protected val progressListener: ProgressListener<ProgressData>?,
         protected val callback: RxProgressCallback<TaskData, ProgressData>
     ) : SimpleStart<TaskData>(immediately) {
 
@@ -144,12 +144,12 @@ interface RxTask<T> {
         }
 
         class Quick<TaskData : Any, ProgressData>(
-            progressListener: ProgressListener<ProgressData>,
+            progressListener: ProgressListener<ProgressData>?,
             callback: RxProgressCallback<TaskData, ProgressData>
         ) : Progress<TaskData, ProgressData>(true, progressListener, callback)
 
         class Lazy<TaskData : Any, ProgressData>(
-            progressListener: ProgressListener<ProgressData>,
+            progressListener: ProgressListener<ProgressData>?,
             callback: RxProgressCallback<TaskData, ProgressData>
         ) : Progress<TaskData, ProgressData>(false, progressListener, callback)
     }
