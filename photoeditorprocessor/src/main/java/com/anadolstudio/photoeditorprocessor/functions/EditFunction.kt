@@ -28,12 +28,14 @@ interface EditFunction {
 
         override fun process(main: Bitmap, support: Bitmap?): Bitmap =
             with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
-//                val supportScale = support?.let { BitmapCommonUtil.scaleBitmap(main, it)}//
-//                TODO для прода
+                val supportScale = scale(support, main)
                 val canvas = Canvas(this)
                 canvas.drawBitmap(main, 0f, 0f, null)
-
-                support?.also {
+                Log.d(
+                    "EditFunction",
+                    "process: ${support?.width} ${support?.height}"
+                )
+                supportScale?.also {
                     Log.d(
                         "EditFunction",
                         "process: ${main.width} ${main.height} ${it.width} ${it.height}"
@@ -41,7 +43,7 @@ interface EditFunction {
 
                     canvas.drawBitmap(
                         BitmapCommonUtil.cropFromSource(
-                            main.width,main.height,
+                            main.width, main.height,
                             BitmapCommonUtil.getXSpace(main, it),
                             BitmapCommonUtil.getYSpace(main, it),
                             it
@@ -50,9 +52,26 @@ interface EditFunction {
                     it.recycle()
                 }
                 support?.recycle()
-//                supportScale?.recycle()
+                supportScale?.recycle()
                 this
             }
+
+        private fun scale(support: Bitmap?, main: Bitmap): Bitmap? {
+            val supportScale = support?.let {
+                val scale = BitmapCommonUtil.scaleRatioCircumscribed(
+                    main.width.toFloat(),
+                    main.height.toFloat(),
+                    support.width.toFloat(),
+                    support.height.toFloat(),
+                )
+
+                val scaleW = (it.width * scale).toInt()
+                val scaleH = (it.height * scale).toInt()
+
+                Bitmap.createScaledBitmap(it, scaleW, scaleH, true)
+            }
+            return supportScale
+        }
 
         open class Base(type: FuncItem.MainFunctions) : Abstract(type) {
 

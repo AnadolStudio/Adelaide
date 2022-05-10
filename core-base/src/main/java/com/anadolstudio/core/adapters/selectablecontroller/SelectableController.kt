@@ -51,10 +51,8 @@ interface SelectableController<Holder : RecyclerView.ViewHolder> {
         }
 
         override fun setStartItem(holder: Holder) {
-            selectedItem ?: let {
-                selectedItem = holder
-                state = savePosition(holder)
-            }
+            selectedItem = holder
+            state = savePosition(holder)
         }
 
         override fun selectableItemIsExist() = selectedItem != null

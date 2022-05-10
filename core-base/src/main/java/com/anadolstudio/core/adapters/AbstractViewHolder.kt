@@ -9,13 +9,13 @@ abstract class AbstractViewHolder<Data : Any>(
     val detailable: IDetailable<Data>?,
 ) : RecyclerView.ViewHolder(view) {
 
-    private val clickView: View by lazy { initClickView() }
+    val clickView: View by lazy { initClickView() }
 
     init {
         clickView.setOnClickListener(::onClick)
     }
 
-    abstract fun initClickView(): View
+    protected abstract fun initClickView(): View
 
     protected var data: Data? = null
 

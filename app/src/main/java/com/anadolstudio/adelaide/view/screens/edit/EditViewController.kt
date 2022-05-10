@@ -5,12 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
@@ -18,6 +16,7 @@ import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFuncti
 import com.anadolstudio.photoeditorprocessor.processor.Mode
 import com.theartofdev.edmodo.cropper.CropImageView
 import ja.burhanrashid52.photoeditor.PhotoEditor
+import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
 
 class EditViewController(context: Context, private val binding: ActivityEditBinding) {
     //TODO нужен interface
@@ -170,4 +169,18 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
         )
 
     fun currentSizeOfMainPanel() = PointF(mainImage.width.toFloat(), mainImage.height.toFloat())
+
+    fun setupBrush(settings: Settings, size: Float = settings.size) {
+        settings.size = size
+        photoEditor.setBrushDrawingMode(true)
+
+        val builder = ShapeBuilder()
+            .withShapeColor(settings.color)
+            .withShapeSize(settings.size)
+
+        photoEditor.setShape(builder)
+
+        if (!settings.isBrush) photoEditor.brushEraser()
+    }
+
 }

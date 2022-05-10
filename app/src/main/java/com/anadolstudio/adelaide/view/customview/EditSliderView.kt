@@ -128,6 +128,14 @@ class EditSliderView(
         binding.cancelButton.setImageResource(id)
     }
 
+    fun setApplyIconTint(color: Int) {
+        binding.applyButton.setColorFilter(color)
+    }
+
+    fun setCancelTint(color: Int) {
+        binding.cancelButton.setColorFilter(color)
+    }
+
     fun setSliderVisible(visibility: Int) {
         setVisible(binding.slider, visibility)
     }

@@ -17,62 +17,12 @@ object BitmapCommonUtil {
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2
 
-    private fun getDegree(orientation: Int) = when (orientation) {
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-        else -> 0
-    }
-
     fun validateUri(context: Context, path: String): Boolean {
         return context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = false
             BitmapFactory.decodeFileDescriptor(it?.fileDescriptor, null, options) != null
         }
-    }
-
-    fun decodeBitmapFromContentResolverPath(
-        context: Context,
-        path: String,
-        minSide: Int = MAX_SIDE
-    ): Bitmap {
-
-        // Читаем с inJustDecodeBounds = true для определения размеров
-        val options = BitmapFactory.Options()
-        var orientation = 1
-
-        options.inJustDecodeBounds = true
-
-        context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use { pfd ->
-            pfd?.let {
-                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
-                orientation = ExifInterface(pfd.fileDescriptor).getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    1
-                )
-            }
-        }
-
-        val degree = getDegree(orientation)
-
-        options.inSampleSize = calculateInSampleSize(options, minSide)
-        options.inJustDecodeBounds = false
-        var bitmap: Bitmap? = null
-
-        context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use { pfd ->
-            bitmap = pfd?.let {
-                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, options)
-            } ?: throw IllegalArgumentException("PFD from path $path is null ")
-        }
-
-        if (bitmap == null) throw IllegalArgumentException("Bitmap is null")
-
-        bitmap = scaleBitmap(bitmap!!)
-        bitmap = rotate(bitmap!!, degree.toFloat())
-
-
-        return bitmap!!
     }
 
     fun scaleBitmap(src: Bitmap, ratio: Float = MAX_SIDE.toFloat()): Bitmap {
@@ -101,35 +51,12 @@ object BitmapCommonUtil {
     fun getScaleRatioMax(mainW: Int, mainH: Int, supportW: Int, supportH: Int) =
         getScaleRatioMax(mainW.toFloat(), mainH.toFloat(), supportW.toFloat(), supportH.toFloat())
 
-    fun getScaleRatio(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
-        if (supportW > mainW || supportH > mainH)
-            min(mainW / supportW, mainH / supportH)
-        else
-            max(mainW / supportW, mainH / supportH)
+    fun scaleRatioCircumscribed(
+        mainW: Float, mainH: Float, supportW: Float, supportH: Float
+    ): Float = max(mainW / supportW, mainH / supportH)
 
-    fun calculateInSampleSize(
-        options: BitmapFactory.Options, maxSide: Int = MAX_SIDE
-    ): Int = calculateInSampleSize(options.outWidth, options.outHeight, maxSide)
-
-    fun calculateInSampleSize(
-        width: Int, height: Int, maxSide: Int = MAX_SIDE
-    ): Int {
-        // Реальные размеры изображения
-        var inSampleSize = 1
-
-        if (width < maxSide && height < maxSide) return inSampleSize
-
-        if (width > maxSide || height > maxSide) {
-            val halfHeight = height / 2
-            val halfWidth = width / 2
-
-            while (halfHeight / inSampleSize > maxSide || halfWidth / inSampleSize > maxSide) {
-                inSampleSize *= 2
-            }
-        }
-
-        return inSampleSize
-    }
+    fun scaleRatioInscribed(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
+        min(mainW / supportW, mainH / supportH)
 
     fun rotate(source: Bitmap, degree: Float): Bitmap {
         if (degree == 0f) return source
@@ -195,7 +122,7 @@ object BitmapCommonUtil {
     //Работает для пропроциональных
     fun scaleBitmap(mainW: Float, mainH: Float, support: Bitmap, isHard: Boolean): Bitmap =
         with(support) {
-            val scaleRatio = getScaleRatio(
+            val scaleRatio = scaleRatioCircumscribed(
                 mainW, mainH,
                 width.toFloat(), height.toFloat()
             )

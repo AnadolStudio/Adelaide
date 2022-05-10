@@ -10,7 +10,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.Shader
 import com.anadolstudio.photoeditorprocessor.util.BitmapRenderEffects.blur
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.scaleBitmap
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -120,7 +119,7 @@ object BitmapCutUtil {
         return pixels
     }
 
-    fun getEdgePixels(bitmap: Bitmap, deep: Int): HashMap<Int, Int?> {
+    fun getEdgePixels(bitmap: Bitmap, deep: Int = DEFAULT_DEEP): HashMap<Int, Int?> {
         val w = bitmap.width
         val h = bitmap.height
 
@@ -324,11 +323,17 @@ object BitmapCutUtil {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
     }
 
-    fun blur(context: Context, main: IntArray, w: Int, h: Int, radius: Int): Bitmap {
-        val mainBitmap = Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888)
-
-        return blur(context, mainBitmap, radius.toFloat())
-    }
+    fun blur(
+        context: Context,
+        main: IntArray,
+        w: Int,
+        h: Int,
+        radius: Int = RADIUS_BLUR_DEFAULT
+    ): Bitmap = blur(
+        context,
+        Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888),
+        radius.toFloat()
+    )
 
     fun blur(
         context: Context,
@@ -336,7 +341,7 @@ object BitmapCutUtil {
         edge: IntArray,
         w: Int,
         h: Int,
-        radius: Int
+        radius: Int = RADIUS_BLUR_DEFAULT
     ): Bitmap {
         val edgeBitmap = Bitmap.createBitmap(edge, w, h, Bitmap.Config.ARGB_8888)
         val mainBitmap = Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888)
@@ -352,64 +357,5 @@ object BitmapCutUtil {
         edgeBitmap.recycle()
 
         return result
-    }
-
-    fun cutAndSet(
-        context: Context,
-        mainBitmap: Bitmap,
-        drawBitmap: Bitmap
-    ): Bitmap {
-
-        val bitmap = scaleBitmap(mainBitmap, drawBitmap)
-
-        val main = Point(mainBitmap.width, mainBitmap.height)
-        val support = Point(bitmap.width, bitmap.height)
-
-        val pixelsOriginal = IntArray(main.x * main.y)
-        val pixelsInverseOriginal = IntArray(main.x * main.y)
-        val pixelsBitmap = IntArray(support.x * support.y)
-
-        if (pixelsBitmap.size != pixelsOriginal.size) throw IllegalArgumentException()
-
-        mainBitmap.getPixels(pixelsOriginal, 0, main.x, 0, 0, main.x, main.y)
-        bitmap.getPixels(pixelsBitmap, 0, support.x, 0, 0, support.x, support.y)
-        val edgePixels = getEdgePixels(bitmap, DEFAULT_DEEP)
-
-        for (i in pixelsOriginal.indices) {
-            if (pixelsBitmap[i] == Color.TRANSPARENT) {
-                pixelsInverseOriginal[i] = pixelsOriginal[i]
-                pixelsOriginal[i] = Color.TRANSPARENT
-            }
-        }
-
-        val edgePixelsArray = pixelsOriginal.clone()
-
-        for (i in edgePixels.keys) {
-            pixelsOriginal[i] = Color.TRANSPARENT
-        }
-
-        val result = blur(
-            context, pixelsOriginal,
-            edgePixelsArray,
-            main.x, main.y,
-            RADIUS_BLUR_DEFAULT
-        )
-
-        result.getPixels(pixelsOriginal, 0, main.x, 0, 0, main.x, main.y)
-
-        val inverseBlur = blur(
-            context, pixelsInverseOriginal,
-            main.x, main.y,
-            RADIUS_BLUR_DEFAULT
-        )
-
-        inverseBlur.getPixels(pixelsInverseOriginal, 0, main.x, 0, 0, main.x, main.y)
-
-        for (i in pixelsInverseOriginal.indices) {
-            val alpha = 255 - Color.alpha(pixelsInverseOriginal[i])
-            pixelsOriginal[i] = getColorWithAlpha(pixelsOriginal[i], alpha)
-        }
-
-        return Bitmap.createBitmap(pixelsOriginal, main.x, main.y, Bitmap.Config.ARGB_8888)
     }
 }
