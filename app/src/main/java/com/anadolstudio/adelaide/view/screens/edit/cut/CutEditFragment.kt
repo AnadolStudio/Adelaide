@@ -78,7 +78,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
             if (result !is Result.Loading) hideLoadingDialog()
         }
 
-        val sizePoint = activityViewModel.viewController.currentSizeOfMainePanel()
+        val sizePoint = activityViewModel.viewController.currentSizeOfMainPanel()
         viewModel.createMask(requireContext(), originalBitmap, sizePoint)
 
         viewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
@@ -227,7 +227,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
                 clearDrawingPanel()
 
                 val nullBackground = BitmapCutUtil.createNullBackground(
-                    viewController.currentSizeOfMainePanel().toPoint()
+                    viewController.currentSizeOfMainPanel().toPoint()
                 )
                 activityViewModel.currentBitmapCommunication.map(Result.Success(nullBackground))
 

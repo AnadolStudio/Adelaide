@@ -169,5 +169,5 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
             activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
         )
 
-    fun currentSizeOfMainePanel() = PointF(mainImage.width.toFloat(), mainImage.height.toFloat())
+    fun currentSizeOfMainPanel() = PointF(mainImage.width.toFloat(), mainImage.height.toFloat())
 }

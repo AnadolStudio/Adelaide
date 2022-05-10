@@ -102,7 +102,7 @@ object BitmapCommonUtil {
         getScaleRatioMax(mainW.toFloat(), mainH.toFloat(), supportW.toFloat(), supportH.toFloat())
 
     fun getScaleRatio(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
-        if (supportW > mainW && supportH > mainH)
+        if (supportW > mainW || supportH > mainH)
             min(mainW / supportW, mainH / supportH)
         else
             max(mainW / supportW, mainH / supportH)
@@ -180,7 +180,7 @@ object BitmapCommonUtil {
 
     fun getYSpace(one: Bitmap, two: Bitmap) = abs((two.height - one.height) / 2)
 
-    fun cropFromSource(height: Int, weight: Int, x: Int, y: Int, source: Bitmap): Bitmap =
+    fun cropFromSource(weight: Int, height: Int, x: Int, y: Int, source: Bitmap): Bitmap =
         Bitmap.createBitmap(source, x, y, weight, height)
 
     fun scaleBitmap(main: Bitmap, support: Bitmap): Bitmap =
@@ -192,6 +192,7 @@ object BitmapCommonUtil {
     fun scaleBitmap(main: Bitmap, support: Bitmap, isHard: Boolean): Bitmap =
         scaleBitmap(main.width.toFloat(), main.height.toFloat(), support, isHard)
 
+    //Работает для пропроциональных
     fun scaleBitmap(mainW: Float, mainH: Float, support: Bitmap, isHard: Boolean): Bitmap =
         with(support) {
             val scaleRatio = getScaleRatio(
