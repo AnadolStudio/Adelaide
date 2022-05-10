@@ -31,15 +31,8 @@ interface EditFunction {
                 val supportScale = scale(support, main)
                 val canvas = Canvas(this)
                 canvas.drawBitmap(main, 0f, 0f, null)
-                Log.d(
-                    "EditFunction",
-                    "process: ${support?.width} ${support?.height}"
-                )
+
                 supportScale?.also {
-                    Log.d(
-                        "EditFunction",
-                        "process: ${main.width} ${main.height} ${it.width} ${it.height}"
-                    )
 
                     canvas.drawBitmap(
                         BitmapCommonUtil.cropFromSource(
