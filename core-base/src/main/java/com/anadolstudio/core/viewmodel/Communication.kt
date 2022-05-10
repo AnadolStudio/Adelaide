@@ -12,7 +12,9 @@ interface Communication {
 
     interface Update<T> : Mapper.Unit<T>
 
-    interface Mutable<T> : Observe<T>, Update<T>
+    interface ImMutable<T> : Observe<T>
+
+    interface Mutable<T> : ImMutable<T>, Update<T>
 
     abstract class Abstract<T : Any>(
         protected val mutableLiveData: MutableLiveData<T>
@@ -40,20 +42,4 @@ interface Communication {
 
         override fun map(data: T) = mutableLiveData.postValue(data)
     }
-
-
-/*
-    class Base<T : Any> : Abstract<T>(){
-        private val mutableLiveData: MutableLiveData<T> = MutableLiveData()
-
-        override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
-            mutableLiveData.observe(owner, observer)
-        }
-
-        override fun map(data: T) {
-            mutableLiveData.postValue(data)
-        }
-    }
-*/
-
 }

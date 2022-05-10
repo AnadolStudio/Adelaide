@@ -3,22 +3,18 @@ package com.anadolstudio.adelaide.view.screens.gallery
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.anadolstudio.adelaide.data.GalleryListener
 import com.anadolstudio.adelaide.data.GalleryService
 import com.anadolstudio.core.tasks.Result
+import com.anadolstudio.core.viewmodel.Communication
 
 class GalleryListViewModel(
     private val galleryService: GalleryService
 ) : ViewModel() {
 
-    private val _folders = MutableLiveData<Result<Set<String>>>()
-    val folders: LiveData<Result<Set<String>>> = _folders
-
-    private val _images = MutableLiveData<Result<List<String>>>()
-    val images: LiveData<Result<List<String>>> = _images
+    val folders = Communication.UiUpdate<Result<Set<String>>>()
+    val images = Communication.UiUpdate<Result<List<String>>>()
 
     private var imagesResult: Result<List<String>> =
         Result.Empty()
@@ -51,17 +47,17 @@ class GalleryListViewModel(
 
     @RequiresPermission(READ_EXTERNAL_STORAGE)
     fun loadFolders(activity: AppCompatActivity) {
-        _folders.value = Result.Loading()
+        folders.map(Result.Loading())
         galleryService.loadFolders(activity).onError {
-            _folders.value = Result.Error(it)
+            folders.map(Result.Error(it))
         }
     }
 
     @RequiresPermission(READ_EXTERNAL_STORAGE)
     fun loadImages(activity: AppCompatActivity, folder: String? = null, lastItemId: Long = -1L) {
-        _images.value = Result.Loading()
+        images.map(Result.Loading())
         galleryService.loadImages(activity, folder, lastItemId)
-            .onError { _images.value = Result.Error(it) }
+            .onError { images.map(Result.Error(it)) }
     }
 
     override fun onCleared() {
@@ -70,10 +66,10 @@ class GalleryListViewModel(
     }
 
     private fun notifyImageUpdates() {
-        _images.postValue(imagesResult)
+        images.map(imagesResult)
     }
 
     private fun notifyFoldersUpdates() {
-        _folders.postValue(foldersResult)
+        folders.map(foldersResult)
     }
 }

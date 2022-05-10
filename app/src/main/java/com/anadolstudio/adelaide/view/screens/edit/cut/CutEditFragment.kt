@@ -221,6 +221,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
             .captureView(viewController.photoEditorView.drawingView)
 
         activityViewModel.currentBitmapCommunication.map(Result.Loading())
+        // TODO map должен быть только из ViewModel
         val processListener = (activity as EditActivity?)?.getProgressListener()
         viewModel.cutByMask(requireContext(), processListener, mainBitmap, drawBitmap)
             .onSuccess { cutBitmap ->
@@ -234,7 +235,6 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
                 viewController.photoEditor.addImage(cutBitmap, false)
                 setCurrentState(State.CHOICE_BG)
             }
-
     }
 
     override fun apply(): Boolean {
