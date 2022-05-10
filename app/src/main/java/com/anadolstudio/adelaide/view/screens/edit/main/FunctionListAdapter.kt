@@ -12,9 +12,9 @@ import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListAdapter(
-    data: List<com.anadolstudio.photoeditorprocessor.functions.FuncItem>,
-    detailable: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>?
-) : SimpleAdapter<com.anadolstudio.photoeditorprocessor.functions.FuncItem>(data, detailable) {
+    data: List<FuncItem>,
+    detailable: IDetailable<FuncItem>?
+) : SimpleAdapter<FuncItem>(data, detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder =
         FunctionViewHolder(
@@ -24,12 +24,12 @@ class FunctionListAdapter(
 
     class FunctionViewHolder(
         view: View,
-        detailable: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>?
-    ) : AbstractViewHolder.Base<com.anadolstudio.photoeditorprocessor.functions.FuncItem>(view, detailable) {
+        detailable: IDetailable<FuncItem>?
+    ) : AbstractViewHolder.Base<FuncItem>(view, detailable) {
 
         private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(view)
 
-        override fun onBind(data: com.anadolstudio.photoeditorprocessor.functions.FuncItem) {
+        override fun onBind(data: FuncItem) {
             super.onBind(data)
 
             binding.icon.setImageDrawable(

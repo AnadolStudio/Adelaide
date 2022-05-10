@@ -28,7 +28,7 @@ class EditProcessorProduction : EditProcessorContract.Abstract() {
 
             when (func) {
                 is TransformFunction -> originalBitmap?.let {
-                    func.scale = BitmapCommonUtil.getScaleRatio(
+                    func.scale = BitmapCommonUtil.scaleRatioToCircumscribed(
                         bitmap.width.toFloat(),
                         bitmap.height.toFloat(),
                         it.width.toFloat(),

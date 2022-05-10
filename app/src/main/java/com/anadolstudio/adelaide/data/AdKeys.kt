@@ -22,12 +22,15 @@ interface AdKeys {
         override val interstitialId: String = ""
     }
 
-    object KeyManager : AdKeys {
-        private val KEYS: AdKeys = if (BuildConfig.DEBUG) Debug else Release
+    abstract class AbstractKeyManager(keys: AdKeys) : AdKeys {
 
-        override val appOpenId: String = KEYS.appOpenId
-        override val nativeId: String = KEYS.nativeId
-        override val bannerId: String = KEYS.bannerId
-        override val interstitialId: String = KEYS.interstitialId
+        override val appOpenId: String = keys.appOpenId
+        override val nativeId: String = keys.nativeId
+        override val bannerId: String = keys.bannerId
+        override val interstitialId: String = keys.interstitialId
     }
+
+    object KeyManager : AbstractKeyManager(if (BuildConfig.DEBUG) Debug else Release)
+
+    class TestKeyManager(keys: AdKeys) : AbstractKeyManager(keys)
 }

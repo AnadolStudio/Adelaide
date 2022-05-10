@@ -14,6 +14,7 @@ class StickerFunction : EditFunction.Abstract.Base(FuncItem.MainFunctions.STICKE
             } else {//Port
                 BitmapCommonUtil.getScaleRatio(it.height.toFloat(), main.height.toFloat())
             }
+
             if (scale > 1) Bitmap.createScaledBitmap(
                 it, (it.width * scale).toInt(), (it.height * scale).toInt(), true
             )

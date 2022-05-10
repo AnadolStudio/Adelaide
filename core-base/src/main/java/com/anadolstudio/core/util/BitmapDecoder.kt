@@ -39,7 +39,7 @@ interface BitmapDecoder {
             return inSampleSize
         }
 
-        fun getDegree(orientation: Int): Int = when (orientation) {
+        protected fun getDegree(orientation: Int): Int = when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270

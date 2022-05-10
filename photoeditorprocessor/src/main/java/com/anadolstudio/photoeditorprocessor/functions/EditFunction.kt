@@ -28,20 +28,14 @@ interface EditFunction {
 
         override fun process(main: Bitmap, support: Bitmap?): Bitmap =
             with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
-//                val supportScale = support?.let { BitmapCommonUtil.scaleBitmap(main, it)}//
-//                TODO для прода
+//                val supportScale = scale(support, main)
                 val canvas = Canvas(this)
                 canvas.drawBitmap(main, 0f, 0f, null)
 
                 support?.also {
-                    Log.d(
-                        "EditFunction",
-                        "process: ${main.width} ${main.height} ${it.width} ${it.height}"
-                    )
-
                     canvas.drawBitmap(
                         BitmapCommonUtil.cropFromSource(
-                            main.width,main.height,
+                            main.width, main.height,
                             BitmapCommonUtil.getXSpace(main, it),
                             BitmapCommonUtil.getYSpace(main, it),
                             it
@@ -50,9 +44,24 @@ interface EditFunction {
                     it.recycle()
                 }
                 support?.recycle()
-//                supportScale?.recycle()
                 this
             }
+
+        private fun scale(support: Bitmap?, main: Bitmap): Bitmap? {
+
+            val supportScale = support?.let {
+                val scale = if (main.width > main.height) {//Land
+                    BitmapCommonUtil.getScaleRatio(it.width.toFloat(), main.width.toFloat())
+                } else {//Port
+                    BitmapCommonUtil.getScaleRatio(it.height.toFloat(), main.height.toFloat())
+                }
+                if (scale > 1) Bitmap.createScaledBitmap(
+                    it, (it.width * scale).toInt(), (it.height * scale).toInt(), true
+                )
+                else it
+            }
+            return supportScale
+        }
 
         open class Base(type: FuncItem.MainFunctions) : Abstract(type) {
 

@@ -1,6 +1,7 @@
 package com.anadolstudio.photoeditorprocessor.util
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -36,9 +37,9 @@ object BitmapInfoUtil {
         Log.i(TAG, "Total memory = ${(Runtime.getRuntime().totalMemory() / 1024).toInt()}")
     }
 
-    fun getMimeType(activity: AppCompatActivity, uri: Uri): String? =
+    fun getMimeType(context: Context, uri: Uri): String? =
         if (uri.scheme == ContentResolver.SCHEME_CONTENT)
-            activity.contentResolver.getType(uri)
+            context.contentResolver.getType(uri)
         else {
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
             MimeTypeMap.getSingleton()

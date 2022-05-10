@@ -17,13 +17,6 @@ object BitmapCommonUtil {
     const val MAX_SIDE = 2560
     const val MAX_SIDE_COPY = MAX_SIDE / 2
 
-    private fun getDegree(orientation: Int) = when (orientation) {
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-        else -> 0
-    }
-
     fun validateUri(context: Context, path: String): Boolean {
         return context.contentResolver.openFileDescriptor(Uri.parse(path), "r").use {
             val options = BitmapFactory.Options()
@@ -54,7 +47,7 @@ object BitmapCommonUtil {
             }
         }
 
-        val degree = getDegree(orientation)
+        val degree = BitmapInfoUtil.getDegree(orientation)
 
         options.inSampleSize = calculateInSampleSize(options, minSide)
         options.inJustDecodeBounds = false
@@ -101,11 +94,21 @@ object BitmapCommonUtil {
     fun getScaleRatioMax(mainW: Int, mainH: Int, supportW: Int, supportH: Int) =
         getScaleRatioMax(mainW.toFloat(), mainH.toFloat(), supportW.toFloat(), supportH.toFloat())
 
-    fun getScaleRatio(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
-        if (supportW > mainW || supportH > mainH)
-            min(mainW / supportW, mainH / supportH)
-        else
-            max(mainW / supportW, mainH / supportH)
+    fun scaleRatioToCircumscribed(
+        mainW: Float,
+        mainH: Float,
+        supportW: Float,
+        supportH: Float
+    ): Float {
+        val scaleW = mainW / supportW
+        val scaleH = mainH / supportH
+
+        return if (supportW > mainW || supportH > mainH)
+            min(scaleW, scaleH) else max(scaleW, scaleH)
+    }
+
+    fun scaleRatioToInscribed(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
+        min(mainW / supportW, mainH / supportH)
 
     fun calculateInSampleSize(
         options: BitmapFactory.Options, maxSide: Int = MAX_SIDE
@@ -195,7 +198,7 @@ object BitmapCommonUtil {
     //Работает для пропроциональных
     fun scaleBitmap(mainW: Float, mainH: Float, support: Bitmap, isHard: Boolean): Bitmap =
         with(support) {
-            val scaleRatio = getScaleRatio(
+            val scaleRatio = scaleRatioToCircumscribed(
                 mainW, mainH,
                 width.toFloat(), height.toFloat()
             )

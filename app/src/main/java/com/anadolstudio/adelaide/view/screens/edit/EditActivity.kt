@@ -10,6 +10,7 @@ import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
+import com.anadolstudio.adelaide.view.screens.edit.brush.BrushEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
@@ -102,7 +103,7 @@ class EditActivity : BaseEditActivity() {
 
                     if (currentMode == Mode.CUT) {
                         viewController.setupMainImage(this, result.data)
-                    }else {
+                    } else {
                         viewController.resetWorkSpace()
                     }
                 }
@@ -209,6 +210,12 @@ class EditActivity : BaseEditActivity() {
                     setEditFragment(
                         Mode.STICKER,
                         StickerEditFragment.newInstance()
+                    )
+                }
+                FuncItem.MainFunctions.BRUSH -> {
+                    setEditFragment(
+                        Mode.BRUSH,
+                        BrushEditFragment.newInstance()
                     )
                 }
                 else -> {}
