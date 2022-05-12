@@ -13,8 +13,8 @@ class GalleryListViewModel(
     private val galleryService: GalleryService
 ) : ViewModel() {
 
-    val folders = Communication.UiUpdate<Result<Set<String>>>()
-    val images = Communication.UiUpdate<Result<List<String>>>()
+    val folders = Communication.PostUpdate<Result<Set<String>>>()
+    val images = Communication.PostUpdate<Result<List<String>>>()
 
     private var imagesResult: Result<List<String>> = Result.Empty()
         set(value) {

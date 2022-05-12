@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.adelaide.databinding.ItemImageListBinding

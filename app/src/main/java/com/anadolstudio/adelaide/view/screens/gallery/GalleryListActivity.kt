@@ -88,26 +88,30 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
                 is Result.Error -> result.error.printStackTrace()
                 is Result.Empty -> initSpinner(listOf())
             }
+
+            if(result !is Result.Loading) hideLoadingDialog()
         }
 
-        viewModel.images.observe(this) {
+        viewModel.images.observe(this) {result->
             hideAll()
-            when (it) {
+            when (result) {
                 is Result.Success -> {
                     binding.recyclerView.visibility = View.VISIBLE
-                    if (loadingMore) galleryListAdapter.addData(it.data as ArrayList<String>)
-                    else galleryListAdapter.setData(it.data as ArrayList<String>)
+                    if (loadingMore) galleryListAdapter.addData(result.data as ArrayList<String>)
+                    else galleryListAdapter.setData(result.data as ArrayList<String>)
 
                     loadingMore = false
                 }
 
-                is Result.Error -> it.error.printStackTrace()
+                is Result.Error -> result.error.printStackTrace()
                 is Result.Loading -> showLoadingDialog()
 
                 is Result.Empty ->
                     if (loadingMore) loadingMore = false
                     else showEmptyText()
             }
+
+            if(result !is Result.Loading) hideLoadingDialog()
         }
     }
 
