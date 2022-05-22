@@ -72,17 +72,21 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
             points[i] *= scale
         }
 
-        return BitmapCropUtil.cropBitmap(
-            main,
-            points,
-            degrees,
-            fixAspectRatio,
-            ratioItem.ratio.x,
-            ratioItem.ratio.y,
-            flipHorizontal,
-            flipVertical
-        )
+        return bitmap(main, points)
     }
+
+    fun processWithOutCrop(main: Bitmap): Bitmap = bitmap(main, FloatArray(0))
+
+    private fun bitmap(main: Bitmap, points: FloatArray) = BitmapCropUtil.cropBitmap(
+        main,
+        points,
+        degrees,
+        fixAspectRatio,
+        ratioItem.ratio.x,
+        ratioItem.ratio.y,
+        flipHorizontal,
+        flipVertical
+    )
 
     override fun reboot() {
         scale = 1F
@@ -95,12 +99,12 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
 
     fun flipHorizontally(w: Int, h: Int) {
         flipHorizontal = !flipHorizontal
-        cropRect = updateCropWindow(w, h, true, false)
+        cropRect = updateCropWindow(w, h, horizontal = true, vertical = false)
     }
 
     fun flipVertically(w: Int, h: Int) {
         flipVertical = !flipVertical
-        cropRect = updateCropWindow(w, h, false, true)
+        cropRect = updateCropWindow(w, h, horizontal = false, vertical = true)
     }
 
     fun setCropWindow(rect: Rect, w: Int, h: Int) {

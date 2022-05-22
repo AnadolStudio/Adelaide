@@ -57,7 +57,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
             )
 
         activityViewModel.getEditProcessor().getCurrentImage().also { bitmap ->
-            defaultImage = func.getCopyWithoutCrop().process(bitmap)
+            defaultImage = func.processWithOutCrop(bitmap)
             cropImage = func.process(bitmap)
             activityViewModel.viewController.setupCropImage(func)
             activityViewModel.viewController.showMainImageView(false)
@@ -106,7 +106,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
             activityViewModel.getEditProcessor().let { processor ->
 
                 defaultImage = processor.getCurrentImage()
-                    .let { bitmap -> func.getCopyWithoutCrop().process(bitmap) }
+                    .let { bitmap -> func.processWithOutCrop(bitmap) }
 
                 cropImage = processor.getCurrentImage().let { b -> func.process(b) }
 
@@ -182,9 +182,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
                 resetCropView()
 
                 activityViewModel.getEditProcessor().apply {
-                    cropView.setImageBitmap(
-                        func.getCopyWithoutCrop().process(getCurrentImage())
-                    )
+                    cropView.setImageBitmap(func.processWithOutCrop(getCurrentImage()))
                     cropImage = func.process(getCurrentImage())
                 }
 
