@@ -16,26 +16,41 @@ interface RxTask<T> {
 
     fun cancel()
 
-    abstract class Abstract<T : Any> : RxTask<T> {
+    abstract class Abstract<TaskData : Any>() : RxTask<TaskData> {
 
-        protected var result: Result<T> = Result.Loading()
+        private var isStart = false
+        protected var result: Result<TaskData> = Result.Loading()
         protected var disposable: Disposable? = null
 
-        protected fun start(): RxTask<T> {
-            val observable = createObservable()
-            subscribe(observable)
+        fun start(): RxTask<TaskData> {
+            if (isStart) throw RxException.StartException()
+            isStart = true
+            subscribe(createObservable())
+
             return this
         }
 
-        abstract fun createObservable(): Observable<T>
+        abstract fun createObservable(): Observable<TaskData>
 
-        abstract fun subscribe(observable: Observable<T>)
+        protected open fun subscribe(observable: Observable<TaskData>) {
+            disposable = observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result = Result.Success(it) },
+                    {
+                        result = Result.Error(it)
+                        notifyAllListeners()
+                    },
+                    { notifyAllListeners() }
+                )
+        }
 
-        protected var valueCallbacks: MutableList<RxCallback<T>> = mutableListOf()
+        protected var valueCallbacks: MutableList<RxCallback<TaskData>> = mutableListOf()
         protected var errorCallbacks: MutableList<RxCallback<Throwable>> = mutableListOf()
         protected var finalCallbacks: MutableList<RxCallback<Boolean>> = mutableListOf()
 
-        override fun onSuccess(callback: RxCallback<T>): RxTask<T> {
+        override fun onSuccess(callback: RxCallback<TaskData>): RxTask<TaskData> {
             valueCallbacks.add(callback)
 
             val result = this.result
@@ -45,7 +60,7 @@ interface RxTask<T> {
             return this
         }
 
-        override fun onError(callback: RxCallback<Throwable>): RxTask<T> {
+        override fun onError(callback: RxCallback<Throwable>): RxTask<TaskData> {
             errorCallbacks.add(callback)
             val result = this.result
 
@@ -54,7 +69,7 @@ interface RxTask<T> {
             return this
         }
 
-        override fun onFinal(callback: RxCallback<Boolean>): RxTask<T> {
+        override fun onFinal(callback: RxCallback<Boolean>): RxTask<TaskData> {
             finalCallbacks.add(callback)
 
             when (this.result) {
@@ -87,94 +102,74 @@ interface RxTask<T> {
         }
     }
 
-    abstract class SimpleStart<T : Any>(immediately: Boolean) : Abstract<T>() {
-
-        init {
-            if (immediately) start()
-        }
-
-        override fun subscribe(observable: Observable<T>) {
-            disposable = observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { result = Result.Success(it) },
-                    {
-                        result = Result.Error(it)
-                        notifyAllListeners()
-                    },
-                    { notifyAllListeners() }
-                )
-        }
-    }
-
     open class Base<TaskData : Any>(
-        immediately: Boolean,
-        protected val callback: RxDoMainCallback<TaskData>
-    ) : SimpleStart<TaskData>(immediately) {
+        protected val domain: RxDomain<TaskData>
+    ) : Abstract<TaskData>() {
 
-        override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
-            try {
-                emitter.onNext(callback.invoke())
-                emitter.onComplete()
-            } catch (ex: Exception) {
-                emitter.onError(ex)
+        override fun createObservable(): Observable<TaskData> = Observable
+            .create { emitter ->
+                try {
+                    emitter.onNext(domain.invoke())
+                    emitter.onComplete()
+                } catch (ex: Exception) {
+                    emitter.onError(ex)
+                }
+            }
+
+
+        class Quick<TaskData : Any>(domain: RxDomain<TaskData>) : Base<TaskData>(domain) {
+
+            init {
+                start()
             }
         }
-
-        class Quick<TaskData : Any>(callback: RxDoMainCallback<TaskData>) :
-            Base<TaskData>(true, callback)
-
-        class Lazy<TaskData : Any>(callback: RxDoMainCallback<TaskData>) :
-            Base<TaskData>(false, callback)
     }
 
     open class Progress<TaskData : Any, ProgressData>(
-        immediately: Boolean,
         protected val progressListener: ProgressListener<ProgressData>?,
-        protected val callback: RxProgressCallback<TaskData, ProgressData>
-    ) : SimpleStart<TaskData>(immediately) {
+        protected val domain: RxDoProgress<TaskData, ProgressData>
+    ) : Abstract<TaskData>() {
 
         override fun createObservable(): Observable<TaskData> = Observable.create { emitter ->
             try {
-                emitter.onNext(callback.invoke(progressListener))
+                emitter.onNext(domain.invoke(progressListener))
                 emitter.onComplete()
             } catch (ex: Exception) {
                 emitter.onError(ex)
             }
         }
 
+
         class Quick<TaskData : Any, ProgressData>(
             progressListener: ProgressListener<ProgressData>?,
-            callback: RxProgressCallback<TaskData, ProgressData>
-        ) : Progress<TaskData, ProgressData>(true, progressListener, callback)
+            callback: RxDoProgress<TaskData, ProgressData>
+        ) : Progress<TaskData, ProgressData>(progressListener, callback) {
 
-        class Lazy<TaskData : Any, ProgressData>(
-            progressListener: ProgressListener<ProgressData>?,
-            callback: RxProgressCallback<TaskData, ProgressData>
-        ) : Progress<TaskData, ProgressData>(false, progressListener, callback)
+            init {
+                start()
+            }
+        }
     }
 
     open class Delay<TaskData : Any>(
         protected val delay: Long,
         protected val unit: TimeUnit,
-        immediately: Boolean,
-        callback: RxDoMainCallback<TaskData>
-    ) : Base<TaskData>(immediately, callback) {
+        domain: RxDomain<TaskData>
+    ) : Base<TaskData>(domain) {
 
-        override fun createObservable(): Observable<TaskData> =
-            super.createObservable().delay(delay, unit)
+        override fun createObservable(): Observable<TaskData> = super.createObservable().delay(delay, unit)
+
 
         class Quick<TaskData : Any>(
             delay: Long,
             unit: TimeUnit,
-            callback: RxDoMainCallback<TaskData>
-        ) : Delay<TaskData>(delay, unit, true, callback)
+            callback: RxDomain<TaskData>
+        ) : Delay<TaskData>(delay, unit, callback) {
 
-        class Lazy<TaskData : Any>(
-            delay: Long,
-            unit: TimeUnit,
-            callback: RxDoMainCallback<TaskData>
-        ) : Delay<TaskData>(delay, unit, false, callback)
+            init {
+                start()
+            }
+        }
     }
 
 }

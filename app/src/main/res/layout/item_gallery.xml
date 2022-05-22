@@ -6,15 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_image_height"
     app:cardCornerRadius="@dimen/radius8"
-    android:stateListAnimator="@animator/item_card_large"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:stateListAnimator="@animator/item_card_large">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"
         android:layout_height="match_parent"
-        app:layout_constraintCircleRadius="@dimen/radius8"
-        >
-
-    </ImageView></androidx.cardview.widget.CardView>
+        android:foreground="@drawable/item_ripple_oval_without_mask"
+        app:layout_constraintCircleRadius="@dimen/radius8" />
+</androidx.cardview.widget.CardView>

@@ -2,7 +2,6 @@ package com.anadolstudio.adelaide.data
 
 import android.Manifest
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore.Images.Media
 import android.provider.MediaStore.MediaColumns.MIME_TYPE
@@ -13,14 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File
 
-typealias GalleryListener = (folders: Set<String>, images: List<String>) -> Unit
-
 class GalleryService {
-
-    private var images = mutableListOf<String>()
-    private var folders = mutableSetOf<String>()
-
-    private val listeners = mutableSetOf<GalleryListener>()
 
     companion object {
         private const val TAG = "GalleryService"
@@ -31,10 +23,10 @@ class GalleryService {
 
     @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     fun loadImages(
-        activity: AppCompatActivity,
+        context: Context,
         folder: String? = null,
         lastItemId: Long = NULL
-    ): RxTask<Unit> = RxTask.Base.Quick {
+    ) = RxTask.Base.Quick {
         val images = mutableListOf<String>()
         val uri: Uri = Media.EXTERNAL_CONTENT_URI
 
@@ -59,7 +51,7 @@ class GalleryService {
         var selectionArgArray: Array<String>? = null
         selectionArg?.also { selectionArgArray = it.toTypedArray() }
 
-        val cursor = activity.contentResolver.query(
+        val cursor = context.contentResolver.query(
             uri, projection, selection, selectionArgArray, "$_ID DESC"
         )
 
@@ -85,12 +77,11 @@ class GalleryService {
             cursor.close()
         }
 
-        this.images = images
-        notifyChanges()
+        images
     }
 
     @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun loadFolders(activity: AppCompatActivity): RxTask<Unit> = RxTask.Base.Quick {
+    fun loadFolders(context: Context): RxTask<Set<String>> = RxTask.Base.Quick {
         val folders: MutableSet<String> = HashSet()
         val uri: Uri = Media.EXTERNAL_CONTENT_URI
 
@@ -98,7 +89,7 @@ class GalleryService {
 
         val projection = arrayOf(Media.BUCKET_DISPLAY_NAME)
 
-        val cursor = activity.contentResolver.query(
+        val cursor = context.contentResolver.query(
             uri, projection, null, null, "$_ID DESC"
         )
 
@@ -114,25 +105,7 @@ class GalleryService {
             cursor.close()
         }
 
-        this.folders = folders
-        notifyChanges()
-    }
-
-    fun addListener(listener: GalleryListener) {
-        listeners.add(listener)
-
-        if (folders.isNotEmpty())
-            listener.invoke(folders, images)
-    }
-
-    fun removeListener(listener: GalleryListener) {
-        listeners.remove(listener)
-    }
-
-    private fun notifyChanges() {
-//        if (folders.isEmpty()) return
-
-        listeners.forEach { it.invoke(folders, images) }
+        folders
     }
 }
 

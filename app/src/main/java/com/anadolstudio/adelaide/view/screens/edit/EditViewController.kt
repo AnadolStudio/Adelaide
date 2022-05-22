@@ -14,6 +14,7 @@ import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.processor.Mode
+import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder
@@ -164,7 +165,7 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
 */
 
     fun workspaceSize(activity: AppCompatActivity): Point =
-        com.anadolstudio.photoeditorprocessor.util.DisplayUtil.workspaceSize(
+        DisplayUtil.workspaceSize(
             activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
         )
 

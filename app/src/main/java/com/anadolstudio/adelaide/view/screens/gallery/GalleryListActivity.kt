@@ -7,27 +7,26 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
-
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
-import com.anadolstudio.adelaide.view.screens.main.TypeKey
+import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
-
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import java.io.File
 
 class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
@@ -40,17 +39,18 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
 
         fun start(context: Context, key: String?) {
             val starter = Intent(context, GalleryListActivity::class.java)
-            starter.putExtra(TypeKey::class.java.name, key)
+            starter.putExtra(EditType::class.java.name, key)
             context.startActivity(starter)
         }
     }
 
-    //TODO Есть баг с дубликатами
     private lateinit var binding: ActivityGalleryBinding
-    private lateinit var galleryListAdapter: GalleryAdapter
+    private lateinit var galleryListAdapter: GalleryImageAdapter
     private var currentFolder: String? = null
     private var loadingMore = false
     private val viewModel: GalleryListViewModel by viewModels { ViewModelFactory() }
+
+    private val spinnerAdapterData = mutableListOf<String>()
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -61,17 +61,52 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
         super.onCreate(savedInstanceState)
         binding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.navigationTb)
 
+        viewModel.folders.observe(this, ::showFolderProgress)
+        viewModel.images.observe(this, ::showImageProgress)
+
+        setupView(savedInstanceState)
+    }
+
+    private fun showImageProgress(result: Result<List<String>>) {
+        when (result) {
+            is Result.Success -> {
+                showEmptyText(false)
+
+                result.data.toMutableList().also { data ->
+                    if (loadingMore) galleryListAdapter.addData(data)
+                    else galleryListAdapter.setData(data)
+                }
+
+                loadingMore = false
+            }
+
+            is Result.Error -> result.error.printStackTrace()
+
+            is Result.Empty ->
+                if (loadingMore) loadingMore = false
+                else showEmptyText(true)
+        }
+
+        showLoadingDialog(result is Result.Loading)
+    }
+
+    private fun showFolderProgress(result: Result<Set<String>>) {
+        when (result) {
+            is Result.Success -> setDataToSpinnerAdapter(result.data.toList())
+            is Result.Error -> result.error.printStackTrace()
+            is Result.Empty -> setDataToSpinnerAdapter(listOf())
+        }
+
+        showLoadingDialog(result is Result.Loading)
+    }
+
+    private fun setupView(savedInstanceState: Bundle?) {
+        setSupportActionBar(binding.navigationTb)
         binding.navigationTb.setNavigationOnClickListener { onBackPressed() }
         binding.navigationTb.title = null
 
-        init(savedInstanceState)
-        loadData()
-    }
-
-    private fun init(savedInstanceState: Bundle?) {
-        galleryListAdapter = GalleryAdapter(mutableListOf(), this, this)
+        galleryListAdapter = GalleryImageAdapter(mutableListOf(), this, this)
         currentFolder = savedInstanceState?.getString(CURRENT_FOLDERS)
 
         binding.recyclerView.apply {
@@ -81,78 +116,54 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
             adapter = galleryListAdapter
         }
 
-        viewModel.folders.observe(this) { result ->
-            when (result) {
-                is Result.Success -> initSpinner(result.data.toList())
-                is Result.Loading -> showLoadingDialog()
-                is Result.Error -> result.error.printStackTrace()
-                is Result.Empty -> initSpinner(listOf())
-            }
+        binding.spinner.onItemSelectedListener = ItemSelectedListener()
+    }
 
-            if(result !is Result.Loading) hideLoadingDialog()
+    private fun setDataToSpinnerAdapter(folders: List<String>) {
+        val data = folders.toMutableList().apply {
+            add(0, getString(R.string.gallery_spinner_title))
         }
+        binding.spinner.adapter = ArrayAdapter(this@GalleryListActivity, R.layout.item_simple_list, data)
+    }
 
-        viewModel.images.observe(this) {result->
-            hideAll()
-            when (result) {
-                is Result.Success -> {
-                    binding.recyclerView.visibility = View.VISIBLE
-                    if (loadingMore) galleryListAdapter.addData(result.data as ArrayList<String>)
-                    else galleryListAdapter.setData(result.data as ArrayList<String>)
-
-                    loadingMore = false
-                }
-
-                is Result.Error -> result.error.printStackTrace()
-                is Result.Loading -> showLoadingDialog()
-
-                is Result.Empty ->
-                    if (loadingMore) loadingMore = false
-                    else showEmptyText()
-            }
-
-            if(result !is Result.Loading) hideLoadingDialog()
-        }
+    override fun onStart() {
+        super.onStart()
+        loadData()
     }
 
     @SuppressLint("MissingPermission")
     override fun loadMore() {
-        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
+        if (loadImages(getLastItemId())) {
             loadingMore = true
-            viewModel.loadImages(this, currentFolder, getLastItemId())
         }
     }
 
-    @SuppressLint("MissingPermission")
+    private fun loadImages(lastItem: Long = -1L) = PermissionUtil.ReadExternalStorage.checkPermission(this).apply {
+        if (this) viewModel.loadImages(this@GalleryListActivity, currentFolder, lastItem)
+    }
+
+    private fun loadFolders() = PermissionUtil.ReadExternalStorage.checkPermission(this).apply {
+        if (this) viewModel.loadFolders(this@GalleryListActivity)
+    }
+
     private fun loadData() {
-        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
-            viewModel.loadData(this)
+        if (loadFolders()) {
+            loadImages()
         } else {
-            showEmptyText()
+            showEmptyText(true)
             PermissionUtil.ReadExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
         }
     }
 
-    private fun initSpinner(folders: List<String>) {
-        if (binding.spinner.adapter != null) return
-
-        val data = mutableListOf<String>().apply {
-            add(getString(R.string.gallery_spinner_title))
-            addAll(folders)
-        }
-
-        binding.spinner.apply {
-            adapter = ArrayAdapter(this@GalleryListActivity, R.layout.item_simple_list, data)
-            onItemSelectedListener = ItemSelectedListener()
-        }
-    }
-
     private fun getLastItemId(): Long {
-        val data = galleryListAdapter.getData()
-        if (data.isEmpty()) return -1
+        galleryListAdapter.getData().apply {
+            if (isEmpty()) return -1L
 
-        val toParseInt = File(Uri.parse(data.last()).path!!).name
-        return if (TextUtils.isDigitsOnly(toParseInt)) toParseInt.toLong() else -1L
+            val path = Uri.parse(last()).path!!
+            val toParseInt = File(path).name
+
+            return if (TextUtils.isDigitsOnly(toParseInt)) toParseInt.toLong() else -1L
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -165,54 +176,42 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
                 if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
                     // permission granted
                     loadData()
-                } else {
-                    // permission denied
-                    val shouldShow = PermissionUtil.ReadExternalStorage
-                        .shouldShowRequestPermissionRationale(this)
-
-                    if (!shouldShow) showSettingsSnackbar(binding.root)
-                    else finish() // Закрывает activity
-                }
+                } else if (PermissionUtil.ReadExternalStorage.shouldShowRequestPermissionRationale(this))
+                    showSettingsSnackbar(binding.root)
+                else finish() // Закрывает activity
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
-    private fun showEmptyText() {
-        binding.emptyText.visibility = View.VISIBLE
-        binding.recyclerView.visibility = View.INVISIBLE
+    private fun showEmptyText(isShow: Boolean) {
+        binding.emptyText.isVisible = isShow
+        binding.recyclerView.isVisible = !isShow
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
+    override fun onSupportNavigateUp(): Boolean =
+        if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             super.onSupportNavigateUp()
         } else {
             onBackPressed()
             true
         }
+
+    override fun toDetail(data: String) = if (BitmapCommonUtil.validateUri(this, data)) {
+        showNextActivity(data)
+    } else {
+        showToast(R.string.edit_error_cant_open_photo)
     }
 
+    private fun showNextActivity(data: String) {
+        val requestCode = intent.getIntExtra(CHOOSE_PHOTO, 0)
 
-    override fun toDetail(data: String) {
-        showLoadingDialog()
-
-        if(!com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.validateUri(this,data)) {
-            hideLoadingDialog()
-            showToast(R.string.edit_error_cant_open_photo)
-            return
-        }
-
-        if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
-            val editType = intent.getStringExtra(TypeKey::class.java.name)
-            EditActivity.start(this, editType, data)
-        } else {
+        if (requestCode == REQUEST_CHOOSE_PHOTO) {
             setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, data))
             finish()
+        } else {
+            val editType = intent.getStringExtra(EditType::class.java.name)
+            EditActivity.start(this, editType, data)
         }
-    }
-
-    private fun hideAll() {
-        binding.emptyText.visibility = View.INVISIBLE
-        hideLoadingDialog()
     }
 
     inner class ItemSelectedListener : AdapterView.OnItemSelectedListener {
@@ -222,13 +221,8 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
             if (adapterView?.adapter == null || view == null || adapterView.adapter.isEmpty)
                 return
 
-            currentFolder =
-                if (i == 0) null
-                else adapterView.adapter.getItem(i).toString()
-
-            if (PermissionUtil.ReadExternalStorage.checkPermission(this@GalleryListActivity)) {
-                viewModel.loadImages(this@GalleryListActivity, currentFolder)
-            }
+            currentFolder = if (i == 0) null else adapterView.adapter.getItem(i).toString()
+            loadImages()
         }
 
         override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -243,10 +237,8 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
             return intent
         }
 
-        override fun parseResult(resultCode: Int, data: Intent?): String? {
-            Log.i(TAG, "Result code: $resultCode")
-            return if (resultCode != RESULT_OK || data == null) null
+        override fun parseResult(resultCode: Int, data: Intent?): String? =
+            if (resultCode != RESULT_OK || data == null) null
             else data.getStringExtra(CHOOSE_PHOTO)
-        }
     }
 }

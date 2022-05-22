@@ -73,6 +73,25 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         return binding.root
     }
 
+    private fun resetCropView() {
+        activityViewModel.viewController.cropView.resetCropRect()
+    }
+
+    private fun rebootFlip(it: CropImageView) {
+        it.isFlippedVertically = false
+        it.isFlippedHorizontally = false
+    }
+
+    private fun saveWindowCrop(it: CropImageView) {
+        func.cropPoints = it.cropPoints
+
+        func.setCropWindow(
+            it.cropRect,
+            defaultImage.width,
+            defaultImage.height
+        )
+    }
+
     override fun isReadyToApply(): Boolean {
         val isReady = currentState == State.TRANSFORM
 
@@ -104,35 +123,13 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
     }
 
     override fun apply(): Boolean {
-
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview()
 
         return super.apply()
     }
 
-    private fun resetCropView() {
-        activityViewModel.viewController.cropView.resetCropRect()
-    }
-
-    private fun rebootFlip(it: CropImageView) {
-        it.isFlippedVertically = false
-        it.isFlippedHorizontally = false
-    }
-
-    private fun saveWindowCrop(it: CropImageView) {
-        func.cropPoints = it.cropPoints
-
-        func.setCropWindow(
-            it.cropRect,
-            defaultImage.width,
-            defaultImage.height
-        )
-    }
-
-    override fun isReadyToBackClick(): Boolean {
-        return currentState == State.TRANSFORM
-    }
+    override fun isReadyToBackClick(): Boolean = currentState == State.TRANSFORM
 
     override fun backClick(): Boolean {
         if (!isReadyToBackClick) {
@@ -227,17 +224,10 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
             cropView.setFixedAspectRatio(data != RatioItem.FREE)
 
             when (data) {
-                RatioItem.FREE -> selectWholeRect(
-                    cropView
-                )
-
-                RatioItem.RATIO_AUTO -> {
-                    val size = DisplayUtil.getDefaultSize(
-                        activity as AppCompatActivity
-                    )
-                    cropView.setAspectRatio(size.widthPixels, size.heightPixels)
+                RatioItem.FREE -> selectWholeRect(cropView)
+                RatioItem.RATIO_AUTO -> DisplayUtil.getDefaultSize(activity as AppCompatActivity).apply {
+                    cropView.setAspectRatio(widthPixels, heightPixels)
                 }
-
                 else -> cropView.setAspectRatio(data.ratio.x, data.ratio.y)
             }
         }

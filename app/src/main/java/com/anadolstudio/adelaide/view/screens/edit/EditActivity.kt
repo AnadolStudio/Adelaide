@@ -3,6 +3,7 @@ package com.anadolstudio.adelaide.view.screens.edit
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
@@ -16,8 +17,6 @@ import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
-import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
-import com.anadolstudio.adelaide.view.screens.main.TypeKey
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.tasks.ProgressListener
@@ -34,6 +33,7 @@ class EditActivity : BaseEditActivity() {
     companion object {
         val TAG: String = EditActivity::class.java.name
         private const val IMAGE_PATH = "image_path"
+        const val EDIT_TYPE = "edit_type"
 
         fun start(context: Context, key: String?, path: String?) {
             val starter = Intent(context, EditActivity::class.java)
@@ -43,7 +43,7 @@ class EditActivity : BaseEditActivity() {
         }
     }
 
-    protected val doubleClickExit = DoubleClickExit.Base()
+    private val doubleClickExit = DoubleClickExit.Base()
     private var bottomFragment: BaseEditFragment? = null
     private lateinit var currentMode: Mode
 
@@ -66,23 +66,17 @@ class EditActivity : BaseEditActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         viewController = EditViewController(this, binding)
         viewModel.setEditViewController(viewController)
-        setSupportActionBar(binding.navigationToolbar)
-        setContentView(binding.root)
-        init()
         EditAdController(binding).load(this)
+        setupView()
     }
 
-    private fun init() {
+    private fun setupView() {
+        setSupportActionBar(binding.navigationToolbar)
+        setContentView(binding.root)
         binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.navigationToolbar.title = null
 
-        binding.saveBtn.setOnClickListener {
-            if (PermissionUtil.WriteExternalStorage.checkPermission(this)) {
-                saveImage()
-            } else {
-                PermissionUtil.WriteExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
-            }
-        }
+        binding.saveBtn.setOnClickListener { saveImage() }
 
         binding.applyBtn.setOnClickListener {
             bottomFragment?.also {
@@ -94,26 +88,14 @@ class EditActivity : BaseEditActivity() {
             }
         }
 
-        val key = intent.getStringExtra(EDIT_TYPE) ?: TypeKey.PHOTO_KEY
-        setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
-
-        viewModel.currentBitmapCommunication.observe(this) { result ->
-            when (result) {
-                is Result.Success -> {
-                    viewController.setMainBitmap(this, result.data)
-
-                    if (currentMode == Mode.CUT) {
-                        viewController.setupMainImage(this, result.data)
-                    } else {
-                        viewController.resetWorkSpace()
-                    }
-                }
-                is Result.Error -> result.error.printStackTrace()
-                is Result.Loading -> showLoadingDialog()
-                else -> {}
+        intent.getStringExtra(EDIT_TYPE)
+            ?.let { key ->
+                setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
             }
-            if (result !is Result.Loading) hideLoadingDialog()
-        }
+            ?: finish()
+
+        viewModel.currentBitmapCommunication.observe(this, ::showChangeBitmapProgress)
+        viewModel.saveBitmapPath.observe(this, ::showSaveBitmapProgress)
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
@@ -124,6 +106,34 @@ class EditActivity : BaseEditActivity() {
                 finish()
             }
 
+    }
+
+    private fun showSaveBitmapProgress(result: Result<String>) {
+        when (result) {
+            is Result.Success -> SaveActivity.start(this@EditActivity, result.data)
+            is Result.Error -> showToast(R.string.edit_error_failed_save_image)
+            else -> {}
+        }
+
+        showLoadingDialog(result is Result.Loading)
+    }
+
+    private fun showChangeBitmapProgress(result: Result<Bitmap>?) {
+        when (result) {
+            is Result.Success -> {
+                viewController.setMainBitmap(this, result.data)
+
+                if (currentMode == Mode.CUT) {
+                    viewController.setupMainImage(this, result.data)
+                } else {
+                    viewController.resetWorkSpace()
+                }
+            }
+            is Result.Error -> result.error.printStackTrace()
+            else -> {}
+        }
+
+        showLoadingDialog(result is Result.Loading)
     }
 
     private fun setEditFragment(mode: Mode, fragment: BaseEditFragment) {
@@ -156,15 +166,10 @@ class EditActivity : BaseEditActivity() {
     ) {
         when (requestCode) {
             DEFAULT_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     saveImage()
-                } else {
-                    val shouldShow = PermissionUtil.WriteExternalStorage
-                        .shouldShowRequestPermissionRationale(this)
-
-                    if (shouldShow) showSettingsSnackbar(binding.root)
+                } else if (PermissionUtil.WriteExternalStorage.shouldShowRequestPermissionRationale(this)) {
+                    showSettingsSnackbar(binding.root)
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -172,17 +177,16 @@ class EditActivity : BaseEditActivity() {
     }
 
     private fun saveImage() {
-        if (!PermissionUtil.WriteExternalStorage.checkPermission(this))
+        if (!PermissionUtil.WriteExternalStorage.checkPermission(this)) {
+            PermissionUtil.WriteExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
             return
+        }
 
-        showLoadingDialog()
-
-        val file = FileUtil.createAppDir(getString(R.string.app_name))
-
-        viewModel.saveAsFile(this, file, loadingView!!)
-            .onSuccess { imagePath -> SaveActivity.start(this@EditActivity, imagePath) }
-            .onError { showToast(R.string.edit_error_failed_save_image) }
-            .onFinal { hideLoadingDialog() }
+        viewModel.saveAsFile(
+            this,
+            FileUtil.createAppDir(getString(R.string.app_name)),
+            loadingView
+        )
     }
 
     fun getProgressListener(): ProgressListener<String>? = loadingView
@@ -191,38 +195,19 @@ class EditActivity : BaseEditActivity() {
 
         override fun toDetail(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
-            when (data) {//TODO упростить через Pair<Mode, Fragment>
-                FuncItem.MainFunctions.TRANSFORM -> setEditFragment(
-                    Mode.TRANSFORM,
-                    CropEditFragment.newInstance()
-                )
+
+            val pair = when (data) {//TODO упростить через Pair<Mode, Fragment>
+                FuncItem.MainFunctions.TRANSFORM -> Pair(Mode.TRANSFORM, CropEditFragment.newInstance())
                 FuncItem.MainFunctions.EFFECT -> {
-                    setEditFragment(
-                        Mode.EFFECT,
-                        EffectEditFragment.newInstance()
-                    )
                     viewController.setupSupportImage(currentMode)
+                    Pair(Mode.EFFECT, EffectEditFragment.newInstance())
                 }
-                FuncItem.MainFunctions.CUT -> {
-                    setEditFragment(
-                        Mode.CUT,
-                        CutEditFragment.newInstance()
-                    )
-                }
-                FuncItem.MainFunctions.STICKER -> {
-                    setEditFragment(
-                        Mode.STICKER,
-                        StickerEditFragment.newInstance()
-                    )
-                }
-                FuncItem.MainFunctions.BRUSH -> {
-                    setEditFragment(
-                        Mode.BRUSH,
-                        BrushEditFragment.newInstance()
-                    )
-                }
-                else -> {}
+                FuncItem.MainFunctions.CUT -> Pair(Mode.CUT, CutEditFragment.newInstance())
+                FuncItem.MainFunctions.STICKER -> Pair(Mode.STICKER, StickerEditFragment.newInstance())
+                else /*FuncItem.MainFunctions.BRUSH*/ -> Pair(Mode.BRUSH, BrushEditFragment.newInstance())
             }
+
+            setEditFragment(pair.first, pair.second)
         }
     }
 

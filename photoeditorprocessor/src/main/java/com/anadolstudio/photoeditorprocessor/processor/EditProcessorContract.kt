@@ -75,7 +75,7 @@ interface EditProcessorContract {
         open fun saveAsFile(
             context: Context,
             file: File,
-            processListener: ProgressListener<String>
+            processListener: ProgressListener<String>?
         ) = RxTask.Progress.Quick(processListener) { progressListener ->
 
             val bitmap = decodeOriginalBitmapWithProcess(context, path)

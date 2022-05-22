@@ -12,6 +12,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toPoint
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.R
@@ -101,7 +102,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
         viewState = ViewState(photoEditorView)
         touchListener = ImageTouchListener(photoEditorView, true, true)
         photoEditorView.setOnTouchListener(touchListener)
-        initView()
+        setupView()
 
         func = activityViewModel.getEditProcessor()
             .getFunction(FuncItem.MainFunctions.CUT) as CutFunction?
@@ -110,7 +111,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
         return binding.root
     }
 
-    fun initView() {
+    fun setupView() {
         photoEditor.drawingView.setPorterDuffXferMode(PorterDuff.Mode.SRC)
 
         binding.editSliderView.setCancelListener {
@@ -190,11 +191,8 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
     private fun setCurrentState(state: State) {
         currentState = state
 
-        binding.editSliderView.visibility =
-            if (currentState == State.CUTTING) View.VISIBLE else View.GONE
-
-        binding.backgroundRecyclerView.visibility =
-            if (currentState == State.CHOICE_BG) View.VISIBLE else View.GONE
+        binding.editSliderView.isVisible = currentState == State.CUTTING
+        binding.backgroundRecyclerView.isVisible = currentState == State.CHOICE_BG
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -222,7 +220,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
 
         activityViewModel.currentBitmapCommunication.map(Result.Loading())
         // TODO map должен быть только из ViewModel
-        val processListener = (activity as EditActivity?)?.getProgressListener()
+        val processListener = (activity as? EditActivity)?.getProgressListener()
         viewModel.cutByMask(requireContext(), processListener, mainBitmap, drawBitmap)
             .onSuccess { cutBitmap ->
                 clearDrawingPanel()
@@ -257,6 +255,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
         defaultStateScalePanel()
         activityViewModel.viewController.photoEditorView.setOnTouchListener(null)
         activityViewModel.rebootCurrentImage()
+
         return super.backClick()
     }
 }

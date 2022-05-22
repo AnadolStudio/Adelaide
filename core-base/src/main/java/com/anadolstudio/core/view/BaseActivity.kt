@@ -16,18 +16,13 @@ import com.google.android.material.snackbar.Snackbar
 open class BaseActivity : AppCompatActivity() {
     protected var loadingView: LoadingView? = null
 
-    protected fun showLoadingDialog() {
-        loadingView = LoadingView.Base.view(supportFragmentManager)
-        loadingView?.showLoadingIndicator()
-    }
-
-    protected fun hideLoadingDialog() {
-        loadingView?.hideLoadingIndicator()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        hideLoadingDialog()
+    protected fun showLoadingDialog(isShow: Boolean) {
+        if (isShow) {
+            loadingView = LoadingView.Base.view(supportFragmentManager)
+            loadingView?.showLoadingIndicator()
+        }else{
+            loadingView?.hideLoadingIndicator()
+        }
     }
 
     fun replaceFragment(fragment: Fragment, containerId: Int) {

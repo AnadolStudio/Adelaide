@@ -11,7 +11,7 @@ import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.interfaces.IDetailable
 import com.anadolstudio.core.interfaces.ILoadMore
 
-class GalleryAdapter(
+class GalleryImageAdapter(
     data: List<String>,
     detailable: IDetailable<String>,
     val loadMore: ILoadMore?
@@ -36,7 +36,7 @@ class GalleryAdapter(
 
         if (position == itemCount - 1 && !isLoading) {
             isLoading = true
-            loadMore?.loadMore()
+//            loadMore?.loadMore() // TODO
             isLoading = false
         }
     }

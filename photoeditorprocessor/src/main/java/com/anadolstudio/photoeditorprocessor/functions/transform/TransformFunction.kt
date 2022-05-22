@@ -151,25 +151,17 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
         return rect
     }
 
-    fun getCopyWithoutCrop(): TransformFunction {
-        val function = TransformFunction()
-        function.scale = 1F
-        function.flipHorizontal = flipHorizontal
-        function.flipVertical = flipVertical
-        function.degrees = degrees
-        function.ratioItem = ratioItem
-        return function
+    fun getCopyWithoutCrop() = TransformFunction().also {
+        it.scale = 1F
+        it.flipHorizontal = flipHorizontal
+        it.flipVertical = flipVertical
+        it.degrees = degrees
+        it.ratioItem = ratioItem
     }
 
-    fun copy(): TransformFunction {
-        val function = TransformFunction()
-        function.scale = 1F
-        function.flipHorizontal = flipHorizontal
-        function.flipVertical = flipVertical
-        function.degrees = degrees
-        function.ratioItem = ratioItem
-        function.cropRect = cropRect
-        function.cropPoints = cropPoints
-        return function
+    fun copy() = getCopyWithoutCrop().also {
+        it.cropRect = cropRect
+        it.cropPoints = cropPoints
     }
+
 }

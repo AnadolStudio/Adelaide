@@ -5,12 +5,9 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.adelaide.databinding.ItemImageListBinding
 import com.anadolstudio.adelaide.domain.utils.Colors
-import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.interfaces.IDetailable
 

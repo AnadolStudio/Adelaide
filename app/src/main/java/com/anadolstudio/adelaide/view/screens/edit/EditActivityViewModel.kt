@@ -20,8 +20,9 @@ class EditActivityViewModel : ViewModel() {
 
     private val editProcessor = EditProcessorStudy()
     val currentBitmapCommunication = Communication.UiUpdate<Result<Bitmap>>()
+    val saveBitmapPath = Communication.UiUpdate<Result<String>>()
     lateinit var viewController: EditViewController
-        private set
+        private set // TODO ?
 
     fun initEditProcessor(context: Context, path: String): RxTask<Bitmap> {
         currentBitmapCommunication.map(Result.Loading())
@@ -45,8 +46,14 @@ class EditActivityViewModel : ViewModel() {
     fun saveAsFile(
         context: Context,
         file: File,
-        progressListener: ProgressListener<String>
-    ): RxTask<String> = editProcessor.saveAsFile(context, file, progressListener)
+        progressListener: ProgressListener<String>?
+    ) {
+        saveBitmapPath.map(Result.Loading())
+
+        editProcessor.saveAsFile(context, file, progressListener)
+            .onSuccess { saveBitmapPath.map(Result.Success(it)) }
+            .onError { saveBitmapPath.map(Result.Error(it)) }
+    }
 
     fun setEditViewController(viewController: EditViewController) {
         this.viewController = viewController
@@ -76,5 +83,4 @@ class EditActivityViewModel : ViewModel() {
         editProcessor.reboot()
         currentBitmapCommunication.map(Result.Success(editProcessor.getCurrentImage()))
     }
-
 }
