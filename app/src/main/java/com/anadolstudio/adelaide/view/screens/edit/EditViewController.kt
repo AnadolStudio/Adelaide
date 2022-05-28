@@ -13,7 +13,7 @@ import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.core.view.show
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
-import com.anadolstudio.photoeditorprocessor.processor.Mode
+import com.anadolstudio.photoeditorprocessor.processor.EditMode
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 import ja.burhanrashid52.photoeditor.PhotoEditor
@@ -116,12 +116,12 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
         )
     }
 
-    fun setupSupportImage(modeEdit: Mode) {
+    fun setupSupportImage(editModeEdit: EditMode) {
         binding.supportImage.run {
             visibility = View.VISIBLE
 
-            when (modeEdit) {
-                Mode.EFFECT -> {
+            when (editModeEdit) {
+                EditMode.EFFECT -> {
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     adjustViewBounds = false
 

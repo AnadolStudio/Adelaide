@@ -3,11 +3,10 @@ package com.anadolstudio.core.adapters
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractSelectableViewHolder<Data:Any>(
     view: View,
-    detailable: IDetailable<Data>?,
+    detailable: ActionClick<Data>?,
     val controller: SelectableController<AbstractSelectableViewHolder<Data>>?
 ) : AbstractViewHolder<Data>(view, detailable) {
 
@@ -44,7 +43,7 @@ abstract class AbstractSelectableViewHolder<Data:Any>(
 
     abstract class Base<Data:Any>(
         view: View,
-        detailable: IDetailable<Data>?,
+        detailable: ActionClick<Data>?,
         controller: SelectableController<out AbstractSelectableViewHolder<Data>>
     ) : AbstractSelectableViewHolder<Data>(
         view,

@@ -9,9 +9,9 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemImageListBinding
 import com.anadolstudio.adelaide.domain.utils.Colors
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
-class ColorAdapter(data: MutableList<String>, detailable: IDetailable<String>?) :
+class ColorAdapter(data: MutableList<String>, detailable: ActionClick<String>?) :
     SimpleSelectableAdapter<String>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -33,7 +33,7 @@ class ColorAdapter(data: MutableList<String>, detailable: IDetailable<String>?) 
     private class ColorPathViewHolder(
         view: View,
         controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: IDetailable<String>?
+        detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding: ItemImageListBinding = ItemImageListBinding.bind(itemView)

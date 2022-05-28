@@ -8,12 +8,12 @@ import com.anadolstudio.adelaide.databinding.ItemGalleryBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.core.interfaces.ILoadMore
+import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.ILoadMore
 
 class GalleryImageAdapter(
     data: List<String>,
-    detailable: IDetailable<String>,
+    detailable: ActionClick<String>,
     val loadMore: ILoadMore?
 ) : SimpleAdapter<String>(data.toMutableList(), detailable) {
 
@@ -43,7 +43,7 @@ class GalleryImageAdapter(
 
     class GalleryViewHolder(
         view: View,
-        detailable: IDetailable<String>?
+        detailable: ActionClick<String>?
     ) : AbstractViewHolder.Base<String>(view, detailable), View.OnClickListener {
 
         val binding = ItemGalleryBinding.bind(view)

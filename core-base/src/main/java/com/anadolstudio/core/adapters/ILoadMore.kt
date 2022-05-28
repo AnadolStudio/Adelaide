@@ -1,4 +1,4 @@
-package com.anadolstudio.core.interfaces
+package com.anadolstudio.core.adapters
 
 interface ILoadMore {
 

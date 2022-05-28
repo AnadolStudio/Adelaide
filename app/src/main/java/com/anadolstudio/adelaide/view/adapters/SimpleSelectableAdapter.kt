@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.adapters.AbstractAdapter
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 open class SimpleSelectableAdapter<Data : Any>(
     data: List<Data>,
-    detailable: IDetailable<Data>?,
+    detailable: ActionClick<Data>?,
 ) : AbstractAdapter.Selectable<Data, SelectableViewHolder<Data>>(data.toMutableList(), detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableViewHolder<Data> =

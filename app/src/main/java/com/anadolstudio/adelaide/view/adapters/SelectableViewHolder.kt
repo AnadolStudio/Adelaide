@@ -5,11 +5,11 @@ import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.adapters.AbstractSelectableViewHolder
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 open class SelectableViewHolder<Data : Any>(
     view: View,
-    detailable: IDetailable<Data>?,
+    detailable: ActionClick<Data>?,
     controller: SelectableController<out AbstractSelectableViewHolder<Data>>,
 ) : AbstractSelectableViewHolder.Base<Data>(view, detailable, controller) {
 

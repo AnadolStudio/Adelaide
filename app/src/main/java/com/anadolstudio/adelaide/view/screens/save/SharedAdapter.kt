@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemShareBinding
+import com.anadolstudio.adelaide.domain.shareaction.SharedAction
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 class SharedAdapter(
     data: List<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem>,
-    detailable: IDetailable<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem>?
+    detailable: ActionClick<SharedAction.SharedItem>?
 ) : SimpleAdapter<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -25,7 +26,7 @@ class SharedAdapter(
 
     private class SharedViewHolder(
         view: View,
-        detailable: IDetailable<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem>?
+        detailable: ActionClick<SharedAction.SharedItem>?
     ) : AbstractViewHolder.Base<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem>(view, detailable) {
 
         val binding = ItemShareBinding.bind(view)

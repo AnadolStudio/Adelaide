@@ -77,7 +77,7 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
 
     fun processWithOutCrop(main: Bitmap): Bitmap = bitmap(main, FloatArray(0))
 
-    private fun bitmap(main: Bitmap, points: FloatArray) = BitmapCropUtil.cropBitmap(
+    private fun bitmap(main: Bitmap, points: FloatArray) = BitmapCropUtil.cropBitmap(//TODO нэйминг дай бог здоровья
         main,
         points,
         degrees,
@@ -155,6 +155,8 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
         return rect
     }
 
+
+    @Deprecated("")
     fun getCopyWithoutCrop() = TransformFunction().also {
         it.scale = 1F
         it.flipHorizontal = flipHorizontal

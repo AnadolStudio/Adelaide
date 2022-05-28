@@ -10,17 +10,18 @@ import android.view.View.VISIBLE
 import com.anadolstudio.adelaide.BuildConfig
 import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
+import com.anadolstudio.adelaide.domain.shareaction.SharedAction
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.util.BitmapDecoder
 import com.anadolstudio.core.view.BaseActivity
 
-class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem> {
+class SaveActivity : BaseActivity(), ActionClick<SharedAction.SharedItem> {
 
     companion object {
         private const val PATH = "path"
@@ -81,7 +82,7 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
         }
     }
 
-    override fun toDetail(data: com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem) {
+    override fun action(data: com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem) {
 
         //TODO FB listener
         val fbEvent = when (data) {

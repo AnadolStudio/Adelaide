@@ -21,15 +21,15 @@ import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
-import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.core.interfaces.ILoadMore
+import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.ILoadMore
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import java.io.File
 
-class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
+class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
 
     companion object {
         private const val TAG = "GalleryListActivity"
@@ -196,7 +196,7 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
             true
         }
 
-    override fun toDetail(data: String) = if (BitmapCommonUtil.validateUri(this, data)) {
+    override fun action(data: String) = if (BitmapCommonUtil.validateUri(this, data)) {
         showNextActivity(data)
     } else {
         showToast(R.string.edit_error_cant_open_photo)

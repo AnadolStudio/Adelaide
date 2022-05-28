@@ -10,11 +10,11 @@ import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 class BackgroundAdapter(
     data: MutableList<String>,
-    detailable: IDetailable<String>?
+    detailable: ActionClick<String>?
 ) : SimpleSelectableAdapter<String>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -28,7 +28,7 @@ class BackgroundAdapter(
     class BackgroundViewHolder(
         view: View,
         controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: IDetailable<String>?
+        detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding = ItemImageListBinding.bind(itemView)
@@ -52,7 +52,7 @@ class BackgroundAdapter(
 
         override fun onClick(view: View) {
             if (data == CUSTOM) {
-                data?.also { detailable?.toDetail(it) }
+                data?.also { detailable?.action(it) }
                 controller?.clear()
             } else super.onClick(view)
         }

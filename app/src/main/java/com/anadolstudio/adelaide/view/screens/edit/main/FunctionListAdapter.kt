@@ -9,11 +9,11 @@ import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 class FunctionListAdapter(
     data: List<FuncItem>,
-    detailable: IDetailable<FuncItem>?
+    detailable: ActionClick<FuncItem>?
 ) : SimpleAdapter<FuncItem>(data, detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionViewHolder =
@@ -24,7 +24,7 @@ class FunctionListAdapter(
 
     class FunctionViewHolder(
         view: View,
-        detailable: IDetailable<FuncItem>?
+        detailable: ActionClick<FuncItem>?
     ) : AbstractViewHolder.Base<FuncItem>(view, detailable) {
 
         private val binding: ItemFunctionBinding = ItemFunctionBinding.bind(view)

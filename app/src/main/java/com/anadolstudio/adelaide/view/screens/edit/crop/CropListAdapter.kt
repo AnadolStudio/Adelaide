@@ -9,13 +9,13 @@ import com.anadolstudio.adelaide.databinding.ItemCropBinding
 import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 
 class CropListAdapter(
     data: List<RatioItem>,
-    detailable: IDetailable<RatioItem>?,
+    detailable: ActionClick<RatioItem>?,
 ) : SimpleSelectableAdapter<RatioItem>(data, detailable) {
 
     override fun onCreateViewHolder(
@@ -38,7 +38,7 @@ class CropListAdapter(
     private inner class CropViewHolder(
         itemView: View,
         controller: SelectableController<SelectableViewHolder<RatioItem>>,
-        detailable: IDetailable<RatioItem>?
+        detailable: ActionClick<RatioItem>?
     ) : SelectableViewHolder<RatioItem>(itemView, detailable, controller), View.OnClickListener {
 
         private val binding: ItemCropBinding = ItemCropBinding.bind(itemView)

@@ -9,7 +9,7 @@ class AdKeysTest {
     @Test
     fun getKey() {
 
-        var keyManager = AdKeys.TestKeyManager(AdKeys.Debug)
+        var keyManager = AdKeys.TestKeyManager(if (BuildConfig.DEBUG) AdKeys.Debug else AdKeys.Release)
 
         assertEquals(AdKeys.KeyManager.appOpenId, keyManager.appOpenId)
         assertEquals(AdKeys.KeyManager.nativeId, keyManager.nativeId)

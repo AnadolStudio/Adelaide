@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
-import com.anadolstudio.adelaide.databinding.ItemShareBinding
 import com.anadolstudio.adelaide.databinding.ItemStickerBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.core.adapters.AbstractAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
-class StickerAdapter(data: MutableList<String>, detailable: IDetailable<String>) :
+class StickerAdapter(data: MutableList<String>, detailable: ActionClick<String>) :
     AbstractAdapter.Base<String, StickerAdapter.StickerViewHolder>(data, detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = StickerViewHolder(
@@ -22,7 +20,7 @@ class StickerAdapter(data: MutableList<String>, detailable: IDetailable<String>)
 
     class StickerViewHolder(
         view: View,
-        detailable: IDetailable<String>?
+        detailable: ActionClick<String>?
     ) : AbstractViewHolder.Base<String>(view, detailable) {
 
         private val binding: ItemStickerBinding = ItemStickerBinding.bind(itemView)

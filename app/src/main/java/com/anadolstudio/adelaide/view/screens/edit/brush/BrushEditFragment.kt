@@ -16,13 +16,13 @@ import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.brush.BrushFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import ja.burhanrashid52.photoeditor.PhotoEditor
 
-class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
+class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
 
     private lateinit var binding: LayoutBrushListBinding
     private lateinit var photoEditor: PhotoEditor
@@ -88,7 +88,7 @@ class BrushEditFragment : BaseEditFragment(), IDetailable<String> {
             if (currentState == State.COLOR_PICK) View.VISIBLE else View.GONE
     }
 
-    override fun toDetail(data: String) {
+    override fun action(data: String) {
         viewModel.settings.color = Color.parseColor(data)
         binding.editSliderView.setCancelTint(viewModel.settings.color)
         activityViewModel.viewController.setupBrush(viewModel.settings)

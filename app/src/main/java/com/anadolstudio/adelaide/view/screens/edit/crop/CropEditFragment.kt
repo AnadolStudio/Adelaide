@@ -13,14 +13,14 @@ import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 
-class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
+class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {
 
     companion object {
         fun newInstance() = CropEditFragment()
@@ -171,7 +171,7 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         cropView.cropRect = cropView.wholeImageRect
     }
 
-    override fun toDetail(data: FuncItem) {
+    override fun action(data: FuncItem) {
 
         val cropView = activityViewModel.viewController.cropView
         cropView.setFixedAspectRatio(false)
@@ -213,9 +213,9 @@ class CropEditFragment : BaseEditFragment(), IDetailable<FuncItem> {
         }
     }
 
-    inner class RatioDetailable : IDetailable<RatioItem> {
+    inner class RatioDetailable : ActionClick<RatioItem> {
 
-        override fun toDetail(data: RatioItem) {
+        override fun action(data: RatioItem) {
             val cropView = activityViewModel.viewController.cropView
 
             currentRatioItem = data

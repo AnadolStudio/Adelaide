@@ -18,14 +18,14 @@ import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.processor.Mode
+import com.anadolstudio.photoeditorprocessor.processor.EditMode
 import com.anadolstudio.photoeditorprocessor.util.FileUtil
 
 class EditActivity : BaseEditActivity() {
@@ -45,7 +45,7 @@ class EditActivity : BaseEditActivity() {
 
     private val doubleClickExit = DoubleClickExit.Base()
     private var bottomFragment: BaseEditFragment? = null
-    private lateinit var currentMode: Mode
+    private lateinit var currentEditMode: EditMode
 
     private lateinit var path: String
     private lateinit var binding: ActivityEditBinding
@@ -66,6 +66,8 @@ class EditActivity : BaseEditActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         viewController = EditViewController(this, binding)
         viewModel.setEditViewController(viewController)
+        viewModel.currentBitmapCommunication.observe(this, ::showChangeBitmapProgress)
+        viewModel.saveBitmapPath.observe(this, ::showSaveBitmapProgress)
         EditAdController(binding).load(this)
         setupView()
     }
@@ -81,7 +83,7 @@ class EditActivity : BaseEditActivity() {
         binding.applyBtn.setOnClickListener {
             bottomFragment?.also {
                 if (it.isReadyToApply) { //TODO правильно, ли такое обращение?
-                    currentMode = Mode.MAIN
+                    currentEditMode = EditMode.MAIN
                     it.apply()
                     super.onBackPressed()
                 }
@@ -90,12 +92,9 @@ class EditActivity : BaseEditActivity() {
 
         intent.getStringExtra(EDIT_TYPE)
             ?.let { key ->
-                setEditFragment(Mode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
+                setEditFragment(EditMode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
             }
             ?: finish()
-
-        viewModel.currentBitmapCommunication.observe(this, ::showChangeBitmapProgress)
-        viewModel.saveBitmapPath.observe(this, ::showSaveBitmapProgress)
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
@@ -123,7 +122,7 @@ class EditActivity : BaseEditActivity() {
             is Result.Success -> {
                 viewController.setMainBitmap(this, result.data)
 
-                if (currentMode == Mode.CUT) {
+                if (currentEditMode == EditMode.CUT) {
                     viewController.setupMainImage(this, result.data)
                 } else {
                     viewController.resetWorkSpace()
@@ -136,16 +135,16 @@ class EditActivity : BaseEditActivity() {
         showLoadingDialog(result is Result.Loading)
     }
 
-    private fun setEditFragment(mode: Mode, fragment: BaseEditFragment) {
-        this.currentMode = mode
+    private fun setEditFragment(editMode: EditMode, fragment: BaseEditFragment) {
+        this.currentEditMode = editMode
         bottomFragment = fragment
-        replaceFragment(fragment, R.id.toolbar_fragment, mode != Mode.MAIN)
+        replaceFragment(fragment, R.id.toolbar_fragment, editMode != EditMode.MAIN)
     }
 
     override fun onBackPressed() {
         if (bottomFragment != null && bottomFragment!!.backClick()) {
 
-            if (currentMode == Mode.MAIN) { // Начальное состояние
+            if (currentEditMode == EditMode.MAIN) { // Начальное состояние
 
                 doubleClickExit.click { isTrue ->
                     if (isTrue) super.onBackPressed()
@@ -191,20 +190,20 @@ class EditActivity : BaseEditActivity() {
 
     fun getProgressListener(): ProgressListener<String>? = loadingView
 
-    inner class FunctionItemClick : IDetailable<FuncItem> {
+    inner class FunctionItemClick : ActionClick<FuncItem> {
 
-        override fun toDetail(data: FuncItem) {
+        override fun action(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
 
             val pair = when (data) {//TODO упростить через Pair<Mode, Fragment>
-                FuncItem.MainFunctions.TRANSFORM -> Pair(Mode.TRANSFORM, CropEditFragment.newInstance())
+                FuncItem.MainFunctions.TRANSFORM -> Pair(EditMode.TRANSFORM, CropEditFragment.newInstance())
                 FuncItem.MainFunctions.EFFECT -> {
-                    viewController.setupSupportImage(currentMode)
-                    Pair(Mode.EFFECT, EffectEditFragment.newInstance())
+                    viewController.setupSupportImage(currentEditMode)
+                    Pair(EditMode.EFFECT, EffectEditFragment.newInstance())
                 }
-                FuncItem.MainFunctions.CUT -> Pair(Mode.CUT, CutEditFragment.newInstance())
-                FuncItem.MainFunctions.STICKER -> Pair(Mode.STICKER, StickerEditFragment.newInstance())
-                else /*FuncItem.MainFunctions.BRUSH*/ -> Pair(Mode.BRUSH, BrushEditFragment.newInstance())
+                FuncItem.MainFunctions.CUT -> Pair(EditMode.CUT, CutEditFragment.newInstance())
+                FuncItem.MainFunctions.STICKER -> Pair(EditMode.STICKER, StickerEditFragment.newInstance())
+                else /*FuncItem.MainFunctions.BRUSH*/ -> Pair(EditMode.BRUSH, BrushEditFragment.newInstance())
             }
 
             setEditFragment(pair.first, pair.second)

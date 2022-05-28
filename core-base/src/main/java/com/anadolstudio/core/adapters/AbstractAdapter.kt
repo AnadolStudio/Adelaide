@@ -4,11 +4,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.util.BaseDiffUtilCallback
-import com.anadolstudio.core.interfaces.IDetailable
 
 abstract class AbstractAdapter<Data : Any, Holder : AbstractViewHolder<Data>>(
     protected var dataList: MutableList<Data> = mutableListOf(),
-    protected val detailable: IDetailable<Data>?
+    protected val detailable: ActionClick<Data>?
 ) : RecyclerView.Adapter<Holder>() {
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -37,7 +36,7 @@ abstract class AbstractAdapter<Data : Any, Holder : AbstractViewHolder<Data>>(
 
     abstract class Base<Data : Any, Holder : AbstractViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
-        detailable: IDetailable<Data>?,
+        detailable: ActionClick<Data>?,
     ) : AbstractAdapter<Data, Holder>(dataList, detailable) {
 
         override val diffUtilCallback: BaseDiffUtilCallback<Data>?
@@ -46,7 +45,7 @@ abstract class AbstractAdapter<Data : Any, Holder : AbstractViewHolder<Data>>(
 
     abstract class Selectable<Data : Any, Holder : AbstractSelectableViewHolder<Data>>(
         dataList: MutableList<Data> = mutableListOf(),
-        detailable: IDetailable<Data>?,
+        detailable: ActionClick<Data>?,
     ) : Base<Data, Holder>(dataList, detailable) {
 
         protected open val selectableController: SelectableController<Holder> =

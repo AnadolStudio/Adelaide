@@ -25,7 +25,7 @@ import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.view.ViewState
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
@@ -35,7 +35,7 @@ import com.anadolstudio.photoeditorprocessor.util.BitmapCutUtil
 import com.anadolstudio.photoeditorprocessor.util.BitmapInfoUtil
 import ja.burhanrashid52.photoeditor.PhotoEditor
 
-class CutEditFragment : BaseEditFragment(), IDetailable<String> {
+class CutEditFragment : BaseEditFragment(), ActionClick<String> {
 
     companion object {
         const val CHOOSE_PHOTO = "choose_photo"
@@ -165,7 +165,7 @@ class CutEditFragment : BaseEditFragment(), IDetailable<String> {
         photoEditor.setBrushDrawingMode(false)
     }
 
-    override fun toDetail(data: String) {
+    override fun action(data: String) {
         when (data) {
             CUSTOM -> launcher.launch(CHOOSE_PHOTO)
             else -> {

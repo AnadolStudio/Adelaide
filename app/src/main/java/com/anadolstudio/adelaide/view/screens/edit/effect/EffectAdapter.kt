@@ -11,11 +11,11 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 class EffectAdapter(
     private val thumbnail: Bitmap, data: List<String>,
-    detailable: IDetailable<String>?
+    detailable: ActionClick<String>?
 ) : SimpleSelectableAdapter<String>(data, detailable) {
 
 
@@ -34,7 +34,7 @@ class EffectAdapter(
         thumbnail: Bitmap,
         view: View,
         controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: IDetailable<String>?
+        detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding: ItemImageListBinding = ItemImageListBinding.bind(view)

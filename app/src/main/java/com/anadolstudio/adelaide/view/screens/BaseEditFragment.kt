@@ -5,9 +5,9 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.dialogs.LoadingView
-import com.anadolstudio.core.interfaces.StateListener
+import com.anadolstudio.core.interfaces.EditState
 
-abstract class BaseEditFragment : Fragment(), StateListener {
+abstract class BaseEditFragment : Fragment(), EditState {
 
     private var mLoadingView: LoadingView? = null
 

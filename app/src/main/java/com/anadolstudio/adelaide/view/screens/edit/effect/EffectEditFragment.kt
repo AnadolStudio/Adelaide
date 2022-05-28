@@ -14,7 +14,7 @@ import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.effect.EffectFunction
@@ -22,7 +22,7 @@ import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.google.android.material.slider.Slider
 import kotlin.math.roundToInt
 
-class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnChangeListener {
+class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnChangeListener {
 
     companion object {
         private const val DEFAULT_ALPHA = 255F
@@ -83,7 +83,7 @@ class EffectEditFragment : BaseEditFragment(), IDetailable<String>, Slider.OnCha
         binding.editSliderView.setValue(DEFAULT_ALPHA)
     }
 
-    override fun toDetail(data: String) {
+    override fun action(data: String) {
         activityViewModel.viewController.showWorkspace(true, needMoreSpace = data.isNotEmpty())
         if (data.isEmpty()) {
             setEffect(null)

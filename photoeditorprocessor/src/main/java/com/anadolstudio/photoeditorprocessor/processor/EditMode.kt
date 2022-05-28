@@ -1,6 +1,6 @@
 package com.anadolstudio.photoeditorprocessor.processor
 
-enum class Mode {
+enum class EditMode {
 
     MAIN,
     TRANSFORM,

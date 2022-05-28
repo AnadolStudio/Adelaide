@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.EDIT_TYPE
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 
 class FunctionListFragment : BaseEditFragment() {
@@ -16,7 +16,7 @@ class FunctionListFragment : BaseEditFragment() {
 
         fun newInstance(
             key: String,
-            detailableListener: IDetailable<FuncItem>
+            detailableListener: ActionClick<FuncItem>
         ): FunctionListFragment = FunctionListFragment().apply {
 
             arguments = Bundle().apply {
@@ -28,7 +28,7 @@ class FunctionListFragment : BaseEditFragment() {
 
     }
 
-    private var listener: IDetailable<FuncItem>? = null
+    private var listener: ActionClick<FuncItem>? = null
     private lateinit var binding: LayoutListBinding
 
     override fun onCreateView(

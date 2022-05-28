@@ -11,13 +11,13 @@ import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.sticker.StickerFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
-class StickerEditFragment : BaseEditFragment(), IDetailable<String> {
+class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
 
     private val activityViewModel: EditActivityViewModel by activityViewModels()
     private val viewModel: StickerViewModel by viewModels()
@@ -52,7 +52,7 @@ class StickerEditFragment : BaseEditFragment(), IDetailable<String> {
     }
 
     @SuppressLint("CheckResult")
-    override fun toDetail(path: String) {
+    override fun action(path: String) {
         ImageLoader.loadImageWithoutCache(
             requireContext(),
             path,
