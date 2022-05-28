@@ -29,15 +29,13 @@ class CutViewModel : DrawingViewModel() {
     fun createMask(context: Context, bitmap: Bitmap, sizePoint: PointF) {
         mask.map(Result.Loading())
 
-        service.initWithProcess(bitmap, context) {
-            when (it) {
+        service.initWithProcess(bitmap, context) {result ->
+            when (result) {
                 is Result.Success -> {
-                    val scaleMask = BitmapCommonUtil.scaleBitmap(
-                        sizePoint.x, sizePoint.y, it.data
-                    )
+                    val scaleMask = BitmapCommonUtil.scaleBitmap(sizePoint.x, sizePoint.y, result.data)
                     mask.map(Result.Success(scaleMask))
                 }
-                is Result.Error -> mask.map(Result.Error(it.error))
+                is Result.Error -> mask.map(Result.Error(result.error))
                 else -> {}
             }
         }
@@ -90,8 +88,8 @@ class CutViewModel : DrawingViewModel() {
 
         val edgePixelsArray = pixelsOriginal.clone()
 
-        for (i in edgePixels.keys) {
-            pixelsOriginal[i] = Color.TRANSPARENT
+        for (key in edgePixels.keys) {
+            pixelsOriginal[key] = Color.TRANSPARENT
         }
 
         processListener?.onProgress("Blurring...")

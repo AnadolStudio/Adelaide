@@ -12,11 +12,11 @@ import java.io.File
 
 interface SharedAction {
 
-    fun createShareIntent(path: String, activity: AppCompatActivity)
+    fun runShareIntent(path: String, activity: AppCompatActivity)
 
     open class Base(val appPackage: AppPackages?) : SharedAction {
 
-        override fun createShareIntent(path: String, activity: AppCompatActivity) {
+        override fun runShareIntent(path: String, activity: AppCompatActivity) {
             val type = "image/*"
             val photoURI =
                 if (path.contains(BitmapDecoder.Manager.CONTENT)) {
@@ -37,10 +37,7 @@ interface SharedAction {
 
             if (appPackage == null) {
                 activity.startActivity(
-                    Intent.createChooser(
-                        share,
-                        activity.getString(R.string.save_func_another)
-                    )
+                    Intent.createChooser(share, activity.getString(R.string.save_func_another))
                 )
             } else {
                 share.setPackage(appPackage.appPackage)

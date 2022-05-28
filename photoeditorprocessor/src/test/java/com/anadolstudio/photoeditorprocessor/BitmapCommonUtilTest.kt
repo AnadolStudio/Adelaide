@@ -4,11 +4,6 @@ import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class BitmapCommonUtilTest {
 
     @Test
@@ -60,7 +55,6 @@ class BitmapCommonUtilTest {
 
     private fun assertCircumscribed(mainW: Float, supportW: Float, mainH: Float, supportH: Float) {
         val scale = BitmapCommonUtil.scaleRatioCircumscribed(mainW, mainH, supportW, supportH)
-        println("$scale $mainW $mainH ${supportW * scale} ${supportH * scale}")
         assertTrue(
             mainW.toInt() == (supportW * scale).toInt() && mainH.toInt() <= (supportH * scale).toInt()
                     || (mainW.toInt() <= (supportW * scale).toInt() && mainH.toInt() == (supportH * scale).toInt())
@@ -117,11 +111,9 @@ class BitmapCommonUtilTest {
         supportH: Float
     ) {
         val scale = BitmapCommonUtil.scaleRatioInscribed(mainW, mainH, supportW, supportH)
-        println("$scale $mainW $mainH ${supportW * scale} ${supportH * scale}")
 
         assertTrue(
-            (mainW == supportW * scale && mainH >= supportH * scale)
-                    || (mainW >= supportW * scale && mainH == supportH * scale)
+            (mainW == supportW * scale && mainH >= supportH * scale) || (mainW >= supportW * scale && mainH == supportH * scale)
         )
     }
 

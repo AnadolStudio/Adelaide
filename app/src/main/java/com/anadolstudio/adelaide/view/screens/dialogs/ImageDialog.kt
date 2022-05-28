@@ -37,7 +37,7 @@ class ImageDialog : AppCompatDialogFragment() {
         val min = min(size.x, size.y)
 
         val bitmap = BitmapDecoder.Manager.decodeBitmapFromPath(
-            activity,
+            requireContext(),
             path!!, min, min
         )
 

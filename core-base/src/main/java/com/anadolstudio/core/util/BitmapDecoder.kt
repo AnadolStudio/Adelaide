@@ -117,13 +117,8 @@ interface BitmapDecoder {
     object Manager {
         const val CONTENT = "content:"
 
-        fun decodeBitmapFromPath(
-            context: Context?, path: String,
-            reqWidth: Int, reqHeight: Int
-        ): Bitmap = if (path.contains(CONTENT)) {
-            FromContentPath(context!!)
-        } else { //RealPath
-            FromRealPath()
-        }.decode(path, reqWidth, reqHeight)
+        fun decodeBitmapFromPath(context: Context, path: String, reqWidth: Int, reqHeight: Int): Bitmap =
+            (if (path.contains(CONTENT)) FromContentPath(context) else FromRealPath())
+                .decode(path, reqWidth, reqHeight)
     }
 }

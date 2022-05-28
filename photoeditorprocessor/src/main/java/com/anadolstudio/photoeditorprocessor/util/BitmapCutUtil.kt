@@ -119,7 +119,7 @@ object BitmapCutUtil {
         return pixels
     }
 
-    fun getEdgePixels(bitmap: Bitmap, deep: Int = DEFAULT_DEEP): HashMap<Int, Int?> {
+    fun getEdgePixels(bitmap: Bitmap, deep: Int = DEFAULT_DEEP): HashMap<Int, Int> {
         val w = bitmap.width
         val h = bitmap.height
 
@@ -127,11 +127,13 @@ object BitmapCutUtil {
 
         val pixels = IntArray(w * h)
         bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
+
         return getEdgePixels(pixels, w, h, deep)
     }
 
-    fun getEdgePixels(pixels: IntArray, w: Int, h: Int, deep: Int): HashMap<Int, Int?> {
-        val map = HashMap<Int, Int?>()
+    fun getEdgePixels(pixels: IntArray, w: Int, h: Int, deep: Int): HashMap<Int, Int> {
+        val map = HashMap<Int, Int>()
+
         for (i in 0 until h * w) {
 
             if (pixels[i] != Color.TRANSPARENT && hasTransparentNeighbors(i, 1, pixels, w, h)) {

@@ -29,6 +29,7 @@ class SegmenterService {
             .build()
 
         val image = InputImage.fromBitmap(bitmap, 0)
+
         Segmentation.getClient(options).process(image)
             .addOnSuccessListener { mask ->
 
@@ -55,6 +56,7 @@ class SegmenterService {
 
         for (index in 0 until height * width) {
             val foregroundConfidence = maskBuffer.float
+
             if (foregroundConfidence > CONFIDENCE) {
                 bits[index] = color
                 count++

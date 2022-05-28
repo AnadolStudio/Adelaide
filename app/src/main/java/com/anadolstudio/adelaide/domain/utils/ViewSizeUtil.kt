@@ -53,6 +53,7 @@ object ViewSizeUtil {
             val scale = widthInto / widthOut.toFloat()
             h = (heightOut.toFloat() * scale).toInt()
         }
+
         return Point(w, h)
     }
 

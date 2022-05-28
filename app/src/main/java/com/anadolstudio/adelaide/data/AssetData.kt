@@ -39,11 +39,10 @@ object AssetData {
         }
     }
 
-    private fun isFile(path: String) = Pattern.compile(".*[.].*").matcher(path).find()
+    private fun isFile(path: String): Boolean = Pattern.compile(".*[.].*").matcher(path).find()
 
-    private fun getPath(dir: AssetsDirections, name: String): String =
-        getPath(dir.nameDir, name)
+    private fun getPath(dir: AssetsDirections, name: String): String = getPath(dir.nameDir, name)
 
-    private fun getPath(nameDir: String, name: String): String =
-        "file:///android_asset/$nameDir/$name"
+    private fun getPath(nameDir: String, name: String): String = "file:///android_asset/$nameDir/$name"
+
 }

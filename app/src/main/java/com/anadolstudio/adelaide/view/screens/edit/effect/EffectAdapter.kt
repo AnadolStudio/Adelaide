@@ -24,8 +24,7 @@ class EffectAdapter(
         viewType: Int
     ): SelectableViewHolder<String> = EffectPathViewHolder(
         thumbnail,
-        LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_image_list, parent, false),
+        LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
         selectableController,
         detailable
     )

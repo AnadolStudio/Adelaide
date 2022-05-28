@@ -110,6 +110,7 @@ object BitmapCropUtil {
         // rotating by 0, 90, 180 or 270 degrees doesn't require extra cropping
         return result
     }
+
     private fun getRectFromPoints(
         points: FloatArray,
         imageWidth: Int,
@@ -137,6 +138,7 @@ object BitmapCropUtil {
 
         return rect
     }
+
     private fun getRectLeft(points: FloatArray): Float =
         minOf(points[0], points[2], points[4], points[6])
 

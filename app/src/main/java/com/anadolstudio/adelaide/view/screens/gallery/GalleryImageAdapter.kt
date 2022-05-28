@@ -36,7 +36,7 @@ class GalleryImageAdapter(
 
         if (position == itemCount - 1 && !isLoading) {
             isLoading = true
-//            loadMore?.loadMore() // TODO
+            loadMore?.loadMore() // TODO нужна иная логика за пределами onViewAttachedToWindow?
             isLoading = false
         }
     }
