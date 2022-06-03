@@ -8,10 +8,10 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
-import com.anadolstudio.core.view.show
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.processor.EditMode
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
@@ -49,12 +49,12 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
             )
         }
 
-        binding.saveBtn.show(!show)
-        binding.applyBtn.show(show)
+        binding.saveBtn.isVisible= !show
+        binding.applyBtn.isVisible = show
     }
 
     fun showMainImageView(show: Boolean) {
-        binding.photoEditorView.source.show(show)
+        binding.photoEditorView.source.isVisible = show
     }
 
     fun resetWorkSpace() {
@@ -68,7 +68,7 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
     }
 
     fun showCropImageView(show: Boolean) {
-        binding.cropImage.show(show)
+        binding.cropImage.isVisible = show
 
         if (!show) {
             binding.cropImage.clearImage()

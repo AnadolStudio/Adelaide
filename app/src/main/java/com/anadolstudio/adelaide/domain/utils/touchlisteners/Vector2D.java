@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.touchlisteners;
+package com.anadolstudio.adelaide.domain.utils.touchlisteners;
 
 import android.graphics.PointF;
 

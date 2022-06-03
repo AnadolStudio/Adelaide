@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.anadolstudio.adelaide.domain.touchlisteners;
+package com.anadolstudio.adelaide.domain.utils.touchlisteners;
 
 import android.util.Log;
 import android.view.MotionEvent;

@@ -17,7 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.FragmentEditCutBinding
-import com.anadolstudio.adelaide.domain.touchlisteners.ImageTouchListener
+import com.anadolstudio.adelaide.domain.utils.touchlisteners.ImageTouchListener
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
