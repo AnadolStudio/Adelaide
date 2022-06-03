@@ -7,28 +7,28 @@ import org.junit.Test
 class BitmapCommonUtilTest {
 
     companion object {
-        val BIGGER_MAIN_SIZES = listOf(
+        private val BIGGER_MAIN_SIZES = listOf(
             TestItem(700F, 1200F, 350F, 600F),
             TestItem(700F, 1200F, 300F, 600F),
             TestItem(700F, 1200F, 500F, 600F)
         )
 
-        val BIGGER_SUPPORT_SIZES = listOf(
+        private val BIGGER_SUPPORT_SIZES = listOf(
             TestItem(500F, 1000F, 700F, 1200F),
             TestItem(300F, 900F, 700F, 1200F),
         )
 
-        val ONE_BIGGER_MAIN_SIZES = listOf(
+        private val ONE_BIGGER_MAIN_SIZES = listOf(
             TestItem(1080F, 1717F, 1080F, 1350F),
             TestItem(700F, 1000F, 700F, 900F)
         )
 
-        val ONE_BIGGER_SUPPORT_SIZES = listOf(
+        private val ONE_BIGGER_SUPPORT_SIZES = listOf(
             TestItem(500F, 1000F, 500F, 2000F),
             TestItem(1080F, 1350F, 1080F, 1717F),
         )
 
-        val BASE_SIZES = listOf(
+        private val BASE_SIZES = listOf(
             TestItem(500F, 1000F, 700F, 900F),
             TestItem(700F, 1200F, 1900F, 900F),
             TestItem(900F, 1000F, 700F, 900F),
