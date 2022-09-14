@@ -3,6 +3,7 @@ package com.anadolstudio.adelaide
 import com.anadolstudio.adelaide.data.AdKeys
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.Locale
 
 class AdKeysTest {
 

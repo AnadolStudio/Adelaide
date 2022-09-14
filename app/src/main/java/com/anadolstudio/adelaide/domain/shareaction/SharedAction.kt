@@ -52,20 +52,14 @@ interface SharedAction {
 
         protected fun openGooglePlay(namePackage: String, activity: AppCompatActivity) {
             try {
-                activity.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=$namePackage")
-                    )
-                )
+                activity.startActivityFromUri("market://details?id=$namePackage")
             } catch (ex: ActivityNotFoundException) {
-                activity.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$namePackage")
-                    )
-                )
+                activity.startActivityFromUri("https://play.google.com/store/apps/details?id=$namePackage")
             }
+        }
+
+        private fun AppCompatActivity.startActivityFromUri(uri: String) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
         }
     }
 

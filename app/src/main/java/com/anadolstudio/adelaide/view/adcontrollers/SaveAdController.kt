@@ -68,7 +68,7 @@ class SaveAdController(val binding: ActivitySaveBinding) : AdController.Abstract
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                    activity.onSupportNavigateUp()
+                    activity.onSupportNavigateUp()// TODO hardcode, довать гибкость а вместо активити использвать Context
                     super.onAdDismissedFullScreenContent()
                 }
             }

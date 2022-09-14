@@ -3,15 +3,13 @@ package com.anadolstudio.photoeditorprocessor.data.segmenter
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.photoeditorprocessor.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.segmentation.Segmentation
 import com.google.mlkit.vision.segmentation.SegmentationMask
 import com.google.mlkit.vision.segmentation.selfie.SelfieSegmenterOptions
+import io.reactivex.Single
 import java.nio.ByteBuffer
 
 class SegmenterService {
@@ -42,7 +40,7 @@ class SegmenterService {
 
     private fun process(
         context: Context, mask: SegmentationMask
-    ): RxTask<Bitmap> = RxTask.Base.Quick {
+    ): Single<Bitmap> = Single.fromS.Base.Quick {
         val color = ContextCompat.getColor(context, R.color.colorMask)
 
         val maskBuffer: ByteBuffer = mask.buffer
