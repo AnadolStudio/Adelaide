@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Point
 import com.anadolstudio.core.common_util.ProgressListener
 import com.anadolstudio.domain.exceprions.SmallMaskException
+import com.anadolstudio.photoeditorprocessor.data.photo_segmenter.PhotoSegmenter
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.anadolstudio.photoeditorprocessor.util.BitmapCutUtil
 import java.nio.ByteBuffer
@@ -16,9 +17,7 @@ class CutBackgroundUseCase {
         private const val CONFIDENCE = 0.35f
     }
 
-    private fun process(colorMask: Int, mask: CutSegmenterData): Bitmap {
-//        val color = ContextCompat.getColor(context, R.color.colorMask)
-
+    fun process(colorMask: Int, mask: PhotoSegmenter.PhotoSegmenterData): Bitmap {
         val maskBuffer: ByteBuffer = mask.byteBuffer
         val width: Int = mask.width
         val height: Int = mask.height
@@ -98,11 +97,5 @@ class CutBackgroundUseCase {
 
         return Bitmap.createBitmap(pixelsOriginal, main.x, main.y, Bitmap.Config.ARGB_8888)
     }
-
-    data class CutSegmenterData(
-            val byteBuffer: ByteBuffer,
-            val width: Int,
-            val height: Int
-    )
 
 }

@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.effect.EffectFunction
@@ -45,16 +45,12 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
 
         init()
 
-        effectViewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> binding.recyclerView.adapter = EffectAdapter(
-                        result.data.thumbnail,
-                        result.data.paths,
-                        this
-                )
-                is Result.Error -> result.error.printStackTrace()
-                else -> {}
-            }
+        effectViewModel.adapterData.observe(viewLifecycleOwner) { result ->
+            binding.recyclerView.adapter = EffectAdapter(
+                    result.thumbnail,
+                    result.paths,
+                    this
+            )
         }
 
         effectViewModel.loadData(
@@ -105,7 +101,7 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
     }
 
     override fun apply(): Boolean {
-        if (!isReadyToApply) return false
+        if (!isReadyToApply()) return false
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview(

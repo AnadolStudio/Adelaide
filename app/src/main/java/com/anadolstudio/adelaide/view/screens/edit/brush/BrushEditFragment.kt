@@ -9,11 +9,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.LayoutBrushListBinding
-import com.anadolstudio.data.colors.Colors
 import com.anadolstudio.adelaide.view.adapters.ColorAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
-import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.core.adapters.ActionClick

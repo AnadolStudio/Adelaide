@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivity.Companion.EDIT_TYPE
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem

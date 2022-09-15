@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import com.anadolstudio.adelaide.databinding.FragmentEditCropBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem

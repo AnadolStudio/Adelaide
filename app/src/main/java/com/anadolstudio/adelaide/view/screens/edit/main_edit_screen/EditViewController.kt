@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.view.screens.edit
+package com.anadolstudio.adelaide.view.screens.edit.main_edit_screen
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.adelaide.view.screens.edit.Settings
 import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
 import com.anadolstudio.photoeditorprocessor.processor.EditMode
 import com.anadolstudio.photoeditorprocessor.util.DisplayUtil

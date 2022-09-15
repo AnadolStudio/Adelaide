@@ -1,8 +1,8 @@
 package com.anadolstudio.adelaide.view.screens.edit
 
-import androidx.lifecycle.ViewModel
+import com.anadolstudio.core.viewmodel.BaseViewModel
 
-open class DrawingViewModel : ViewModel() {
+open class DrawingViewModel : BaseViewModel() {
 
     val settings = Settings()
 

@@ -18,7 +18,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
-import com.anadolstudio.adelaide.view.screens.edit.EditActivity
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.activity.hasPermission
 import com.anadolstudio.core.activity.requestPermission

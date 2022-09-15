@@ -1,9 +1,8 @@
-package com.anadolstudio.adelaide.view.screens.edit
+package com.anadolstudio.adelaide.view.screens.edit.main_edit_screen
 
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.anadolstudio.adelaide.R
@@ -23,9 +22,7 @@ import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.common_util.PermissionUtil
 import com.anadolstudio.core.common_util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.core.common_util.doubleClickAction
-import com.anadolstudio.core.tasks.ProgressListener
-import com.anadolstudio.core.util.PermissionUtil
-import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
+import com.anadolstudio.core.livedata.SingleEvent
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.processor.EditMode
 import com.anadolstudio.photoeditorprocessor.util.FileUtil
@@ -67,10 +64,31 @@ class EditActivity : BaseEditActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         viewController = EditViewController(this, binding)
         viewModel.setEditViewController(viewController)
-        viewModel.currentBitmapCommunication.observe(this, ::showChangeBitmapProgress)
-        viewModel.saveBitmapPath.observe(this, ::showSaveBitmapProgress)
+        viewModelSubscribes()
         EditAdController(binding).load(this)
         setupView()
+    }
+
+    private fun viewModelSubscribes() {
+        viewModel.currentBitmap.observe(this, this::render)
+        viewModel.event.observe(this, this::handleEvent)
+    }
+
+    override fun handleEvent(event: SingleEvent) {
+        when (event) {
+            is EditActivityEvent.CantOpenPhotoEvent -> closeEditActivity()
+            is EditActivityEvent.LoadingEvent -> showLoading(event.isLoading)
+            is EditActivityEvent.SuccessSaveEvent -> SaveActivity.start(this@EditActivity, event.path)
+            else -> super.handleEvent(event)
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+    }
+
+    private fun closeEditActivity() {
+        showToast(R.string.edit_error_cant_open_photo)
+        finish()
     }
 
     private fun setupView() {
@@ -100,35 +118,21 @@ class EditActivity : BaseEditActivity() {
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
         viewModel.initEditProcessor(this, path)
-                .onError { ex ->
-                    ex.printStackTrace()
-                    showToast(R.string.edit_error_cant_open_photo)
-                    finish()
-                }
 
     }
 
-    private fun showSaveBitmapProgress(result: Result<String>) {
-        when (result) {
-            is Result.Success -> SaveActivity.start(this@EditActivity, result.data)
-            is Result.Error -> showToast(R.string.edit_error_failed_save_image)
-            else -> {}
-        }
-    }
-
-    private fun showChangeBitmapProgress(result: Result<Bitmap>?) {
-        when (result) {
-            is Result.Success -> {
-                viewController.setMainBitmap(this, result.data)
+    private fun render(state: EditActivityViewState) {
+        when (state) {
+            is EditActivityViewState.Content -> {
+                viewController.setMainBitmap(this, state.bitmap)
 
                 if (currentEditMode == EditMode.CUT) {
-                    viewController.setupMainImage(this, result.data)
+                    viewController.setupMainImage(this, state.bitmap)
                 } else {
                     viewController.resetWorkSpace()
                 }
             }
-            is Result.Error -> result.error.printStackTrace()
-            else -> {}
+            is EditActivityViewState.Error -> state.error.printStackTrace()
         }
     }
 
@@ -189,7 +193,7 @@ class EditActivity : BaseEditActivity() {
         override fun action(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
 
-            val (mode, fragment) = when (data) {//TODO упростить через Pair<Mode, Fragment>
+            val (mode, fragment) = when (data) {
                 FuncItem.MainFunctions.TRANSFORM -> EditMode.TRANSFORM to CropEditFragment.newInstance()
                 FuncItem.MainFunctions.EFFECT -> {
                     viewController.setupSupportImage(currentEditMode)

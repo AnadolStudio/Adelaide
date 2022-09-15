@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.sticker.StickerFunction
@@ -33,12 +33,7 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
     ): View {
         val binding: LayoutListBinding = LayoutListBinding.inflate(inflater, container, false)
 
-        viewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> adapter.setData(result.data)
-                is Result.Error -> result.error.printStackTrace()
-            }
-        }
+        viewModel.adapterData.observe(viewLifecycleOwner, adapter::setData)
 
         func = activityViewModel.getEditProcessor()
                 .getFunction(FuncItem.MainFunctions.STICKER) as StickerFunction?
@@ -47,6 +42,7 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
         adapter = StickerAdapter(mutableListOf(), this)
         binding.recyclerView.adapter = adapter
         viewModel.loadAdapterData(requireContext())
+
         return binding.root
     }
 
@@ -59,7 +55,7 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
     }
 
     override fun apply(): Boolean {
-        if (!isReadyToApply) return false
+        if (!isReadyToApply()) return false
 
         activityViewModel.viewController.photoEditor.clearHelperBox()
         activityViewModel.getEditProcessor().addFunction(func)

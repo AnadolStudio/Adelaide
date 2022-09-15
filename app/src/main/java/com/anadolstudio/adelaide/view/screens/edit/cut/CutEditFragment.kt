@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toPoint
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -19,13 +20,13 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.FragmentEditCutBinding
 import com.anadolstudio.adelaide.domain.utils.touchlisteners.ImageTouchListener
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.EditActivity
-import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.livedata.SingleEvent
 import com.anadolstudio.core.view.util.ViewPositionState
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.cut.CutFunction
@@ -69,28 +70,20 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         val originalBitmap: Bitmap = activityViewModel.getEditProcessor().getCurrentImage()
         sizeOriginal = Point(originalBitmap.width, originalBitmap.height)
 
-        viewModel.maskLiveData.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> defaultDraw(result.data)
-                is Result.Error -> showToast(R.string.cut_error_object_isnt_exist)
-                is Result.Loading -> showLoadingDialog()
-                else -> {}
+        viewModel.maskLiveData.observe(viewLifecycleOwner) { screenState ->
+            when (screenState) {
+                is CutViewState.Content -> defaultDraw(screenState.mask)
+                is CutViewState.Error -> showToast(R.string.cut_error_object_isnt_exist)
+                is CutViewState.Loading -> showLoadingDialog()
             }
-
-            if (result !is Result.Loading) hideLoadingDialog()
         }
 
         val sizePoint = activityViewModel.viewController.currentSizeOfMainPanel()
-        viewModel.createMask(originalBitmap, sizePoint)
 
-        viewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Success -> adapter.setData(result.data)
-                is Result.Error -> result.error.printStackTrace()
-                else -> {}
-            }
+        viewModel.createMask(originalBitmap, sizePoint, ContextCompat.getColor(requireContext(), R.color.colorMask))
 
-            if (result !is Result.Loading) hideLoadingDialog()
+        viewModel.adapterData.observe(viewLifecycleOwner) { backgrounds ->
+            adapter.setData(backgrounds)
         }
 
         adapter = BackgroundAdapter(mutableListOf(), this)
@@ -107,7 +100,26 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
                 .getFunction(FuncItem.MainFunctions.CUT) as CutFunction?
                 ?: CutFunction()
 
+        viewModel.event.observe(viewLifecycleOwner, this::handleEvent)
+
         return binding.root
+    }
+
+    private fun handleEvent(event: SingleEvent) {
+        when (event) {
+            is MaskWasCutEvent -> {
+                clearDrawingPanel()
+                val viewController = activityViewModel.viewController
+                val emptyBackground = BitmapCutUtil.createNullBackground(
+                        viewController.currentSizeOfMainPanel().toPoint()
+                )
+                activityViewModel.onChangedCurrentBitmap(emptyBackground)
+
+                viewController.photoEditor.addImage(event.cutBitmap, false)
+                setCurrentState(State.CHOICE_BG)
+            }
+            else -> {}
+        }
     }
 
     fun setupView() {
@@ -115,10 +127,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
 
         binding.editSliderView.setCancelListener {
             photoEditor.clearAllViews()
-
-            with(viewModel.maskLiveData.value) {
-                if (this is Result.Success) defaultDraw(this.data)
-            }
+            viewModel.getMask()?.let(this::defaultDraw)
         }
 
         binding.editSliderView.setApplyIcon(R.drawable.ic_brush)
@@ -156,7 +165,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
     }
 
     private fun defaultStateScalePanel() {
-        viewState.rebootToDefaultWithAnim()
+        viewState.rebootToDefaultWithAnim(activityViewModel.viewController.photoEditorView)
     }
 
     private fun clearDrawingPanel() {
@@ -217,25 +226,11 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         val drawBitmap = BitmapCommonUtil
                 .captureView(viewController.photoEditorView.drawingView)
 
-        activityViewModel.currentBitmapCommunication.map(Result.Loading())
-        // TODO map должен быть только из ViewModel
-        val processListener = (activity as? EditActivity)?.getProgressListener()
-        viewModel.cutByMask(requireContext(), processListener, mainBitmap, drawBitmap)
-                .onSuccess { cutBitmap ->
-                    clearDrawingPanel()
-
-                    val nullBackground = BitmapCutUtil.createNullBackground(
-                            viewController.currentSizeOfMainPanel().toPoint()
-                    )
-                    activityViewModel.currentBitmapCommunication.map(Result.Success(nullBackground))
-
-                    viewController.photoEditor.addImage(cutBitmap, false)
-                    setCurrentState(State.CHOICE_BG)
-                }
+        viewModel.cutByMask(requireContext(), mainBitmap, drawBitmap)
     }
 
     override fun apply(): Boolean {
-        if (!isReadyToApply) return false
+        if (!isReadyToApply()) return false
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.viewController.photoEditor.clearHelperBox()
@@ -249,7 +244,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun backClick(): Boolean {
-        if (!isReadyToBackClick) return false
+        if (!isReadyToBackClick()) return false
 
         defaultStateScalePanel()
         activityViewModel.viewController.photoEditorView.setOnTouchListener(null)

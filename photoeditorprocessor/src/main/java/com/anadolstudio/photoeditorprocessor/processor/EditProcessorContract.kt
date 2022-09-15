@@ -11,7 +11,6 @@ import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.anadolstudio.photoeditorprocessor.util.BitmapSaver
-import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.File
 
@@ -77,13 +76,13 @@ interface EditProcessorContract {
                 context: Context,
                 file: File,
                 processListener: ProgressListener<String>?
-        ): Completable = Completable.fromAction {
+        ): String {
             val bitmap = decodeOriginalBitmapWithProcess(context, path)
             processListener?.onProgress(20, "Setup...")
             val parent = file.parent ?: throw FileParentException()
             val nameDir = parent.substring(parent.lastIndexOf("/"), parent.length)
 
-            BitmapSaver.Factory.save(processListener, context, bitmap, nameDir, file)
+            return BitmapSaver.Factory.save(processListener, context, bitmap, nameDir, file)
         }
 
         override fun process(bitmap: Bitmap, func: EditFunction): Bitmap = func.process(bitmap)

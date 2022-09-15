@@ -53,7 +53,7 @@
             android:parentActivityName=".view.screens.main.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.screens.edit.EditActivity"
+            android:name=".view.screens.edit.main_edit_screen.EditActivity"
             android:parentActivityName=".view.screens.main.MainActivity"
             android:screenOrientation="portrait" /> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <activity

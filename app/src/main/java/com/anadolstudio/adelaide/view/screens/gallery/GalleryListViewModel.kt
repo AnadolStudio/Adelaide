@@ -4,11 +4,9 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.anadolstudio.core.livedata.onNext
 import com.anadolstudio.core.livedata.toImmutable
-import com.anadolstudio.domain.repository.gallery.GalleryRepositoryImpl
 import com.anadolstudio.core.viewmodel.BaseViewModel
 import com.anadolstudio.data.repository.GalleryRepository
 import io.reactivex.Single
