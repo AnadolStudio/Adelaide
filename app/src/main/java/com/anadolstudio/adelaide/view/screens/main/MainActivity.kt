@@ -6,22 +6,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.App
 import com.anadolstudio.adelaide.databinding.ActivityMainBinding
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper.Event
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        fun start(context: Context) {
-            context.startActivity(
-                Intent(
-                    context,
-                    MainActivity::class.java
-                )
-            )
-        }
 
-        const val EDIT_TYPE = "edit_type"
+        fun start(context: Context) = context.startActivity(
+                Intent(
+                        context,
+                        MainActivity::class.java
+                )
+        )
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -31,19 +26,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         binding.nightBtn.setOnClickListener { (application as App).changeTheme() }
-        binding.photoCardView.setOnClickListener { startActivity(TypeKey.PHOTO_KEY) }
+        binding.photoCardView.setOnClickListener { startActivity(EditType.PHOTO) }
 //        binding.collageCardView.setOnClickListener {  } TODO
         setContentView(binding.root)
     }
 
-    private fun startActivity(type: String) {
-        if (type != TypeKey.COLLAGE_KEY && type != TypeKey.PHOTO_KEY) return
-
-        FirebaseHelper.get().logEvent(
-            if (type == TypeKey.PHOTO_KEY) Event.PHOTO_EDIT_OPEN else Event.COLLAGE_EDIT_OPEN
-        )
-
-        GalleryListActivity.start(this, type)
+    private fun startActivity(data: EditType) {
+        GalleryListActivity.start(this, data)
     }
 
     override fun recreate() {

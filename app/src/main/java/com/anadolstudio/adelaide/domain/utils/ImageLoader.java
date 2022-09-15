@@ -23,9 +23,6 @@ import androidx.annotation.Nullable;
 
 public class ImageLoader {
 
-    private ImageLoader() {
-    }
-
     public static void loadImage(ImageView imageView, @DrawableRes int id, ScaleType scaleType) {
         RequestBuilder<Drawable> builder = Glide
                 .with(imageView)
@@ -40,17 +37,17 @@ public class ImageLoader {
         builder.into(imageView);
     }
 
-    public static void loadImage(ImageView imageView, String path, ScaleType scaleType) {
-        loadImage(imageView, path, scaleType, false, null);
+    public static void loadImage(ImageView imageView, String path, ScaleType scaleType, boolean withPlaceHolder) {
+        loadImage(imageView, path, scaleType, false, null, withPlaceHolder);
     }
 
-    public static void loadImageWithoutCache(ImageView imageView, String path, SimpleRequestListener<Bitmap> listener) {
-        loadImage(imageView, path, ScaleType.FIT_CENTER, true, listener);
+    public static void loadImageWithoutCache(ImageView imageView, String path, SimpleRequestListener<Bitmap> listener, boolean withPlaceHolder) {
+        loadImage(imageView, path, ScaleType.FIT_CENTER, true, listener, withPlaceHolder);
     }
 
     public static void loadImage(ImageView imageView, String path, ScaleType scaleType, boolean skipMemoryCache,
-                                 SimpleRequestListener<Bitmap> listener) {
-        RequestBuilder<Bitmap> builder = getBaseRequestBuilder(imageView.getContext(), path, scaleType, skipMemoryCache);
+                                 SimpleRequestListener<Bitmap> listener, boolean withPlaceHolder) {
+        RequestBuilder<Bitmap> builder = getBaseRequestBuilder(imageView.getContext(), path, scaleType, skipMemoryCache, withPlaceHolder);
 
         if (listener != null) {
             builder = builder.addListener(getBitmapRequestListener(listener));
@@ -60,36 +57,40 @@ public class ImageLoader {
     }
 
     public static void loadImageWithoutCache(Context context, Target<Bitmap> target, String path, RequestListener<Bitmap> requestListener) {
-        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true)
+        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true, false)
                 .addListener(requestListener)
                 .into(target);
     }
 
     // При загрузке большоего BM виснет
-    public static void loadImageWithoutCache(Context context, IResourceReady<Bitmap> listener, String path) {
-        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true)
+    public static void loadImageWithoutCache(Context context, String path, IResourceReady<Bitmap> listener) {
+        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true, false)
                 .into(createBitmapTarget(listener));
     }
 
     public static void loadImageWithoutCache(Context context, String path, int width, int height, IResourceReady<Bitmap> listener) {
-        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true)
+        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true, false)
                 .override(width, height)
                 .into(createBitmapTarget(listener));
     }
 
-    public static void loadImageWithoutCache(Context context, IResourceReady<Bitmap> listener, String path, int widthResize, int heightResize) {
-        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true)
+    public static void loadImageWithoutCache(Context context, String path, IResourceReady<Bitmap> listener, int widthResize, int heightResize) {
+        getBaseRequestBuilder(context, path, ScaleType.FIT_CENTER, true, false)
                 .apply(new RequestOptions().override(widthResize, heightResize))
                 .into(createBitmapTarget(listener));
     }
 
     @NonNull
-    private static RequestBuilder<Bitmap> getBaseRequestBuilder(Context context, String path, ScaleType scaleType, boolean skipMemoryCache) {
+    private static RequestBuilder<Bitmap> getBaseRequestBuilder(Context context, String path, ScaleType scaleType, boolean skipMemoryCache,
+                                                                boolean withPlaceHolder) {
         RequestBuilder<Bitmap> builder = Glide.with(context)
                 .asBitmap()
-                .placeholder(R.drawable.ic_image_placeholder)
-                .error(R.drawable.ic_broken_image)
                 .load(path);
+
+        if (withPlaceHolder) {
+            builder = builder.placeholder(R.drawable.ic_image_placeholder)
+                    .error(R.drawable.ic_broken_image);
+        }
 
         if (scaleType == ScaleType.FIT_CENTER) {
             builder = builder.fitCenter();
@@ -133,6 +134,9 @@ public class ImageLoader {
 
             }
         };
+    }
+
+    private ImageLoader() {
     }
 
     public enum ScaleType {

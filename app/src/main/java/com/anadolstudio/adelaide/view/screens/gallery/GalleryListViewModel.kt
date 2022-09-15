@@ -1,79 +1,82 @@
 package com.anadolstudio.adelaide.view.screens.gallery
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.content.Context
+import android.net.Uri
 import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.anadolstudio.adelaide.data.GalleryListener
-import com.anadolstudio.adelaide.data.GalleryService
-import com.anadolstudio.core.tasks.Result
+import com.anadolstudio.core.livedata.onNext
+import com.anadolstudio.core.livedata.toImmutable
+import com.anadolstudio.core.viewmodel.BaseViewModel
+import com.anadolstudio.data.repository.GalleryRepository
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.io.File
+import kotlin.math.max
 
-class GalleryListViewModel(
-    private val galleryService: GalleryService
-) : ViewModel() {
+class GalleryListViewModel(private val galleryRepository: GalleryRepository) : BaseViewModel() {
 
-    private val _folders = MutableLiveData<Result<Set<String>>>()
-    val folders: LiveData<Result<Set<String>>> = _folders
-
-    private val _images = MutableLiveData<Result<List<String>>>()
-    val images: LiveData<Result<List<String>>> = _images
-
-    private var imagesResult: Result<List<String>> =
-        Result.Empty()
-        set(value) {
-            val b = field != value
-            field = value
-            if (b) notifyImageUpdates()
-        }
-
-    private var foldersResult: Result<Set<String>> =
-        Result.Empty()
-        set(value) {
-            val b = field != value
-            field = value
-            if (b) notifyFoldersUpdates()
-        }
-
-    private val listener: GalleryListener = { folders, images ->
-        foldersResult = if (folders.isEmpty()) Result.Empty() else Result.Success(folders)
-        imagesResult = if (images.isEmpty()) Result.Empty() else Result.Success(images)
+    private companion object {
+        const val ONE_PORTION = 99
     }
 
-    @RequiresPermission(READ_EXTERNAL_STORAGE)
-    fun loadData(activity: AppCompatActivity) {
-        galleryService.addListener(listener)
+    private var currentFolder: String? = null
+    private val _screenState = MutableLiveData<GalleryScreenState>(GalleryScreenState.Empty)
+    val screenState = _screenState.toImmutable()
 
-        loadFolders(activity)
-        loadImages(activity)
+    private var lastImageItem: Long? = null
+
+    @RequiresPermission(READ_EXTERNAL_STORAGE)
+    fun loadData(context: Context) {
+        _screenState.onNext(GalleryScreenState.Loading)
+
+        Single.zip(
+                galleryRepository.loadImages(context = context, size = ONE_PORTION, folder = null),
+                galleryRepository.loadFolders(context)
+        ) { images, folders -> GalleryScreenState.Content(images = images, folders = folders) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { data -> setScreenState(data) },
+                        { error -> _screenState.onNext(GalleryScreenState.Error(error)) }
+                )
+                .disposeOnViewModelDestroy()
     }
 
-    @RequiresPermission(READ_EXTERNAL_STORAGE)
-    fun loadFolders(activity: AppCompatActivity) {
-        _folders.value = Result.Loading()
-        galleryService.loadFolders(activity).onError {
-            _folders.value = Result.Error(it)
+    private fun setScreenState(data: GalleryScreenState.Content) {
+        when (data.images.isEmpty()) {
+            true -> if (!data.isLoadMore) _screenState.onNext(GalleryScreenState.Empty)
+            false -> updateLastItem(data).also { _screenState.onNext(data) }
         }
     }
 
+    private fun updateLastItem(data: GalleryScreenState.Content) {
+        lastImageItem = Uri.parse(data.images.last()).path?.let { File(it).name }
+                ?.toLongOrNull()
+    }
+
     @RequiresPermission(READ_EXTERNAL_STORAGE)
-    fun loadImages(activity: AppCompatActivity, folder: String? = null, lastItemId: Long = -1L) {
-        _images.value = Result.Loading()
-        galleryService.loadImages(activity, folder, lastItemId)
-            .onError { _images.value = Result.Error(it) }
+    fun loadImages(context: Context, size: Int = ONE_PORTION, loadMore: Boolean = false) {
+        val lastItem = if (loadMore) lastImageItem else null
+
+        galleryRepository.loadImages(context = context, size = size, folder = currentFolder, lastItemIndex = lastItem)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { images -> setScreenState(GalleryScreenState.Content(images = images, folders = null, loadMore)) },
+                        { error -> _screenState.onNext(GalleryScreenState.Error(error)) },
+                )
+                .disposeOnViewModelDestroy()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        galleryService.removeListener(listener)
+    @RequiresPermission(READ_EXTERNAL_STORAGE)
+    fun updateImages(context: Context, size: Int?) {
+        if (_screenState.value !is GalleryScreenState.Content) return
+
+        loadImages(context = context, size = max(size ?: 0, ONE_PORTION), loadMore = false)
     }
 
-    private fun notifyImageUpdates() {
-        _images.postValue(imagesResult)
-    }
+    fun folderChanged(folder: String?): Boolean = (currentFolder != folder).also { currentFolder = folder }
 
-    private fun notifyFoldersUpdates() {
-        _folders.postValue(foldersResult)
-    }
 }

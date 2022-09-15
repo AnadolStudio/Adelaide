@@ -26,7 +26,6 @@ class FirebaseHelper private constructor() {
 
     private var lastItem = ""
 
-
     fun logEvent(event: Event) {
         return // TODO открой в релизе
         val name = event.name.lowercase()

@@ -1,13 +1,7 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
-
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 31
@@ -16,17 +10,24 @@ android {
 
         applicationId "com.anadolstudio.adelaide"
         minSdk 23
-        targetSdk 31
+        targetSdk 32
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
     }
 
     buildTypes {
         release {
-            crunchPngs false
+            signingConfig signingConfigs.debug
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -40,28 +41,31 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
-    kapt { generateStubs = true }
     lintOptions {
         abortOnError false
     }
 }
 
 dependencies {
+    implementation project(path: ':core')
+    implementation project(path: ':photoeditor')
+    implementation project(path: ':photoeditorprocessor')
+    implementation project(path: ':domain')
+    implementation project(path: ':data')
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
-    implementation 'androidx.activity:activity-ktx:1.4.0'
-    implementation project(path: ':core-base')
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.fragment:fragment-ktx:1.5.2'
+    implementation 'androidx.activity:activity-ktx:1.5.1'
 
-    def lifecycle_version = "2.4.1"
+    def lifecycle_version = '2.5.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -69,25 +73,22 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-inappmessaging:20.1.2'
-    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    implementation 'com.google.firebase:firebase-inappmessaging:20.1.3'
+    implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics'
 
-    implementation 'com.google.mlkit:segmentation-selfie:16.0.0-beta4'
-
-    //Rx
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
 
     //Ad
-    implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation 'com.google.android.gms:play-services-ads:21.2.0'
 
     //PhotoEditLibs
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'org.wysaid:gpuimage-plus:2.6.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
 }

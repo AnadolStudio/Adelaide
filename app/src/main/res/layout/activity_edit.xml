@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -50,7 +52,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/colorPrimary"
-        android:visibility="invisible"
         app:adSize="SMART_BANNER"
         app:adUnitId="ca-app-pub-3940256099942544/6300978111"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,11 +67,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adView">
 
-        <ImageView
-            android:id="@+id/main_image"
+        <ja.burhanrashid52.photoeditor.PhotoEditorView
+            android:id="@+id/photo_editor_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/support_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            />
 
         <com.theartofdev.edmodo.cropper.CropImageView
             android:id="@+id/crop_image"
@@ -84,8 +102,7 @@
             app:cropBorderCornerThickness="3dp"
             app:cropBorderLineColor="@color/colorPrimaryInverse"
             app:cropBorderLineThickness="3dp"
-            app:cropGuidelinesColor="@color/colorPrimaryInverse"
-            />
+            app:cropGuidelinesColor="@color/colorPrimaryInverse" />
 
     </FrameLayout>
 
@@ -93,9 +110,9 @@
         android:id="@+id/toolbar_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:maxHeight="@dimen/max_height_bottom_fragment"
         android:minHeight="@dimen/min_height_bottom_fragment"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

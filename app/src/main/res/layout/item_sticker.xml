@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/image_filter_side"
+    android:layout_height="@dimen/image_filter_side"
+    android:layout_margin="@dimen/margin_small"
+    android:stateListAnimator="@animator/item_card_normal"
+    app:cardCornerRadius="@dimen/radius8">
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        style="@style/EditItem.LinearLayoutRipple"
+        android:layout_width="match_parent"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

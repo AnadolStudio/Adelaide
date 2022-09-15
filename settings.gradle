@@ -8,4 +8,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Adelaide"
 include ':app'
-include ':core-base'
+include ':core'
+project(':core').projectDir = new File('/AndroidCoreBase/core')
+include ':photoeditorprocessor'
+include ':photoeditor'
+include ':domain'
+include ':data'

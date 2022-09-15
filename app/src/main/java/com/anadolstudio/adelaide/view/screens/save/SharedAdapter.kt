@@ -6,32 +6,32 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemShareBinding
-import com.anadolstudio.adelaide.domain.editphotoprocessor.shareaction.SharedAction
+import com.anadolstudio.core.share_util.SharedAction.SharedItem
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
-import com.anadolstudio.core.interfaces.IDetailable
+import com.anadolstudio.core.adapters.ActionClick
 
 class SharedAdapter(
-    data: List<SharedAction.SharedItem>,
-    detailable: IDetailable<SharedAction.SharedItem>?
-) : SimpleAdapter<SharedAction.SharedItem>(data, detailable) {
+        data: List<SharedItem>,
+        detailable: ActionClick<SharedItem>?
+) : SimpleAdapter<SharedItem>(data, detailable) {
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): AbstractViewHolder.Base<SharedAction.SharedItem> = SharedViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
-        detailable
+            parent: ViewGroup,
+            viewType: Int
+    ): AbstractViewHolder.Base<SharedItem> = SharedViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
+            detailable
     )
 
     private class SharedViewHolder(
-        view: View,
-        detailable: IDetailable<SharedAction.SharedItem>?
-    ) : AbstractViewHolder.Base<SharedAction.SharedItem>(view, detailable) {
+            view: View,
+            detailable: ActionClick<SharedItem>?
+    ) : AbstractViewHolder.Base<SharedItem>(view, detailable) {
 
         val binding = ItemShareBinding.bind(view)
 
-        override fun onBind(data: SharedAction.SharedItem) {
+        override fun onBind(data: SharedItem) {
             binding.shareIcon.setImageDrawable(ContextCompat.getDrawable(itemView.context, data.drawable))
             super.onBind(data)
         }
