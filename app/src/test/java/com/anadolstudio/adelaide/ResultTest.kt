@@ -1,6 +1,5 @@
 package com.anadolstudio.adelaide
 
-import android.util.Log
 import com.anadolstudio.core.tasks.Result
 import org.junit.Test
 
@@ -16,14 +15,9 @@ class ResultTest {
         val result: Result<String> = Result.Success("")
 
         when (result) {
-            is Result.Final-> {
-                println("Final")
-                when(result){
-                    is Result.Success -> println("Success")
-                    is Result.Error -> println("Error")
-                }
-            }
-            is Result.Loading -> println( "Loading")
+            is Result.Loading -> println("Loading")
+            is Result.Success -> println("Success")
+            is Result.Error -> println("Error")
         }
     }
 }
