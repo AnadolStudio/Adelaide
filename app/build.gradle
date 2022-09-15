@@ -43,6 +43,9 @@ android {
         jvmTarget = '1.8'
     }
     kapt { generateStubs = true }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
