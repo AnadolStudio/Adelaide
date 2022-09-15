@@ -1,0 +1,8 @@
+com/anadolstudio/core/interfaces/StateListener.java
+ com.anadolstudio.core.interfaces.StateListener
+com/anadolstudio/core/databinding/ViewSimpleTextBinding.java
+ com.anadolstudio.core.databinding.ViewSimpleTextBinding
+com/anadolstudio/core/databinding/DialogLoadingBinding.java
+ com.anadolstudio.core.databinding.DialogLoadingBinding
+com/anadolstudio/core/BuildConfig.java
+ com.anadolstudio.core.BuildConfig
