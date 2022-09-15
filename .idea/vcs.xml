@@ -3,7 +3,8 @@
   <component name="GithubSharedProjectSettings">
     <option name="branchProtectionPatterns">
       <list>
-        <option value=".*" />
+        <option value="master" />
+        <option value="release\/.*" />
       </list>
     </option>
   </component>

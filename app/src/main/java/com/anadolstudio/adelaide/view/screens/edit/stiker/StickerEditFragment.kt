@@ -33,8 +33,6 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
     ): View {
         val binding: LayoutListBinding = LayoutListBinding.inflate(inflater, container, false)
 
-        viewModel.adapterData.observe(viewLifecycleOwner, adapter::setData)
-
         func = activityViewModel.getEditProcessor()
                 .getFunction(FuncItem.MainFunctions.STICKER) as StickerFunction?
                 ?: StickerFunction()
@@ -42,6 +40,7 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
         adapter = StickerAdapter(mutableListOf(), this)
         binding.recyclerView.adapter = adapter
         viewModel.loadAdapterData(requireContext())
+        viewModel.adapterData.observe(viewLifecycleOwner, adapter::setData)
 
         return binding.root
     }
