@@ -8,18 +8,18 @@ import android.view.ViewGroup
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemImageListBinding
 import com.anadolstudio.adelaide.domain.utils.Colors
-import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
 class ColorAdapter(data: MutableList<String>, detailable: ActionClick<String>?) :
-    SimpleSelectableAdapter<String>(data, detailable) {
+        SimpleSelectableAdapter<String>(data, detailable) {
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): SelectableViewHolder<String> = ColorPathViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
-        selectableController, detailable
+            LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
+            selectableController, detailable
     )
 
     override fun onBindViewHolder(holder: SelectableViewHolder<String>, position: Int) {
@@ -31,9 +31,9 @@ class ColorAdapter(data: MutableList<String>, detailable: ActionClick<String>?) 
     }
 
     private class ColorPathViewHolder(
-        view: View,
-        controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: ActionClick<String>?
+            view: View,
+            controller: SelectableController<SelectableViewHolder<String>>,
+            detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding: ItemImageListBinding = ItemImageListBinding.bind(itemView)

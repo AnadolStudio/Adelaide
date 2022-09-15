@@ -72,26 +72,27 @@ public class ImageTouchListener implements OnTouchListener {
         view.setTranslationX(view.getTranslationX() - offsetX);
         view.setTranslationY(view.getTranslationY() - offsetY);
     }
+
     private final GestureDetector mGestureListener;
     private final float defaultX;
     private final float defaultY;
     private final float defaultScaleX;
     private final float defaultScaleY;
     private final float defaultRotation;
-    private boolean isRotateEnabled = true;
     private final boolean isTranslateEnabled = true;
     private final boolean isScaleEnabled = true;
+    private final ScaleGestureDetector mScaleGestureDetector;
+    private final int[] location = new int[2];
+    private final boolean mIsPinchScalable;
+    private boolean isRotateEnabled = true;
     private float minimumScale = 0.25f;
     private float maximumScale = 10.0f;
     private int mActivePointerId = INVALID_POINTER_ID;
     private float mPrevX, mPrevY, mPrevRawX, mPrevRawY;
-    private final ScaleGestureDetector mScaleGestureDetector;
-    private final int[] location = new int[2];
     private Rect outRect;
     private IViewMove listener = null;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl mOnGestureControl;
-    private final boolean mIsPinchScalable;
 
     public ImageTouchListener(@NonNull View view,
                               boolean isPinchScalable,
@@ -257,9 +258,9 @@ public class ImageTouchListener implements OnTouchListener {
 
     private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
+        private final Vector2D mPrevSpanVector = new Vector2D();
         private float mPivotX;
         private float mPivotY;
-        private final Vector2D mPrevSpanVector = new Vector2D();
 
         @Override
         public boolean onScaleBegin(View view, ScaleGestureDetector detector) {

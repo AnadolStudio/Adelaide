@@ -5,10 +5,10 @@ import androidx.annotation.StringRes
 import com.anadolstudio.photoeditorprocessor.R
 
 enum class RatioItem(
-    @StringRes val textId: Int,
-    @DrawableRes var drawableId: Int?,
-    val ratio: Ratio,
-    val density: Density
+        @StringRes val textId: Int,
+        @DrawableRes var drawableId: Int?,
+        val ratio: Ratio,
+        val density: Density
 ) {
 
     FREE(R.string.crop_func_free, R.drawable.ic_crop_free, Ratio(), Density()),

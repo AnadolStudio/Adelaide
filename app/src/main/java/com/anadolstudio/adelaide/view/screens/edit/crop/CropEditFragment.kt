@@ -37,24 +37,24 @@ class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {
     private val activityViewModel: EditActivityViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentEditCropBinding.inflate(inflater)
 
         binding.mainRecyclerView.adapter =
-            FunctionListAdapter(FuncItem.MainFunctions.TRANSFORM.innerFunctions, this)
+                FunctionListAdapter(FuncItem.MainFunctions.TRANSFORM.innerFunctions, this)
 
         func = activityViewModel.getEditProcessor()
-            .getFunction(FuncItem.MainFunctions.TRANSFORM) as TransformFunction?
-            ?: TransformFunction()
+                .getFunction(FuncItem.MainFunctions.TRANSFORM) as TransformFunction?
+                ?: TransformFunction()
 
         binding.ratioRecyclerView.adapter =
-            CropListAdapter(
-                RatioItem.values().toList(),
-                RatioDetailable()
-            )
+                CropListAdapter(
+                        RatioItem.values().toList(),
+                        RatioDetailable()
+                )
 
         activityViewModel.getEditProcessor().getCurrentImage().also { bitmap ->
             defaultImage = func.processWithOutCrop(bitmap)
@@ -86,9 +86,9 @@ class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {
         func.cropPoints = it.cropPoints
 
         func.setCropWindow(
-            it.cropRect,
-            defaultImage.width,
-            defaultImage.height
+                it.cropRect,
+                defaultImage.width,
+                defaultImage.height
         )
     }
 
@@ -106,7 +106,7 @@ class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {
             activityViewModel.getEditProcessor().let { processor ->
 
                 defaultImage = processor.getCurrentImage()
-                    .let { bitmap -> func.processWithOutCrop(bitmap) }
+                        .let { bitmap -> func.processWithOutCrop(bitmap) }
 
                 cropImage = processor.getCurrentImage().let { b -> func.process(b) }
 

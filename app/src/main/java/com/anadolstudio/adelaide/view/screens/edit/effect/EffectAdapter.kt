@@ -10,30 +10,30 @@ import com.anadolstudio.adelaide.databinding.ItemImageListBinding
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
-import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
 class EffectAdapter(
-    private val thumbnail: Bitmap, data: List<String>,
-    detailable: ActionClick<String>?
+        private val thumbnail: Bitmap, data: List<String>,
+        detailable: ActionClick<String>?
 ) : SimpleSelectableAdapter<String>(data, detailable) {
 
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): SelectableViewHolder<String> = EffectPathViewHolder(
-        thumbnail,
-        LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
-        selectableController,
-        detailable
+            thumbnail,
+            LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
+            selectableController,
+            detailable
     )
 
     inner class EffectPathViewHolder(
-        thumbnail: Bitmap,
-        view: View,
-        controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: ActionClick<String>?
+            thumbnail: Bitmap,
+            view: View,
+            controller: SelectableController<SelectableViewHolder<String>>,
+            detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding: ItemImageListBinding = ItemImageListBinding.bind(view)
@@ -47,10 +47,10 @@ class EffectAdapter(
         override fun onBind(data: String, isSelected: Boolean) {
             super.onBind(data, isSelected)
             ImageLoader.loadImage(
-                binding.supportImageView,
-                data,
-                ImageLoader.ScaleType.CENTER_CROP,
-                false
+                    binding.supportImageView,
+                    data,
+                    ImageLoader.ScaleType.CENTER_CROP,
+                    false
             )
         }
     }

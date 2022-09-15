@@ -12,9 +12,9 @@ import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.adapters.ILoadMore
 
 class GalleryImageAdapter(
-    data: List<String>,
-    detailable: ActionClick<String>,
-    val loadMore: ILoadMore?
+        data: List<String>,
+        detailable: ActionClick<String>,
+        val loadMore: ILoadMore?
 ) : SimpleAdapter<String>(data.toMutableList(), detailable) {
 
     private var isLoading = false
@@ -22,13 +22,13 @@ class GalleryImageAdapter(
     fun getData() = dataList.toList() // TODO Переписать подгрузку
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): AbstractViewHolder.Base<String> =
-        GalleryViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false),
-            detailable
-        )
+            GalleryViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false),
+                    detailable
+            )
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder.Base<String>) {
         super.onViewAttachedToWindow(holder)
@@ -42,8 +42,8 @@ class GalleryImageAdapter(
     }
 
     class GalleryViewHolder(
-        view: View,
-        detailable: ActionClick<String>?
+            view: View,
+            detailable: ActionClick<String>?
     ) : AbstractViewHolder.Base<String>(view, detailable), View.OnClickListener {
 
         val binding = ItemGalleryBinding.bind(view)

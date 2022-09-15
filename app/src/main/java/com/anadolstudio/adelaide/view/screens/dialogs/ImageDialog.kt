@@ -37,8 +37,8 @@ class ImageDialog : AppCompatDialogFragment() {
         val min = min(size.x, size.y)
 
         val bitmap = BitmapDecoder.Manager.decodeBitmapFromPath(
-            requireContext(),
-            path!!, min, min
+                requireContext(),
+                path!!, min, min
         )
 
         binding.imagePhoto.layoutParams.height = bitmap.height
@@ -46,8 +46,8 @@ class ImageDialog : AppCompatDialogFragment() {
         binding.imagePhoto.setImageBitmap(bitmap)
 
         val dialog: AlertDialog = AlertDialog.Builder(activity)
-            .setView(binding.root)
-            .create()
+                .setView(binding.root)
+                .create()
 
         if (dialog.window != null)
             dialog.window!!.attributes.windowAnimations = R.style.SlidingDialogAnimation

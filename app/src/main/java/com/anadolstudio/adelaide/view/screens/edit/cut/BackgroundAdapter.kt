@@ -9,26 +9,26 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.adapters.SelectableViewHolder
 import com.anadolstudio.adelaide.view.adapters.SimpleSelectableAdapter
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
-import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
 class BackgroundAdapter(
-    data: MutableList<String>,
-    detailable: ActionClick<String>?
+        data: MutableList<String>,
+        detailable: ActionClick<String>?
 ) : SimpleSelectableAdapter<String>(data, detailable) {
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): SelectableViewHolder<String> = BackgroundViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
-        selectableController, detailable
+            LayoutInflater.from(parent.context).inflate(R.layout.item_image_list, parent, false),
+            selectableController, detailable
     )
 
     class BackgroundViewHolder(
-        view: View,
-        controller: SelectableController<SelectableViewHolder<String>>,
-        detailable: ActionClick<String>?
+            view: View,
+            controller: SelectableController<SelectableViewHolder<String>>,
+            detailable: ActionClick<String>?
     ) : SelectableViewHolder<String>(view, detailable, controller) {
 
         private val binding = ItemImageListBinding.bind(itemView)
@@ -43,7 +43,7 @@ class BackgroundAdapter(
                 } else {
                     textView.visibility = View.GONE
                     ImageLoader.loadImage(
-                        binding.imageView, data, ImageLoader.ScaleType.CENTER_CROP, false
+                            binding.imageView, data, ImageLoader.ScaleType.CENTER_CROP, false
                     )
                 }
             }

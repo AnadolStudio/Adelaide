@@ -11,16 +11,16 @@ import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.adapters.ActionClick
 
 class StickerAdapter(data: MutableList<String>, detailable: ActionClick<String>) :
-    AbstractAdapter.Base<String, StickerAdapter.StickerViewHolder>(data, detailable) {
+        AbstractAdapter.Base<String, StickerAdapter.StickerViewHolder>(data, detailable) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = StickerViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_sticker, parent, false),
-        detailable
+            LayoutInflater.from(parent.context).inflate(R.layout.item_sticker, parent, false),
+            detailable
     )
 
     class StickerViewHolder(
-        view: View,
-        detailable: ActionClick<String>?
+            view: View,
+            detailable: ActionClick<String>?
     ) : AbstractViewHolder.Base<String>(view, detailable) {
 
         private val binding: ItemStickerBinding = ItemStickerBinding.bind(itemView)

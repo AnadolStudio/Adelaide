@@ -13,16 +13,16 @@ import io.reactivex.Single
 class EditProcessorProduction : EditProcessorContract.Abstract() {
 
     override fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap =
-        processAll(
-            BitmapDecoder.Manager.decodeBitmapFromPath(
-                context,path, BitmapCommonUtil.MAX_SIDE, BitmapCommonUtil.MAX_SIDE
+            processAll(
+                    BitmapDecoder.Manager.decodeBitmapFromPath(
+                            context, path, BitmapCommonUtil.MAX_SIDE, BitmapCommonUtil.MAX_SIDE
+                    )
             )
-        )
 
-    override fun processPreview(support: Bitmap?):Single<Bitmap> = quickSingleFrom {
+    override fun processPreview(support: Bitmap?): Single<Bitmap> = quickSingleFrom {
         originalBitmap
-            ?.let { processAll(it) }
-            ?: throw NullBitmapException()
+                ?.let { processAll(it) }
+                ?: throw NullBitmapException()
     }.doOnSuccess { bitmap -> currentBitmap = bitmap }
 
     override fun processAll(bitmap: Bitmap): Bitmap {
@@ -33,10 +33,10 @@ class EditProcessorProduction : EditProcessorContract.Abstract() {
             when (func) {
                 is TransformFunction -> originalBitmap?.let {
                     func.scale = BitmapCommonUtil.scaleRatioCircumscribed(
-                        bitmap.width.toFloat(),
-                        bitmap.height.toFloat(),
-                        it.width.toFloat(),
-                        it.height.toFloat()
+                            bitmap.width.toFloat(),
+                            bitmap.height.toFloat(),
+                            it.width.toFloat(),
+                            it.height.toFloat()
                     )
                 }
 

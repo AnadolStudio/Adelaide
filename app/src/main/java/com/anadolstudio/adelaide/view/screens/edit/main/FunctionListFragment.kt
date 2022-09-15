@@ -15,8 +15,8 @@ class FunctionListFragment : BaseEditFragment() {
     companion object {
 
         fun newInstance(
-            key: String,
-            detailableListener: ActionClick<FuncItem>
+                key: String,
+                detailableListener: ActionClick<FuncItem>
         ): FunctionListFragment = FunctionListFragment().apply {
 
             arguments = Bundle().apply {
@@ -32,13 +32,13 @@ class FunctionListFragment : BaseEditFragment() {
     private lateinit var binding: LayoutListBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = LayoutListBinding.inflate(inflater)
         binding.recyclerView.adapter =
-            FunctionListAdapter(FuncItem.MainFunctions.values().toList(), listener)
+                FunctionListAdapter(FuncItem.MainFunctions.values().toList(), listener)
 
         return binding.root
     }

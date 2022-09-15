@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.view.View
-import androidx.exifinterface.media.ExifInterface
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -36,36 +35,36 @@ object BitmapCommonUtil {
     }
 
     fun getScaleRatioMin(maxSide: Float, supportW: Float, supportH: Float): Float =
-        getScaleRatioMin(maxSide, maxSide, supportW, supportH)
+            getScaleRatioMin(maxSide, maxSide, supportW, supportH)
 
     fun getScaleRatioMin(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
-        if (supportW > mainW || supportH > mainH)
-            min(mainW / supportW, mainH / supportH)
-        else 1F
+            if (supportW > mainW || supportH > mainH)
+                min(mainW / supportW, mainH / supportH)
+            else 1F
 
     fun getScaleRatio(current: Float, defaultInt: Float): Float = defaultInt / current
 
     fun getScaleRatioMax(mainW: Float, mainH: Float, supportW: Float, supportH: Float) =
-        max(mainW / supportW, mainH / supportH)
+            max(mainW / supportW, mainH / supportH)
 
     fun getScaleRatioMax(mainW: Int, mainH: Int, supportW: Int, supportH: Int) =
-        getScaleRatioMax(mainW.toFloat(), mainH.toFloat(), supportW.toFloat(), supportH.toFloat())
+            getScaleRatioMax(mainW.toFloat(), mainH.toFloat(), supportW.toFloat(), supportH.toFloat())
 
     fun scaleRatioCircumscribed(
-        mainW: Float, mainH: Float, supportW: Float, supportH: Float
+            mainW: Float, mainH: Float, supportW: Float, supportH: Float
     ): Float = max(mainW / supportW, mainH / supportH)
 
     fun scaleRatioInscribed(mainW: Float, mainH: Float, supportW: Float, supportH: Float): Float =
-        min(mainW / supportW, mainH / supportH)
+            min(mainW / supportW, mainH / supportH)
 
     fun rotate(source: Bitmap, degree: Float): Bitmap {
         if (degree == 0f) return source
         //Если хочешь кастомный градус, то используй editor().setScaleType(ImageView.ScaleType.MATRIX);
         val matrix = createRotateMatrix(degree)
         return Bitmap.createBitmap(
-            source, 0, 0,
-            source.width, source.height,
-            matrix, true
+                source, 0, 0,
+                source.width, source.height,
+                matrix, true
         )
     }
 
@@ -77,24 +76,24 @@ object BitmapCommonUtil {
 
     fun flip(source: Bitmap, flipHorizontally: Boolean, flipVertically: Boolean): Bitmap? {
         val matrix: Matrix = createFlipMatrix(
-            source.width / 2F,
-            source.height / 2F,
-            flipHorizontally,
-            flipVertically
+                source.width / 2F,
+                source.height / 2F,
+                flipHorizontally,
+                flipVertically
         )
 
         return Bitmap.createBitmap(
-            source, 0, 0,
-            source.width, source.height,
-            matrix, true
+                source, 0, 0,
+                source.width, source.height,
+                matrix, true
         )
     }
 
     fun createFlipMatrix(
-        centerX: Float,
-        centerY: Float,
-        flipHorizontally: Boolean,
-        flipVertically: Boolean
+            centerX: Float,
+            centerY: Float,
+            flipHorizontally: Boolean,
+            flipVertically: Boolean
     ): Matrix {
         val matrix = Matrix()
         val xFlip = if (flipHorizontally) 1 else -1
@@ -108,30 +107,30 @@ object BitmapCommonUtil {
     fun getYSpace(one: Bitmap, two: Bitmap) = abs((two.height - one.height) / 2)
 
     fun cropFromSource(weight: Int, height: Int, x: Int, y: Int, source: Bitmap): Bitmap =
-        Bitmap.createBitmap(source, x, y, weight, height)
+            Bitmap.createBitmap(source, x, y, weight, height)
 
     fun scaleBitmap(main: Bitmap, support: Bitmap): Bitmap =
-        scaleBitmap(main.width.toFloat(), main.height.toFloat(), support, true)
+            scaleBitmap(main.width.toFloat(), main.height.toFloat(), support, true)
 
     fun scaleBitmap(mainW: Float, mainH: Float, support: Bitmap): Bitmap =
-        scaleBitmap(mainW, mainH, support, true)
+            scaleBitmap(mainW, mainH, support, true)
 
     fun scaleBitmap(main: Bitmap, support: Bitmap, isHard: Boolean): Bitmap =
-        scaleBitmap(main.width.toFloat(), main.height.toFloat(), support, isHard)
+            scaleBitmap(main.width.toFloat(), main.height.toFloat(), support, isHard)
 
     //Работает для пропроциональных
     fun scaleBitmap(mainW: Float, mainH: Float, support: Bitmap, isHard: Boolean): Bitmap =
-        with(support) {
-            val scaleRatio = scaleRatioCircumscribed(
-                mainW, mainH,
-                width.toFloat(), height.toFloat()
-            )
+            with(support) {
+                val scaleRatio = scaleRatioCircumscribed(
+                        mainW, mainH,
+                        width.toFloat(), height.toFloat()
+                )
 
-            val scaleW = (if (isHard) mainW else width.toFloat() * scaleRatio).toInt()
-            val scaleH = (if (isHard) mainH else height.toFloat() * scaleRatio).toInt()
+                val scaleW = (if (isHard) mainW else width.toFloat() * scaleRatio).toInt()
+                val scaleH = (if (isHard) mainH else height.toFloat() * scaleRatio).toInt()
 
-            Bitmap.createScaledBitmap(support, scaleW, scaleH, true)
-        }
+                Bitmap.createScaledBitmap(support, scaleW, scaleH, true)
+            }
 
     fun centerCrop(source: Bitmap): Bitmap = with(source) {
         val minSide = min(width, height)
@@ -144,11 +143,11 @@ object BitmapCommonUtil {
     fun captureView(view: View) = captureView(view.width, view.height, view)
 
     fun captureView(width: Int, height: Int, vararg views: View): Bitmap =
-        with(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)) {
-            val canvas = Canvas(this)
-            views.forEach { it.draw(canvas) }
-            this
-        }
+            with(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)) {
+                val canvas = Canvas(this)
+                views.forEach { it.draw(canvas) }
+                this
+            }
 
 
 }

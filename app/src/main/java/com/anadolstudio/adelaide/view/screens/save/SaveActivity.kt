@@ -69,11 +69,11 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
 
         // TODO ВЫнести во ViewModel
         RxTask.Base.Quick { BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400) }
-            .onSuccess { binding.savedImage.setImageBitmap(it) }
-            .onError { it.printStackTrace() }
+                .onSuccess { binding.savedImage.setImageBitmap(it) }
+                .onError { it.printStackTrace() }
 
         binding.recyclerView.adapter =
-            SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
+                SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
 
         adController = SaveAdController(binding).apply {
             if (!SettingsPreference.hasPremium(this@SaveActivity))
@@ -100,9 +100,9 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
 
     private fun updateAd() {
         SettingsPreference.hasPremium(this)
-            .also { hasPremium ->
-                adController.updateView(!hasPremium)
-            }
+                .also { hasPremium ->
+                    adController.updateView(!hasPremium)
+                }
     }
 
     override fun onResume() {
@@ -133,8 +133,8 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
         binding.recyclerView.apply {
             smoothScrollBy(ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt())
             postDelayed(
-                { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
-                DURATION_EXTRA_LONG + 200
+                    { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
+                    DURATION_EXTRA_LONG + 200
             )
         }
     }

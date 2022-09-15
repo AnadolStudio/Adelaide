@@ -5,13 +5,11 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.anadolstudio.adelaide.data.AssetData
 import com.anadolstudio.adelaide.data.AssetsDirections
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
-import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.tasks.RxTask
 import com.anadolstudio.core.viewmodel.Communication
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
 class EffectEditViewModel : ViewModel() {
-
 
 
     data class AdapterData(val thumbnail: Bitmap, val paths: MutableList<String>)
@@ -33,7 +31,7 @@ class EffectEditViewModel : ViewModel() {
 
             AdapterData(thumbnail, paths)
         }
-            .onSuccess { adapterDataCommunication.map(Result.Success(it)) }
-            .onError { ex -> adapterDataCommunication.map(Result.Error(ex)) }
+                .onSuccess { adapterDataCommunication.map(Result.Success(it)) }
+                .onError { ex -> adapterDataCommunication.map(Result.Error(ex)) }
     }
 }

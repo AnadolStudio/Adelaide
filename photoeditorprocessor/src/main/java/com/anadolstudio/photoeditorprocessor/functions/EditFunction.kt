@@ -27,35 +27,35 @@ interface EditFunction {
         override fun toString(): String = "EditFunction(type=$type)"
 
         override fun process(main: Bitmap, support: Bitmap?): Bitmap =
-            with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
-                val supportScale = scale(support, main)
-                val canvas = Canvas(this)
-                canvas.drawBitmap(main, 0f, 0f, null)
+                with(Bitmap.createBitmap(main.width, main.height, Bitmap.Config.ARGB_8888)) {
+                    val supportScale = scale(support, main)
+                    val canvas = Canvas(this)
+                    canvas.drawBitmap(main, 0f, 0f, null)
 
-                supportScale?.also {
+                    supportScale?.also {
 
-                    canvas.drawBitmap(
-                        BitmapCommonUtil.cropFromSource(
-                            main.width, main.height,
-                            BitmapCommonUtil.getXSpace(main, it),
-                            BitmapCommonUtil.getYSpace(main, it),
-                            it
-                        ), 0f, 0f, null
-                    )
-                    it.recycle()
+                        canvas.drawBitmap(
+                                BitmapCommonUtil.cropFromSource(
+                                        main.width, main.height,
+                                        BitmapCommonUtil.getXSpace(main, it),
+                                        BitmapCommonUtil.getYSpace(main, it),
+                                        it
+                                ), 0f, 0f, null
+                        )
+                        it.recycle()
+                    }
+                    support?.recycle()
+                    supportScale?.recycle()
+                    this
                 }
-                support?.recycle()
-                supportScale?.recycle()
-                this
-            }
 
         private fun scale(support: Bitmap?, main: Bitmap): Bitmap? {
             val supportScale = support?.let {
                 val scale = BitmapCommonUtil.scaleRatioCircumscribed(
-                    main.width.toFloat(),
-                    main.height.toFloat(),
-                    support.width.toFloat(),
-                    support.height.toFloat(),
+                        main.width.toFloat(),
+                        main.height.toFloat(),
+                        support.width.toFloat(),
+                        support.height.toFloat(),
                 )
 
                 val scaleW = (it.width * scale).toInt()

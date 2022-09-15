@@ -9,7 +9,7 @@ import io.reactivex.Single
 class EditProcessorStudy : EditProcessorContract.Abstract() {
 
     override fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap =
-        getCurrentImage()
+            getCurrentImage()
 
     override fun processPreview(support: Bitmap?): Single<Bitmap> = quickSingleFrom {
         val func = containerFunctions[containerFunctions.keys.last()]

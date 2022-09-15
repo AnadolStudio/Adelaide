@@ -36,9 +36,9 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = LayoutBrushListBinding.inflate(inflater, container, false)
 
@@ -54,7 +54,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
             val isBrush = viewModel.settings.isBrush
 
             binding.editSliderView.setApplyIcon(
-                if (isBrush) R.drawable.ic_eraser else R.drawable.ic_brush
+                    if (isBrush) R.drawable.ic_eraser else R.drawable.ic_brush
             )
 
             viewModel.settings.isBrush = !isBrush
@@ -62,7 +62,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
         }
 
         binding.editSliderView.setupSlider(
-            XSMALL, XLARGE, viewModel.settings.size
+                XSMALL, XLARGE, viewModel.settings.size
         )
 
         binding.editSliderView.setSliderListener { _, value, _ ->
@@ -72,8 +72,8 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
         }
 
         func = activityViewModel.getEditProcessor()
-            .getFunction(FuncItem.MainFunctions.CUT) as BrushFunction?
-            ?: BrushFunction()
+                .getFunction(FuncItem.MainFunctions.CUT) as BrushFunction?
+                ?: BrushFunction()
 
         binding.recyclerView.adapter = ColorAdapter(Colors.getColors().toMutableList(), this)
         activityViewModel.viewController.setupBrush(viewModel.settings)
@@ -83,9 +83,9 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
     private fun setState(currentState: State) {
         this.currentState = currentState
         binding.editSliderView.visibility =
-            if (currentState == State.DRAW) View.VISIBLE else View.GONE
+                if (currentState == State.DRAW) View.VISIBLE else View.GONE
         binding.recyclerView.visibility =
-            if (currentState == State.COLOR_PICK) View.VISIBLE else View.GONE
+                if (currentState == State.COLOR_PICK) View.VISIBLE else View.GONE
     }
 
     override fun action(data: String) {
@@ -105,7 +105,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
         activityViewModel.viewController.photoEditor.clearHelperBox()
 
         activityViewModel.processPreview(
-            BitmapCommonUtil.captureView(activityViewModel.viewController.photoEditorView)
+                BitmapCommonUtil.captureView(activityViewModel.viewController.photoEditorView)
         )
 
         return super.apply()

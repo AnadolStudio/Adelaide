@@ -2,7 +2,11 @@ package com.anadolstudio.adelaide
 
 import android.app.Application
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatDelegate.*
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode
+import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import com.anadolstudio.adelaide.data.SettingsPreference
 
 class App : Application() {

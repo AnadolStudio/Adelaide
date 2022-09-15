@@ -4,18 +4,18 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.adapters.AbstractSelectableViewHolder
-import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
 open class SelectableViewHolder<Data : Any>(
-    view: View,
-    detailable: ActionClick<Data>?,
-    controller: SelectableController<out AbstractSelectableViewHolder<Data>>,
+        view: View,
+        detailable: ActionClick<Data>?,
+        controller: SelectableController<out AbstractSelectableViewHolder<Data>>,
 ) : AbstractSelectableViewHolder.Base<Data>(view, detailable, controller) {
 
     override fun getSelectableView(): View? = itemView.findViewById(R.id.main_container)
 
     override fun getSelectableColor(isSelected: Boolean): Int = ContextCompat.getColor(
-        itemView.context, if (isSelected) R.color.colorAccent else R.color.colorAccentInverse
+            itemView.context, if (isSelected) R.color.colorAccent else R.color.colorAccentInverse
     )
 }

@@ -36,10 +36,10 @@ object DisplayUtil {
 
     // TODO need Test
     fun workspaceSize(
-        activity: AppCompatActivity,
-        vararg views: View,
-        checkWidth: Boolean = false,
-        checkHeight: Boolean = true
+            activity: AppCompatActivity,
+            vararg views: View,
+            checkWidth: Boolean = false,
+            checkHeight: Boolean = true
     ): Point {
         val dm = getDefaultSize(activity)
         return with(views) {

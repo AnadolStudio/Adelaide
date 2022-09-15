@@ -19,15 +19,15 @@ interface SharedAction {
         override fun runShareIntent(path: String, activity: AppCompatActivity) {
             val type = "image/*"
             val photoURI =
-                if (path.contains(BitmapDecoder.Manager.CONTENT)) {
-                    Uri.parse(path)
-                } else {
-                    FileProvider.getUriForFile(
-                        activity,
-                        activity.applicationContext.packageName + ".provider",
-                        File(path)
-                    )
-                }
+                    if (path.contains(BitmapDecoder.Manager.CONTENT)) {
+                        Uri.parse(path)
+                    } else {
+                        FileProvider.getUriForFile(
+                                activity,
+                                activity.applicationContext.packageName + ".provider",
+                                File(path)
+                        )
+                    }
 
             val share = Intent(Intent.ACTION_SEND)
             share.type = type
@@ -37,7 +37,7 @@ interface SharedAction {
 
             if (appPackage == null) {
                 activity.startActivity(
-                    Intent.createChooser(share, activity.getString(R.string.save_func_another))
+                        Intent.createChooser(share, activity.getString(R.string.save_func_another))
                 )
             } else {
                 share.setPackage(appPackage.appPackage)
@@ -64,7 +64,7 @@ interface SharedAction {
     }
 
     sealed class SharedItem(
-        @DrawableRes val drawable: Int,
-        appPackage: AppPackages?
+            @DrawableRes val drawable: Int,
+            appPackage: AppPackages?
     ) : Base(appPackage)
 }

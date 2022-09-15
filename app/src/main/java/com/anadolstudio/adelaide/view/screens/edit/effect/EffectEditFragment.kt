@@ -15,7 +15,6 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.effect.EffectFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -38,9 +37,9 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
     private val effectViewModel: EffectEditViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = LayoutListBinding.inflate(inflater, container, false)
 
@@ -49,9 +48,9 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
         effectViewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> binding.recyclerView.adapter = EffectAdapter(
-                    result.data.thumbnail,
-                    result.data.paths,
-                    this
+                        result.data.thumbnail,
+                        result.data.paths,
+                        this
                 )
                 is Result.Error -> result.error.printStackTrace()
                 else -> {}
@@ -59,8 +58,8 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
         }
 
         effectViewModel.loadData(
-            requireContext(),
-            activityViewModel.getEditProcessor().getCurrentImage()
+                requireContext(),
+                activityViewModel.getEditProcessor().getCurrentImage()
         )
 
         return binding.root
@@ -74,8 +73,8 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
         binding.editSliderView.setSliderListener(this)
 
         func = activityViewModel.getEditProcessor()
-            .getFunction(FuncItem.MainFunctions.EFFECT) as EffectFunction?
-            ?: EffectFunction()
+                .getFunction(FuncItem.MainFunctions.EFFECT) as EffectFunction?
+                ?: EffectFunction()
     }
 
     private fun setupSlider(isEnable: Boolean) {
@@ -98,7 +97,7 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
         currentEffect = bitmap?.let { BitmapDrawable(resources, bitmap) }
 
         bitmap?.also { selectEditObject() }
-            ?: clearEditObject()
+                ?: clearEditObject()
 
         currentEffect?.alpha = currentAlpha
         activityViewModel.viewController.setSupportImage(currentEffect)
@@ -110,9 +109,9 @@ class EffectEditFragment : BaseEditFragment(), ActionClick<String>, Slider.OnCha
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview(
-            BitmapCommonUtil.captureView(
-                activityViewModel.viewController.supportImage
-            )
+                BitmapCommonUtil.captureView(
+                        activityViewModel.viewController.supportImage
+                )
         )
 
         return super.apply()

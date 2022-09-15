@@ -5,7 +5,7 @@ import com.anadolstudio.photoeditorprocessor.util.BitmapInfoUtil
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BitmapInfoUtilTest{
+class BitmapInfoUtilTest {
 
     @Test
     fun getDegreesTest() {

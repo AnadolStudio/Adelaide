@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.App
 import com.anadolstudio.adelaide.databinding.ActivityMainBinding
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper.Event
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 
 class MainActivity : AppCompatActivity() {
@@ -15,10 +13,10 @@ class MainActivity : AppCompatActivity() {
 
         fun start(context: Context) {
             context.startActivity(
-                Intent(
-                    context,
-                    MainActivity::class.java
-                )
+                    Intent(
+                            context,
+                            MainActivity::class.java
+                    )
             )
         }
 

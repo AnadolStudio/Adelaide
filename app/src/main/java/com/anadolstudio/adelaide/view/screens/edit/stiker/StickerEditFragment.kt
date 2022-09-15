@@ -12,7 +12,6 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.sticker.StickerFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -29,8 +28,8 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         val binding: LayoutListBinding = LayoutListBinding.inflate(inflater, container, false)
 
@@ -42,8 +41,8 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
         }
 
         func = activityViewModel.getEditProcessor()
-            .getFunction(FuncItem.MainFunctions.STICKER) as StickerFunction?
-            ?: StickerFunction()
+                .getFunction(FuncItem.MainFunctions.STICKER) as StickerFunction?
+                ?: StickerFunction()
 
         adapter = StickerAdapter(mutableListOf(), this)
         binding.recyclerView.adapter = adapter
@@ -54,8 +53,8 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
     @SuppressLint("CheckResult")
     override fun action(path: String) {
         ImageLoader.loadImageWithoutCache(
-            requireContext(),
-            path,
+                requireContext(),
+                path,
         ) { sticker -> activityViewModel.viewController.photoEditor.addSticker(sticker) }
     }
 
@@ -65,7 +64,7 @@ class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
         activityViewModel.viewController.photoEditor.clearHelperBox()
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.processPreview(
-            BitmapCommonUtil.captureView(activityViewModel.viewController.photoEditorView)
+                BitmapCommonUtil.captureView(activityViewModel.viewController.photoEditorView)
         )
 
         return super.apply()

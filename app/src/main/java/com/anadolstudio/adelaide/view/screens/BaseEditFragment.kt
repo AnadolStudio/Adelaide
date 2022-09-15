@@ -42,8 +42,8 @@ abstract class BaseEditFragment : Fragment(), EditState {
     open fun nothingIsSelectedToast() = showToast(getString(R.string.edit_error_nothing_selected))
 
     protected fun showToast(@StringRes stringId: Int, duration: Int = Toast.LENGTH_SHORT) =
-        showToast(getString(stringId), duration)
+            showToast(getString(stringId), duration)
 
     protected fun showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
-        Toast.makeText(context, text, duration).show()
+            Toast.makeText(context, text, duration).show()
 }

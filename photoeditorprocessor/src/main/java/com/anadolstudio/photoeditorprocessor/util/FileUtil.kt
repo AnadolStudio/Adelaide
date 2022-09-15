@@ -20,8 +20,8 @@ object FileUtil {
 
     fun createAppDir(nameDir: String, fileName: String = getFileName()): File {
         val directory = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                .toString() + File.separator + nameDir
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                        .toString() + File.separator + nameDir
         )
 
         if (!directory.exists() && !directory.isDirectory) {

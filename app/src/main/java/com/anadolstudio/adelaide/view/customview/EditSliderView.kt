@@ -15,7 +15,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class EditSliderView(
-    context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
     companion object {
 
@@ -32,7 +32,7 @@ class EditSliderView(
     constructor(context: Context) : this(context, null)
 
     private val binding: ViewSliderEditBinding = ViewSliderEditBinding.bind(
-        LayoutInflater.from(context).inflate(R.layout.view_slider_edit, this, true)
+            LayoutInflater.from(context).inflate(R.layout.view_slider_edit, this, true)
     )
 
     init {
@@ -46,16 +46,16 @@ class EditSliderView(
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.EditSliderView)
 
         setState(
-            State.values()[typeArray.getInt(R.styleable.EditSliderView_state, State.ALL.ordinal)]
+                State.values()[typeArray.getInt(R.styleable.EditSliderView_state, State.ALL.ordinal)]
         )
 
         binding.slider.apply {
             setSliderLabelFormatter(RealFormatter)
             setLabelBehavior()
             setupSlider(
-                typeArray.getFloat(R.styleable.EditSliderView_valueFrom, 0F),
-                typeArray.getFloat(R.styleable.EditSliderView_valueTo, 100F),
-                typeArray.getFloat(R.styleable.EditSliderView_value, 0F)
+                    typeArray.getFloat(R.styleable.EditSliderView_valueFrom, 0F),
+                    typeArray.getFloat(R.styleable.EditSliderView_valueTo, 100F),
+                    typeArray.getFloat(R.styleable.EditSliderView_value, 0F)
             )
         }
 

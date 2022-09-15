@@ -1,12 +1,10 @@
 package com.anadolstudio.photoeditorprocessor
 
 import android.net.Uri
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.anadolstudio.photoeditorprocessor.util.BitmapInfoUtil
 import junit.framework.TestCase
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -16,24 +14,24 @@ import org.junit.runner.RunWith
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class BitmapInfoUtilAndroidTest : TestCase(){
+class BitmapInfoUtilAndroidTest : TestCase() {
 
     @Test
     fun mimeTypeTest() {
         val appContext = InstrumentationRegistry.getInstrumentation().context
         assertEquals(
-            "image/jpeg",
-            BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.jpg"))
+                "image/jpeg",
+                BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.jpg"))
         )
 
         assertEquals(
-            "image/png",
-            BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.png"))
+                "image/png",
+                BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.png"))
         )
 
         assertEquals(
-            "text/plain",
-            BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.text"))
+                "text/plain",
+                BitmapInfoUtil.getMimeType(appContext, Uri.parse("/testName.text"))
         )
     }
 }

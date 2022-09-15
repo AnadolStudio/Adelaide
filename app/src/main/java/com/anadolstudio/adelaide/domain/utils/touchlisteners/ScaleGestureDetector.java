@@ -45,10 +45,10 @@ class ScaleGestureDetector {
      */
     private static final float PRESSURE_THRESHOLD = 0.67f;
     private final OnScaleGestureListener mListener;
+    private final Vector2D mCurrSpanVector;
     private boolean mGestureInProgress;
     private MotionEvent mPrevEvent;
     private MotionEvent mCurrEvent;
-    private final Vector2D mCurrSpanVector;
     private float mFocusX;
     private float mFocusY;
     private float mPrevFingerDiffX;

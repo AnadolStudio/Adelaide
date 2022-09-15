@@ -8,7 +8,6 @@ import android.provider.MediaStore.MediaColumns.MIME_TYPE
 import android.provider.MediaStore.MediaColumns._ID
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.core.tasks.RxTask
 import java.io.File
 
@@ -23,9 +22,9 @@ class GalleryService {
 
     @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     fun loadImages(
-        context: Context,
-        folder: String? = null,
-        lastItemId: Long = NULL
+            context: Context,
+            folder: String? = null,
+            lastItemId: Long = NULL
     ) = RxTask.Base.Quick {
         val images = mutableListOf<String>()
         val uri: Uri = Media.EXTERNAL_CONTENT_URI
@@ -52,7 +51,7 @@ class GalleryService {
         selectionArg?.also { selectionArgArray = it.toTypedArray() }
 
         val cursor = context.contentResolver.query(
-            uri, projection, selection, selectionArgArray, "$_ID DESC"
+                uri, projection, selection, selectionArgArray, "$_ID DESC"
         )
 
         if (cursor != null) {
@@ -62,7 +61,7 @@ class GalleryService {
 
             while (cursor.moveToNext() && count < ONE_PORTION) {
                 val pathOfImage =
-                    Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
+                        Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
 
                 //image/jpeg
                 val format = cursor.getString(indexMT).split("/".toRegex()).toTypedArray()[1]
@@ -90,7 +89,7 @@ class GalleryService {
         val projection = arrayOf(Media.BUCKET_DISPLAY_NAME)
 
         val cursor = context.contentResolver.query(
-            uri, projection, null, null, "$_ID DESC"
+                uri, projection, null, null, "$_ID DESC"
         )
 
         if (cursor != null) {
@@ -98,7 +97,7 @@ class GalleryService {
 
             while (cursor.moveToNext()) {
                 val folderItem =
-                    Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
+                        Uri.withAppendedPath(uri, cursor.getString(columnIndexData)).toString()
                 folders.add(File(Uri.parse(folderItem).path!!).name)
             }
 

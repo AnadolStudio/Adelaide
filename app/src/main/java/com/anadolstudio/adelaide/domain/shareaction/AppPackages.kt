@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide.domain.shareaction
 
-enum class AppPackages(val appPackage:String) {
+enum class AppPackages(val appPackage: String) {
     VK("com.vkontakte.android"),
     INSTAGRAM("com.instagram.android"),
     FACEBOOK("com.facebook.katana"),

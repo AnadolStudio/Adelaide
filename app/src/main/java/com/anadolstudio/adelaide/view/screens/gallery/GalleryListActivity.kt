@@ -20,9 +20,9 @@ import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.edit.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.EditType
-import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.adapters.ILoadMore
+import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -166,9 +166,9 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         when (requestCode) {
             DEFAULT_REQUEST_CODE ->
@@ -188,12 +188,12 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
     }
 
     override fun onSupportNavigateUp(): Boolean =
-        if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
-            super.onSupportNavigateUp()
-        } else {
-            onBackPressed()
-            true
-        }
+            if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
+                super.onSupportNavigateUp()
+            } else {
+                onBackPressed()
+                true
+            }
 
     override fun action(data: String) = if (BitmapCommonUtil.validateUri(this, data)) {
         showNextActivity(data)
@@ -237,7 +237,7 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
         }
 
         override fun parseResult(resultCode: Int, data: Intent?): String? =
-            if (resultCode != RESULT_OK || data == null) null
-            else data.getStringExtra(CHOOSE_PHOTO)
+                if (resultCode != RESULT_OK || data == null) null
+                else data.getStringExtra(CHOOSE_PHOTO)
     }
 }

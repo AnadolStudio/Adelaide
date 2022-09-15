@@ -13,7 +13,7 @@ class EditAdController(val binding: ActivityEditBinding) : AdController.Abstract
     override fun load(activity: AppCompatActivity) {
         super.load(activity)
         val adRequest = AdRequest.Builder()
-            .build()
+                .build()
 
         binding.adView.adListener = object : AdListener() {
             override fun onAdLoaded() {

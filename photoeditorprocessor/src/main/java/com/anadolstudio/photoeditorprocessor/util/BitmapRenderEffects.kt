@@ -46,14 +46,14 @@ object BitmapRenderEffects {
     }
 
     val monochromeFilter = ColorMatrixColorFilter(
-        ColorMatrix(
-            floatArrayOf(
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.0F, 0.0F, 0.0F, 1.0F, 0.0F
+            ColorMatrix(
+                    floatArrayOf(
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.0F, 0.0F, 0.0F, 1.0F, 0.0F
+                    )
             )
-        )
     )
 }
 

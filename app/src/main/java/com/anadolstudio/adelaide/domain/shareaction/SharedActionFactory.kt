@@ -5,13 +5,13 @@ import com.anadolstudio.adelaide.R
 object SharedActionFactory {
 
     fun instance(): List<SharedAction.SharedItem> = listOf(
-        Empty(),
-        VK(),
-        Instagram(),
-        Facebook(),
-        Messenger(),
-        WhatsApp(),
-        Twitter()
+            Empty(),
+            VK(),
+            Instagram(),
+            Facebook(),
+            Messenger(),
+            WhatsApp(),
+            Twitter()
     )
 
     class Empty : SharedAction.SharedItem(R.drawable.ic_share, null)

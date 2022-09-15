@@ -12,21 +12,21 @@ import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.adapters.ActionClick
 
 class SharedAdapter(
-    data: List<SharedItem>,
-    detailable: ActionClick<SharedItem>?
+        data: List<SharedItem>,
+        detailable: ActionClick<SharedItem>?
 ) : SimpleAdapter<SharedItem>(data, detailable) {
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+            parent: ViewGroup,
+            viewType: Int
     ): AbstractViewHolder.Base<SharedItem> = SharedViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
-        detailable
+            LayoutInflater.from(parent.context).inflate(R.layout.item_share, parent, false),
+            detailable
     )
 
     private class SharedViewHolder(
-        view: View,
-        detailable: ActionClick<SharedItem>?
+            view: View,
+            detailable: ActionClick<SharedItem>?
     ) : AbstractViewHolder.Base<SharedItem>(view, detailable) {
 
         val binding = ItemShareBinding.bind(view)

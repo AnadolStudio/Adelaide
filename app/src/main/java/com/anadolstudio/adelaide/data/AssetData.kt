@@ -17,13 +17,13 @@ object AssetData {
     }
 
     private fun getFiles(
-        assetManager: AssetManager,
-        nameDir: String,
-        dataList: MutableList<String>
+            assetManager: AssetManager,
+            nameDir: String,
+            dataList: MutableList<String>
     ) {
         try {
             val list = assetManager.list(nameDir)
-                ?: throw Exception("Asset list is null")
+                    ?: throw Exception("Asset list is null")
 
             list.forEach { path ->
 

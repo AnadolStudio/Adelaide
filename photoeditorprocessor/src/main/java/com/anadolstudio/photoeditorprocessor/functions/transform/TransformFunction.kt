@@ -78,14 +78,14 @@ class TransformFunction() : EditFunction.Abstract(FuncItem.MainFunctions.TRANSFO
     fun processWithOutCrop(main: Bitmap): Bitmap = bitmap(main, FloatArray(0))
 
     private fun bitmap(main: Bitmap, points: FloatArray) = BitmapCropUtil.cropBitmap(//TODO нэйминг дай бог здоровья
-        main,
-        points,
-        degrees,
-        fixAspectRatio,
-        ratioItem.ratio.x,
-        ratioItem.ratio.y,
-        flipHorizontal,
-        flipVertical
+            main,
+            points,
+            degrees,
+            fixAspectRatio,
+            ratioItem.ratio.x,
+            ratioItem.ratio.y,
+            flipHorizontal,
+            flipVertical
     )
 
     override fun reboot() {

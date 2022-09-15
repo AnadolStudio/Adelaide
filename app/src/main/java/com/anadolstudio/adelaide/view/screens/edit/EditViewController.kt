@@ -31,8 +31,8 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
     val photoEditorView = binding.photoEditorView
 
     val photoEditor = PhotoEditor.Builder(context, binding.photoEditorView)
-        .setClipSourceImage(true)
-        .build()
+            .setClipSourceImage(true)
+            .build()
 
     fun showWorkspace(show: Boolean, needMoreSpace: Boolean = false) {
         //TODO не хватает плавности для mainContainer
@@ -42,14 +42,14 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
             val height = binding.adView.height.toFloat()
 
             AnimateUtil.showAnimY(
-                binding.adView,
-                if (needMoreSpace) 0F else -height,
-                if (needMoreSpace) -height else 0F,
-                visible
+                    binding.adView,
+                    if (needMoreSpace) 0F else -height,
+                    if (needMoreSpace) -height else 0F,
+                    visible
             )
         }
 
-        binding.saveBtn.isVisible= !show
+        binding.saveBtn.isVisible = !show
         binding.applyBtn.isVisible = show
     }
 
@@ -82,8 +82,8 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
 
     fun setupCropImage(function: TransformFunction) {
         binding.cropImage.setAspectRatio(
-            if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
-            if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
+                if (function.fixAspectRatio) function.ratioItem.ratio.x else 1,
+                if (function.fixAspectRatio) function.ratioItem.ratio.y else 1
         )
 
         binding.cropImage.setFixedAspectRatio(false)
@@ -110,9 +110,9 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
 
     fun setupSupportImage() {
         ViewSizeUtil.changeViewSize(
-            binding.supportImage,
-            binding.photoEditorView.source.width,
-            binding.photoEditorView.source.height
+                binding.supportImage,
+                binding.photoEditorView.source.width,
+                binding.photoEditorView.source.height
         )
     }
 
@@ -126,9 +126,9 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
                     adjustViewBounds = false
 
                     ViewSizeUtil.changeViewSize(
-                        this,
-                        binding.photoEditorView.source.width,
-                        binding.photoEditorView.source.height
+                            this,
+                            binding.photoEditorView.source.width,
+                            binding.photoEditorView.source.height
                     )
 
                 }
@@ -139,7 +139,7 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
     }
 
     fun setSupportImage(
-        drawable: Drawable?,
+            drawable: Drawable?,
     ) {
         binding.supportImage.setImageDrawable(drawable)
     }
@@ -165,9 +165,9 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
 */
 
     fun workspaceSize(activity: AppCompatActivity): Point =
-        DisplayUtil.workspaceSize(
-            activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
-        )
+            DisplayUtil.workspaceSize(
+                    activity, binding.navigationToolbar, binding.toolbarFragment, binding.adView
+            )
 
     fun currentSizeOfMainPanel() = PointF(mainImage.width.toFloat(), mainImage.height.toFloat())
 
@@ -176,8 +176,8 @@ class EditViewController(context: Context, private val binding: ActivityEditBind
         photoEditor.setBrushDrawingMode(true)
 
         val builder = ShapeBuilder()
-            .withShapeColor(settings.color)
-            .withShapeSize(settings.size)
+                .withShapeColor(settings.color)
+                .withShapeSize(settings.size)
 
         photoEditor.setShape(builder)
 

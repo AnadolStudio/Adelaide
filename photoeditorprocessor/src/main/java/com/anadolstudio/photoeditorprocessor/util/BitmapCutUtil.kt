@@ -51,7 +51,7 @@ object BitmapCutUtil {
         for (i in 0 until height * width) {
             val pixel = pixels[i]
             if (pixel != Color.TRANSPARENT
-                && hasTransparentNeighbors(i, DEFAULT_RADIUS, pixels, width, height)
+                    && hasTransparentNeighbors(i, DEFAULT_RADIUS, pixels, width, height)
             ) {
                 delete.add(i)
             }
@@ -65,28 +65,28 @@ object BitmapCutUtil {
     }
 
     fun opening(pixels: IntArray, width: Int, height: Int, color: Int): IntArray =
-        dilation(
-            erosion(pixels, width, height),
-            width,
-            height, color
-        )
+            dilation(
+                    erosion(pixels, width, height),
+                    width,
+                    height, color
+            )
 
     fun opening(bitmap: Bitmap, color: Int): IntArray = dilation(
-        erosion(bitmap),
-        bitmap.width,
-        bitmap.height, color
+            erosion(bitmap),
+            bitmap.width,
+            bitmap.height, color
     )
 
     fun closing(pixels: IntArray, width: Int, height: Int, color: Int): IntArray = erosion(
-        dilation(pixels, width, height, color),
-        width,
-        height
+            dilation(pixels, width, height, color),
+            width,
+            height
     )
 
     fun closing(bitmap: Bitmap, color: Int): IntArray = erosion(
-        dilation(bitmap, color),
-        bitmap.width,
-        bitmap.height
+            dilation(bitmap, color),
+            bitmap.width,
+            bitmap.height
     )
 
     fun dilation(bitmap: Bitmap, color: Int): IntArray {
@@ -173,11 +173,11 @@ object BitmapCutUtil {
     }
 
     private fun hasTransparentNeighbors(
-        index: Int,
-        radius: Int,
-        pixels: IntArray,
-        width: Int,
-        height: Int
+            index: Int,
+            radius: Int,
+            pixels: IntArray,
+            width: Int,
+            height: Int
     ): Boolean {
         val neighbors = getNeighbors(index, radius, width, height)
 
@@ -326,24 +326,24 @@ object BitmapCutUtil {
     }
 
     fun blur(
-        context: Context,
-        main: IntArray,
-        w: Int,
-        h: Int,
-        radius: Int = RADIUS_BLUR_DEFAULT
+            context: Context,
+            main: IntArray,
+            w: Int,
+            h: Int,
+            radius: Int = RADIUS_BLUR_DEFAULT
     ): Bitmap = blur(
-        context,
-        Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888),
-        radius.toFloat()
+            context,
+            Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888),
+            radius.toFloat()
     )
 
     fun blur(
-        context: Context,
-        main: IntArray,
-        edge: IntArray,
-        w: Int,
-        h: Int,
-        radius: Int = RADIUS_BLUR_DEFAULT
+            context: Context,
+            main: IntArray,
+            edge: IntArray,
+            w: Int,
+            h: Int,
+            radius: Int = RADIUS_BLUR_DEFAULT
     ): Bitmap {
         val edgeBitmap = Bitmap.createBitmap(edge, w, h, Bitmap.Config.ARGB_8888)
         val mainBitmap = Bitmap.createBitmap(main, w, h, Bitmap.Config.ARGB_8888)
