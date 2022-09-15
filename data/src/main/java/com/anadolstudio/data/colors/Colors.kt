@@ -1,4 +1,4 @@
-package com.anadolstudio.adelaide.domain.utils
+package com.anadolstudio.data.colors
 
 object Colors {
     const val COLOR_DEFAULT = "#1976D2"

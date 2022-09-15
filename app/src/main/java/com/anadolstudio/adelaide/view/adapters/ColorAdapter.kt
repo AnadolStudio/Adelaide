@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ItemImageListBinding
-import com.anadolstudio.adelaide.domain.utils.Colors
+import com.anadolstudio.data.colors.Colors
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.adapters.selectablecontroller.SelectableController
 
@@ -23,7 +23,7 @@ class ColorAdapter(data: MutableList<String>, detailable: ActionClick<String>?) 
     )
 
     override fun onBindViewHolder(holder: SelectableViewHolder<String>, position: Int) {
-        if (dataList[position] == Colors.COLOR_DEFAULT && !selectableController.selectableItemIsExist()) {
+        if (dataList[position] == com.anadolstudio.data.colors.Colors.COLOR_DEFAULT && !selectableController.selectableItemIsExist()) {
             selectableController.setStartItem(holder)
         }
         super.onBindViewHolder(holder, position)

@@ -48,7 +48,7 @@ class EditActivityViewModel : ViewModel() {
     fun saveAsFile(
             context: Context,
             file: File,
-            progressListener: ProgressListener<String>?
+            progressListener: ProgressListener<String>? = null
     ) {
         saveBitmapPath.map(Result.Loading())
 

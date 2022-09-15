@@ -132,7 +132,7 @@ class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {
     override fun isReadyToBackClick(): Boolean = currentState == State.TRANSFORM
 
     override fun backClick(): Boolean {
-        if (!isReadyToBackClick) {
+        if (!isReadyToBackClick()) {
             showRatioView(false)
 
             activityViewModel.viewController.cropView.let { cropView ->

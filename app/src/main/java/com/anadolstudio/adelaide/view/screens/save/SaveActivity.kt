@@ -8,21 +8,23 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View.VISIBLE
 import com.anadolstudio.adelaide.BuildConfig
+import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem
-import com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
+import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.core.tasks.RxTask
-import com.anadolstudio.core.util.BitmapDecoder
-import com.anadolstudio.core.view.BaseActivity
+import com.anadolstudio.core.bitmap_util.BitmapDecoder
+import com.anadolstudio.core.rx_util.quickSingleFrom
+import com.anadolstudio.core.rx_util.smartSubscribe
+import com.anadolstudio.core.share_util.SharedAction.SharedItem
+import com.anadolstudio.core.share_util.SharedActionFactory
 
-class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
+class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
 
     companion object {
         private const val PATH = "path"
@@ -68,9 +70,11 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
         binding.savedImage.setOnTouchListener(ImageDialogTouchListener(path, this))
 
         // TODO ВЫнести во ViewModel
-        RxTask.Base.Quick { BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400) }
-                .onSuccess { binding.savedImage.setImageBitmap(it) }
-                .onError { it.printStackTrace() }
+        quickSingleFrom { BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400) }
+                .smartSubscribe(
+                        onSuccess = { binding.savedImage.setImageBitmap(it) },
+                        onError = { it.printStackTrace() }
+                )
 
         binding.recyclerView.adapter =
                 SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
@@ -82,7 +86,6 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
     }
 
     override fun action(data: SharedItem) {
-
         //TODO FB listener
         val fbEvent = when (data) {
             is SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
@@ -95,7 +98,7 @@ class SaveActivity : BaseActivity(), ActionClick<SharedItem> {
         }
 
         FirebaseHelper.get().logEvent(fbEvent)
-        data.runShareIntent(path, this)
+        data.runShareIntent(path, this, getString(R.string.save_func_another))
     }
 
     private fun updateAd() {

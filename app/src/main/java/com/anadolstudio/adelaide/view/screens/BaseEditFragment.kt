@@ -4,29 +4,23 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.core.dialogs.LoadingView
-import com.anadolstudio.core.interfaces.EditState
 
-abstract class BaseEditFragment : Fragment(), EditState {
+abstract class BaseEditFragment : Fragment() {
 
-    private var mLoadingView: LoadingView? = null
 
     fun showLoadingDialog() {
-        requireActivity().let { mLoadingView = LoadingView.Base.view(it.supportFragmentManager) }
-        mLoadingView?.showLoadingIndicator()
     }
 
     fun hideLoadingDialog() {
-        mLoadingView?.hideLoadingIndicator()
     }
 
-    override fun isReadyToApply() = true
+    open fun isReadyToApply() = true
 
-    override fun apply(): Boolean = true
+    open fun apply(): Boolean = true
 
-    override fun isReadyToBackClick() = true
+    open fun isReadyToBackClick() = true
 
-    override fun backClick() = true
+    open fun backClick() = true
 
     protected var hasEditObject = false
         private set

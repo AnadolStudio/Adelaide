@@ -8,6 +8,7 @@ import androidx.annotation.StringRes
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.core.activity.BaseActivity
 import com.anadolstudio.core.activity.MessageType
+import com.anadolstudio.core.common_extention.startAppSettingsActivity
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
@@ -19,6 +20,7 @@ open class BaseEditActivity : BaseActivity() {
 
     override fun showMessage(message: MessageType) {
         val text = message.text
+
         when (message) {
             is MessageType.Snack -> showToast(text)
             is MessageType.Toast -> showSnack(text)
@@ -51,12 +53,4 @@ open class BaseEditActivity : BaseActivity() {
             )
             .setAction(R.string.gallery_snack_bar_settings) { startAppSettingsActivity() }
             .show()
-
-    private fun startAppSettingsActivity() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.fromParts("package", packageName, null)
-
-        startActivity(intent)
-    }
-
 }

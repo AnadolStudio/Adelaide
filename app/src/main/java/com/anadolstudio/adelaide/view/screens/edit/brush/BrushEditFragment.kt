@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.LayoutBrushListBinding
-import com.anadolstudio.adelaide.domain.utils.Colors
+import com.anadolstudio.data.colors.Colors
 import com.anadolstudio.adelaide.view.adapters.ColorAdapter
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.DrawingViewModel
@@ -75,7 +75,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
                 .getFunction(FuncItem.MainFunctions.CUT) as BrushFunction?
                 ?: BrushFunction()
 
-        binding.recyclerView.adapter = ColorAdapter(Colors.getColors().toMutableList(), this)
+        binding.recyclerView.adapter = ColorAdapter(com.anadolstudio.data.colors.Colors.getColors().toMutableList(), this)
         activityViewModel.viewController.setupBrush(viewModel.settings)
         return binding.root
     }
@@ -99,7 +99,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
     }
 
     override fun apply(): Boolean {
-        if (!isReadyToApply) return false
+        if (!isReadyToApply()) return false
 
         activityViewModel.getEditProcessor().addFunction(func)
         activityViewModel.viewController.photoEditor.clearHelperBox()
@@ -115,7 +115,7 @@ class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
         return currentState != State.DRAW
     }
 
-    override fun backClick(): Boolean = if (isReadyToBackClick) {
+    override fun backClick(): Boolean = if (isReadyToBackClick()) {
         setState(State.DRAW)
 
         false

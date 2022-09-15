@@ -17,8 +17,11 @@ import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
+import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.common_util.PermissionUtil
+import com.anadolstudio.core.common_util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.core.common_util.doubleClickAction
 import com.anadolstudio.core.tasks.ProgressListener
 import com.anadolstudio.core.util.PermissionUtil
@@ -34,7 +37,7 @@ class EditActivity : BaseEditActivity() {
         private const val IMAGE_PATH = "image_path"
         const val EDIT_TYPE = "edit_type"
 
-        fun start(context: Context, key: String?, path: String?) {
+        fun start(context: Context, key: EditType, path: String?) {
             val starter = Intent(context, EditActivity::class.java)
             starter.putExtra(EDIT_TYPE, key)
             starter.putExtra(IMAGE_PATH, path)
@@ -80,7 +83,7 @@ class EditActivity : BaseEditActivity() {
 
         binding.applyBtn.setOnClickListener {
             bottomFragment?.also {
-                if (it.isReadyToApply) { //TODO правильно, ли такое обращение?
+                if (it.isReadyToApply()) { //TODO правильно, ли такое обращение?
                     currentEditMode = EditMode.MAIN
                     it.apply()
                     super.onBackPressed()
@@ -88,7 +91,7 @@ class EditActivity : BaseEditActivity() {
             }
         }
 
-        intent.getStringExtra(EDIT_TYPE)
+        (intent.getSerializableExtra(EDIT_TYPE) as? EditType)
                 ?.let { key ->
                     setEditFragment(EditMode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
                 }
@@ -127,8 +130,6 @@ class EditActivity : BaseEditActivity() {
             is Result.Error -> result.error.printStackTrace()
             else -> {}
         }
-
-        showLoadingDialog(result is Result.Loading)
     }
 
     private fun setEditFragment(editMode: EditMode, fragment: BaseEditFragment) {
@@ -179,12 +180,9 @@ class EditActivity : BaseEditActivity() {
 
         viewModel.saveAsFile(
                 this,
-                FileUtil.createAppDir(getString(R.string.app_name)),
-                loadingView
+                FileUtil.createAppDir(getString(R.string.app_name))
         )
     }
-
-    fun getProgressListener(): ProgressListener<String>? = loadingView
 
     inner class FunctionItemClick : ActionClick<FuncItem> {
 

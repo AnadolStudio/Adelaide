@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Point
+import com.anadolstudio.core.common_util.ProgressListener
 import com.anadolstudio.domain.exceprions.SmallMaskException
-import com.anadolstudio.domain.util.ProgressListener
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.anadolstudio.photoeditorprocessor.util.BitmapCutUtil
 import java.nio.ByteBuffer
@@ -49,7 +49,7 @@ class CutBackgroundUseCase {
             mainBitmap: Bitmap,
             drawBitmap: Bitmap
     ): Bitmap {
-        processListener?.onProgress("Setup...")
+        processListener?.onProgress(10, "Setup...")
 
         val bitmap = BitmapCommonUtil.scaleBitmap(mainBitmap, drawBitmap)
 
@@ -60,7 +60,7 @@ class CutBackgroundUseCase {
         val pixelsInverseOriginal = IntArray(main.x * main.y)
         val pixelsBitmap = IntArray(support.x * support.y)
 
-        processListener?.onProgress("Cutting...")
+        processListener?.onProgress(40, "Cutting...")
 
         if (pixelsBitmap.size != pixelsOriginal.size) throw IllegalArgumentException()
 
@@ -81,7 +81,7 @@ class CutBackgroundUseCase {
             pixelsOriginal[key] = Color.TRANSPARENT
         }
 
-        processListener?.onProgress("Blurring...")
+        processListener?.onProgress(80, "Blurring...")
 
         val result = BitmapCutUtil.blur(context, pixelsOriginal, edgePixelsArray, main.x, main.y)
         result.getPixels(pixelsOriginal, 0, main.x, 0, 0, main.x, main.y)
@@ -89,7 +89,7 @@ class CutBackgroundUseCase {
         val inverseBlur = BitmapCutUtil.blur(context, pixelsInverseOriginal, main.x, main.y)
         inverseBlur.getPixels(pixelsInverseOriginal, 0, main.x, 0, 0, main.x, main.y)
 
-        processListener?.onProgress("Done")
+        processListener?.onProgress(100, "Done")
 
         for (i in pixelsInverseOriginal.indices) {
             val alpha = 255 - Color.alpha(pixelsInverseOriginal[i])

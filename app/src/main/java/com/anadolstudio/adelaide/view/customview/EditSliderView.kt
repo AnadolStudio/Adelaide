@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ViewSliderEditBinding
-import com.anadolstudio.core.util.RealFormatter
+import com.anadolstudio.core.common_util.RealFormatter
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import kotlin.math.max

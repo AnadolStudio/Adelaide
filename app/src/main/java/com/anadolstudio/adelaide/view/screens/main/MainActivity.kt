@@ -11,15 +11,12 @@ import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 class MainActivity : AppCompatActivity() {
     companion object {
 
-        fun start(context: Context) {
-            context.startActivity(
-                    Intent(
-                            context,
-                            MainActivity::class.java
-                    )
-            )
-        }
-
+        fun start(context: Context) = context.startActivity(
+                Intent(
+                        context,
+                        MainActivity::class.java
+                )
+        )
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -35,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startActivity(data: EditType) {
-        GalleryListActivity.start(this, data.name)
+        GalleryListActivity.start(this, data)
     }
 
     override fun recreate() {

@@ -2,7 +2,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 31
@@ -11,7 +10,7 @@ android {
 
         applicationId "com.anadolstudio.adelaide"
         minSdk 23
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0.0"
 
@@ -29,7 +28,6 @@ android {
         release {
             signingConfig signingConfigs.debug
 
-            crunchPngs false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -45,7 +43,6 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-    kapt { generateStubs = true }
     lintOptions {
         abortOnError false
     }
@@ -56,13 +53,14 @@ dependencies {
     implementation project(path: ':photoeditor')
     implementation project(path: ':photoeditorprocessor')
     implementation project(path: ':domain')
+    implementation project(path: ':data')
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
     implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.fragment:fragment-ktx:1.5.2'
     implementation 'androidx.activity:activity-ktx:1.5.1'

@@ -1,7 +1,6 @@
 package com.anadolstudio.adelaide
 
-import com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory
-import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
+import com.anadolstudio.core.share_util.SharedActionFactory
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
