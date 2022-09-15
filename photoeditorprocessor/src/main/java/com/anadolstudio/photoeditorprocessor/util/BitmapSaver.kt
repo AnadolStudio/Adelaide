@@ -11,7 +11,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.anadolstudio.core.tasks.ProgressListener
+import com.anadolstudio.core.common_util.ProgressListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -27,22 +27,22 @@ interface BitmapSaver {
     abstract class Abstract(private val progressListener: ProgressListener<String>?) : BitmapSaver {
 
         fun save(
-            context: Context,
-            bitmap: Bitmap,
-            nameDir: String,
-            file: File
+                context: Context,
+                bitmap: Bitmap,
+                nameDir: String,
+                file: File
         ): String {
             var uri: Uri? = null
             val resolver = context.contentResolver
 
             try {
-                progressListener?.onProgress("Get uri...")
+                progressListener?.onProgress(10, "Get uri...")
                 uri = getUri(resolver, nameDir, file)
 
-                progressListener?.onProgress("Compress...")
+                progressListener?.onProgress(40, "Compress...")
                 val path = compress(resolver, bitmap, uri, file)
 
-                progressListener?.onProgress("Done")
+                progressListener?.onProgress(100, "Done")
                 scanFile(context, path)
 
                 return path
@@ -56,9 +56,9 @@ interface BitmapSaver {
 
         override fun scanFile(context: Context, path: String) {
             MediaScannerConnection.scanFile(
-                context,
-                arrayOf(path),
-                null
+                    context,
+                    arrayOf(path),
+                    null
             ) { _: String?, _: Uri? -> Log.d("BitmapSaver", "onSuccess") }
         }
     }
@@ -67,10 +67,10 @@ interface BitmapSaver {
         override fun getUri(resolver: ContentResolver, nameDir: String, file: File): Uri? = null
 
         override fun compress(
-            resolver: ContentResolver,
-            bitmap: Bitmap,
-            uri: Uri?,
-            file: File
+                resolver: ContentResolver,
+                bitmap: Bitmap,
+                uri: Uri?,
+                file: File
         ): String {
             FileOutputStream(file).use { fos ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
@@ -88,20 +88,20 @@ interface BitmapSaver {
 
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-                put(MediaStore.MediaColumns.MIME_TYPE, BitmapUtil.MIME_TYPE)
+                put(MediaStore.MediaColumns.MIME_TYPE, BitmapCommonUtil.MIME_TYPE)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
             }
 
             val contentUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             return resolver.insert(contentUri, contentValues)
-                ?: throw Exception("Failed to create new  MediaStore record.")
+                    ?: throw Exception("Failed to create new  MediaStore record.")
         }
 
         override fun compress(
-            resolver: ContentResolver,
-            bitmap: Bitmap,
-            uri: Uri?,
-            file: File
+                resolver: ContentResolver,
+                bitmap: Bitmap,
+                uri: Uri?,
+                file: File
         ): String {
             if (uri == null) throw IllegalArgumentException("Uri is null")
 
@@ -116,11 +116,11 @@ interface BitmapSaver {
     object Factory {
 
         fun save(
-            progressListener: ProgressListener<String>?,
-            context: Context,
-            bitmap: Bitmap,
-            nameDir: String,
-            file: File
+                progressListener: ProgressListener<String>?,
+                context: Context,
+                bitmap: Bitmap,
+                nameDir: String,
+                file: File
         ): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             AboveQ(progressListener)
         } else {

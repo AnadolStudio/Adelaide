@@ -16,56 +16,56 @@ class AnimateUtil {
             view.visibility = View.INVISIBLE
             view.translationX = start
             view.animate()
-                .translationX(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(getSimpleStartListener(view))
+                    .translationX(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(getSimpleStartListener(view))
         }
 
         fun showAnimX(view: View, start: Float, end: Float, visible: Int) {
             view.translationX = start
             view.animate()
-                .translationX(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(getSimpleListener(view, visible))
+                    .translationX(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(getSimpleListener(view, visible))
         }
 
         fun showAnimX(view: View, start: Float, end: Float, listener: AnimatorListenerAdapter) {
             view.visibility = View.INVISIBLE
             view.translationX = start
             view.animate()
-                .translationX(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(listener)
+                    .translationX(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(listener)
         }
 
         fun <T : View> fadOutAnimation(
-            view: T,
-            duration: Long = DURATION_SHORT,
-            visibility: Int = View.INVISIBLE,
-            completion: ((T) -> Unit)? = null
+                view: T,
+                duration: Long = DURATION_SHORT,
+                visibility: Int = View.INVISIBLE,
+                completion: ((T) -> Unit)? = null
         ) {
             with(view) {
                 animate()
-                    .alpha(0f)
-                    .setDuration(duration)
-                    .withEndAction {
-                        this.visibility = visibility
-                        completion?.let { it(this) }
-                    }
+                        .alpha(0f)
+                        .setDuration(duration)
+                        .withEndAction {
+                            this.visibility = visibility
+                            completion?.let { it(this) }
+                        }
             }
         }
 
         fun <T : View> fadInAnimation(
-            view: T,
-            duration: Long = DURATION_SHORT, completion: ((T) -> Unit)? = null
+                view: T,
+                duration: Long = DURATION_SHORT, completion: ((T) -> Unit)? = null
         ) {
             with(view) {
                 alpha = 0f
                 visibility = View.VISIBLE
                 animate()
-                    .alpha(1f)
-                    .setDuration(duration)
-                    .withEndAction { completion?.let { it(this) } }
+                        .alpha(1f)
+                        .setDuration(duration)
+                        .withEndAction { completion?.let { it(this) } }
             }
         }
 
@@ -74,26 +74,26 @@ class AnimateUtil {
             view.visibility = View.INVISIBLE
             view.translationY = start
             view.animate()
-                .translationY(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(getSimpleStartListener(view))
+                    .translationY(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(getSimpleStartListener(view))
         }
 
         fun showAnimY(view: View, start: Float, end: Float, listener: AnimatorListenerAdapter) {
             view.visibility = View.INVISIBLE
             view.translationY = start
             view.animate()
-                .translationY(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(listener)
+                    .translationY(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(listener)
         }
 
         fun showAnimY(view: View, start: Float, end: Float, visible: Int) {
             view.translationY = start
             view.animate()
-                .translationY(end)
-                .setDuration(DURATION_NORMAL)
-                .setListener(getSimpleListener(view, visible))
+                    .translationY(end)
+                    .setDuration(DURATION_NORMAL)
+                    .setListener(getSimpleListener(view, visible))
         }
 
         fun getSimpleStartListener(view: View) = getSimpleListener(view, View.VISIBLE)

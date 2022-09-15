@@ -2,24 +2,28 @@ package com.anadolstudio.photoeditorprocessor.processor.implementation
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.anadolstudio.core.tasks.RxTask
+import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
-import com.anadolstudio.photoeditorprocessor.processor.NullBitmapException
+import io.reactivex.Single
 
 class EditProcessorStudy : EditProcessorContract.Abstract() {
 
     override fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap =
-        getCurrentImage()
+            getCurrentImage()
 
-    override fun processPreview() = RxTask.Base.Quick {
+    override fun processPreview(support: Bitmap?): Single<Bitmap> = quickSingleFrom {
         val func = containerFunctions[containerFunctions.keys.last()]
-            ?: throw IllegalArgumentException("Function is null")
+                ?: throw IllegalArgumentException("Function is null")
 
-        originalBitmap
-            ?.let { process(it, func) }
-            ?: throw NullBitmapException()
-    }.onSuccess { bitmap -> currentBitmap = bitmap }
+        getCurrentImage().let { func.process(it, support) }
+    }.doOnSuccess { bitmap ->
+        originalBitmap = bitmap
+        currentBitmap = bitmap
+    }
 
     override fun processAll(bitmap: Bitmap): Bitmap = TODO("Not implement")
 
+    fun setCurrentImage(bitmap: Bitmap) {
+        currentBitmap = bitmap
+    }
 }

@@ -1,132 +1,113 @@
 package com.anadolstudio.adelaide.view.screens.gallery
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
-
+import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
-import com.anadolstudio.adelaide.view.screens.edit.EditActivity
-import com.anadolstudio.adelaide.view.screens.main.TypeKey
-import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
-import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.core.interfaces.ILoadMore
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.util.PermissionUtil
-import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity
+import com.anadolstudio.adelaide.view.screens.main.EditType
+import com.anadolstudio.core.activity.hasPermission
+import com.anadolstudio.core.activity.requestPermission
+import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.adapters.ILoadMore
+import com.anadolstudio.core.common_extention.onTrue
+import com.anadolstudio.core.recycler.SpaceItemDecoration
 
-import java.io.File
-
-class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
+class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
 
     companion object {
-        private const val TAG = "GalleryListActivity"
-        private const val CURRENT_FOLDERS = "current_folders"
+        const val TAG = "GalleryListActivity"
+        const val REQUEST_STORAGE_PERMISSION = 1
         private const val REQUEST_CHOOSE_PHOTO = 1001
         private const val CHOOSE_PHOTO = "choose_photo"
+        private val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
-        fun start(context: Context, key: String?) {
+        fun start(context: Context, type: EditType) {
             val starter = Intent(context, GalleryListActivity::class.java)
-            starter.putExtra(TypeKey::class.java.name, key)
+            starter.putExtra(EditType::class.java.name, type)
             context.startActivity(starter)
         }
     }
 
-    //TODO Есть баг с дубликатами
-    private lateinit var binding: ActivityGalleryBinding
-    private lateinit var galleryListAdapter: GalleryAdapter
-    private var currentFolder: String? = null
-    private var loadingMore = false
+    private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityGalleryBinding.inflate(layoutInflater) }
+    private lateinit var galleryListAdapter: GalleryImageAdapter
     private val viewModel: GalleryListViewModel by viewModels { ViewModelFactory() }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(CURRENT_FOLDERS, currentFolder)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.navigationTb)
+        viewModel.screenState.observe(this, this::render)
 
         binding.navigationTb.setNavigationOnClickListener { onBackPressed() }
         binding.navigationTb.title = null
 
-        init(savedInstanceState)
+        initView()
         loadData()
     }
 
-    private fun init(savedInstanceState: Bundle?) {
-        galleryListAdapter = GalleryAdapter(mutableListOf(), this, this)
-        currentFolder = savedInstanceState?.getString(CURRENT_FOLDERS)
+    private fun render(state: GalleryScreenState) = when (state) {
+        is GalleryScreenState.Content -> showContent(state).also { /*hideLoadingDialog()*/ }
+        is GalleryScreenState.Error -> initSpinner(emptyList()).also { /*hideLoadingDialog()*/ }
+        is GalleryScreenState.Empty -> showEmptyText(true).also { /*hideLoadingDialog()*/ }
+        is GalleryScreenState.Loading -> {}  /*showLoadingDialog()*/
+    }
+
+    private fun showContent(content: GalleryScreenState.Content) {
+        content.folders?.toList()?.let(this::initSpinner)
+        showEmptyText(false)
+
+        when (content.isLoadMore) {
+            true -> galleryListAdapter.addData(content.images)
+            false -> galleryListAdapter.setData(content.images)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+        withPermission { viewModel.updateImages(this, binding.recyclerView.adapter?.itemCount) }
+    }
+
+    private fun initView() {
+        galleryListAdapter = GalleryImageAdapter(mutableListOf<String>(), this, this)
 
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(this@GalleryListActivity, 3)
             setItemViewCacheSize(50)
-            addItemDecoration(BaseSpaceItemDecoration.All())
+            addItemDecoration(SpaceItemDecoration(SpaceItemDecoration.NORMAL_SPACE))
             adapter = galleryListAdapter
-        }
-
-        viewModel.folders.observe(this) { result ->
-            when (result) {
-                is Result.Success -> initSpinner(result.data.toList())
-                is Result.Loading -> showLoadingDialog()
-                is Result.Error -> result.error.printStackTrace()
-                is Result.Empty -> initSpinner(listOf())
-            }
-        }
-
-        viewModel.images.observe(this) {
-            hideAll()
-            when (it) {
-                is Result.Success -> {
-                    binding.recyclerView.visibility = View.VISIBLE
-                    if (loadingMore) galleryListAdapter.addData(it.data as ArrayList<String>)
-                    else galleryListAdapter.setData(it.data as ArrayList<String>)
-
-                    loadingMore = false
-                }
-
-                is Result.Error -> it.error.printStackTrace()
-                is Result.Loading -> showLoadingDialog()
-
-                is Result.Empty ->
-                    if (loadingMore) loadingMore = false
-                    else showEmptyText()
-            }
         }
     }
 
+    override fun loadMore() = loadImages(true)
+
     @SuppressLint("MissingPermission")
-    override fun loadMore() {
-        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
-            loadingMore = true
-            viewModel.loadImages(this, currentFolder, getLastItemId())
-        }
+    private fun loadImages(loadMore: Boolean = false) {
+        withPermission { viewModel.loadImages(this@GalleryListActivity, loadMore = loadMore) }
     }
 
     @SuppressLint("MissingPermission")
     private fun loadData() {
-        if (PermissionUtil.ReadExternalStorage.checkPermission(this)) {
-            viewModel.loadData(this)
-        } else {
-            showEmptyText()
-            PermissionUtil.ReadExternalStorage.requestPermission(this, DEFAULT_REQUEST_CODE)
+        val success = withPermission { viewModel.loadData(this) }
+
+        if (!success) {
+            showEmptyText(true)
+            requestPermission(STORAGE_PERMISSION[0], REQUEST_STORAGE_PERMISSION)
         }
     }
 
@@ -137,46 +118,53 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
             add(getString(R.string.gallery_spinner_title))
             addAll(folders)
         }
-
         binding.spinner.apply {
             adapter = ArrayAdapter(this@GalleryListActivity, R.layout.item_simple_list, data)
             onItemSelectedListener = ItemSelectedListener()
         }
     }
 
-    private fun getLastItemId(): Long {
-        val data = galleryListAdapter.getData()
-        if (data.isEmpty()) return -1
+    inner class ItemSelectedListener : AdapterView.OnItemSelectedListener {
 
-        val toParseInt = File(Uri.parse(data.last()).path!!).name
-        return if (TextUtils.isDigitsOnly(toParseInt)) toParseInt.toLong() else -1L
+        @SuppressLint("MissingPermission")
+        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
+            if (adapterView?.adapter == null || view == null || adapterView.adapter.isEmpty) return
+
+            val currentFolder = when (i) {
+                0 -> null
+                else -> adapterView.adapter.getItem(i).toString()
+            }
+
+            if (viewModel.folderChanged(currentFolder)) {
+                loadImages()
+            }
+        }
+
+        override fun onNothingSelected(p0: AdapterView<*>?) {}
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         when (requestCode) {
-            DEFAULT_REQUEST_CODE ->
-                if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-                    // permission granted
+            REQUEST_STORAGE_PERMISSION ->
+                if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) { // permission granted
                     loadData()
-                } else {
-                    // permission denied
-                    val shouldShow = PermissionUtil.ReadExternalStorage
-                        .shouldShowRequestPermissionRationale(this)
+                } else { // permission denied
+                    val shouldShow = ActivityCompat.shouldShowRequestPermissionRationale(this, STORAGE_PERMISSION[0])
 
-                    if (!shouldShow) showSettingsSnackbar(binding.root)
+                    if (!shouldShow) showSettingsSnackbar()
                     else finish() // Закрывает activity
                 }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
-    private fun showEmptyText() {
-        binding.emptyText.visibility = View.VISIBLE
-        binding.recyclerView.visibility = View.INVISIBLE
+    private fun showEmptyText(isShow: Boolean) {
+        binding.emptyText.isVisible = isShow
+        binding.recyclerView.isVisible = !isShow
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -188,18 +176,9 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
         }
     }
 
-
-    override fun toDetail(data: String) {
-        showLoadingDialog()
-
-        if(!com.anadolstudio.photoeditorprocessor.util.BitmapUtil.validateUri(this,data)) {
-            hideLoadingDialog()
-            showToast(R.string.edit_error_cant_open_photo)
-            return
-        }
-
+    override fun action(data: String) {
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
-            val editType = intent.getStringExtra(TypeKey::class.java.name)
+            val editType = intent.getSerializableExtra(EditType::class.java.name) as EditType
             EditActivity.start(this, editType, data)
         } else {
             setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, data))
@@ -207,43 +186,19 @@ class GalleryListActivity : BaseEditActivity(), IDetailable<String>, ILoadMore {
         }
     }
 
-    private fun hideAll() {
-        binding.emptyText.visibility = View.INVISIBLE
-        hideLoadingDialog()
-    }
-
-    inner class ItemSelectedListener : AdapterView.OnItemSelectedListener {
-
-        @SuppressLint("MissingPermission")
-        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-            if (adapterView?.adapter == null || view == null || adapterView.adapter.isEmpty)
-                return
-
-            currentFolder =
-                if (i == 0) null
-                else adapterView.adapter.getItem(i).toString()
-
-            if (PermissionUtil.ReadExternalStorage.checkPermission(this@GalleryListActivity)) {
-                viewModel.loadImages(this@GalleryListActivity, currentFolder)
-            }
-        }
-
-        override fun onNothingSelected(p0: AdapterView<*>?) {
-        }
-    }
+    private fun withPermission(action: () -> Unit): Boolean =
+            hasPermission(STORAGE_PERMISSION[0]).onTrue { action.invoke() }
 
     class GalleryResultContract : ActivityResultContract<String, String?>() {
 
-        override fun createIntent(context: Context, input: String): Intent {
-            val intent = Intent(context, GalleryListActivity::class.java)
-            if (input == CHOOSE_PHOTO) intent.putExtra(CHOOSE_PHOTO, REQUEST_CHOOSE_PHOTO)
-            return intent
-        }
+        override fun createIntent(context: Context, input: String): Intent =
+                Intent(context, GalleryListActivity::class.java).apply {
+                    if (input == CHOOSE_PHOTO) putExtra(CHOOSE_PHOTO, REQUEST_CHOOSE_PHOTO)
+                }
 
-        override fun parseResult(resultCode: Int, data: Intent?): String? {
-            Log.i(TAG, "Result code: $resultCode")
-            return if (resultCode != RESULT_OK || data == null) null
-            else data.getStringExtra(CHOOSE_PHOTO)
+        override fun parseResult(resultCode: Int, intent: Intent?): String? = when {
+            resultCode != RESULT_OK || intent == null -> null
+            else -> intent.getStringExtra(CHOOSE_PHOTO)
         }
     }
 }

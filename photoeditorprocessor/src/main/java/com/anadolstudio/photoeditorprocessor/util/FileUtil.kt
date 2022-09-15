@@ -2,7 +2,7 @@ package com.anadolstudio.photoeditorprocessor.util
 
 import android.os.Environment
 import android.util.Log
-import com.anadolstudio.core.util.TimeUtil
+import com.anadolstudio.core.common_util.TimeUtil
 import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -20,8 +20,8 @@ object FileUtil {
 
     fun createAppDir(nameDir: String, fileName: String = getFileName()): File {
         val directory = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                .toString() + File.separator + nameDir
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                        .toString() + File.separator + nameDir
         )
 
         if (!directory.exists() && !directory.isDirectory) {

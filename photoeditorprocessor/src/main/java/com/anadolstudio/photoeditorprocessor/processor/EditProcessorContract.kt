@@ -4,12 +4,14 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
-import com.anadolstudio.core.tasks.ProgressListener
-import com.anadolstudio.core.tasks.RxTask
+import com.anadolstudio.core.bitmap_util.BitmapDecoder
+import com.anadolstudio.core.common_util.ProgressListener
+import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.photoeditorprocessor.functions.EditFunction
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 import com.anadolstudio.photoeditorprocessor.util.BitmapSaver
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
+import io.reactivex.Single
 import java.io.File
 
 interface EditProcessorContract {
@@ -18,7 +20,7 @@ interface EditProcessorContract {
 
     val applyFuncList: MutableSet<EditFunction>
 
-    fun init(context: Context, path: String): RxTask<Bitmap>
+    fun init(context: Context, path: String): Single<Bitmap>
 
     fun process(bitmap: Bitmap, func: EditFunction): Bitmap
 
@@ -47,10 +49,12 @@ interface EditProcessorContract {
         override val applyFuncList: MutableSet<EditFunction> = mutableSetOf()
         // TODO будет использоваться для удаления функции в стеке
 
-        override fun init(context: Context, path: String): RxTask<Bitmap> = RxTask.Base.Quick {
+        override fun init(context: Context, path: String): Single<Bitmap> = quickSingleFrom {
             this.path = path
-            BitmapUtil.decodeBitmapFromContentResolverPath(context, path, BitmapUtil.MAX_SIDE_COPY)
-        }.onSuccess { result -> originalBitmap = result }
+            BitmapDecoder.Manager.decodeBitmapFromPath(
+                    context, path, BitmapCommonUtil.MAX_SIDE, BitmapCommonUtil.MAX_SIDE
+            )
+        }.doOnSuccess { result -> originalBitmap = result }
 
         override fun getOriginalImage(): Bitmap = originalBitmap ?: throw NullBitmapException()
 
@@ -61,8 +65,7 @@ interface EditProcessorContract {
             currentBitmap?.recycle()
         }
 
-        override fun getFunction(type: FuncItem.MainFunctions): EditFunction? =
-            containerFunctions[type.name]
+        override fun getFunction(type: FuncItem.MainFunctions): EditFunction? = containerFunctions[type.name]
 
         override fun addFunction(func: EditFunction) {
             containerFunctions.add(func)
@@ -70,22 +73,25 @@ interface EditProcessorContract {
 
         @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
         open fun saveAsFile(
-            context: Context,
-            file: File,
-            processListener: ProgressListener<String>
-        ) = RxTask.Progress.Quick(processListener) { progressListener ->
-
+                context: Context,
+                file: File,
+                processListener: ProgressListener<String>?
+        ): String {
             val bitmap = decodeOriginalBitmapWithProcess(context, path)
-            progressListener.onProgress("Setup...")
+            processListener?.onProgress(20, "Setup...")
             val parent = file.parent ?: throw FileParentException()
             val nameDir = parent.substring(parent.lastIndexOf("/"), parent.length)
 
-            BitmapSaver.Factory.save(progressListener, context, bitmap, nameDir, file)
+            return BitmapSaver.Factory.save(processListener, context, bitmap, nameDir, file)
         }
 
         override fun process(bitmap: Bitmap, func: EditFunction): Bitmap = func.process(bitmap)
 
-        abstract fun processPreview(): RxTask<Bitmap>
+        open fun reboot() {
+            currentBitmap = originalBitmap
+        }
+
+        abstract fun processPreview(support: Bitmap? = null): Single<Bitmap>
 
         abstract fun decodeOriginalBitmapWithProcess(context: Context, path: String): Bitmap
     }

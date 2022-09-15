@@ -1,9 +1,9 @@
 package com.anadolstudio.adelaide.data;
 
-import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-
 import android.content.Context;
 import android.preference.PreferenceManager;
+
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
 
 
 public class SettingsPreference {
@@ -26,6 +26,7 @@ public class SettingsPreference {
                 .putBoolean(FIRST_RUN_APP, false)
                 .apply();
     }
+
     public static boolean isFirstRunShareActivity(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(FIRST_SHARE_ACTIVITY_OPEN, true);

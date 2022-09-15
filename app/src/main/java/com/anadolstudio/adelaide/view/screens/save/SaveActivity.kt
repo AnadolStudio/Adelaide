@@ -8,25 +8,29 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View.VISIBLE
 import com.anadolstudio.adelaide.BuildConfig
+import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
 import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
+import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
-import com.anadolstudio.core.interfaces.IDetailable
-import com.anadolstudio.core.tasks.RxTask
-import com.anadolstudio.core.util.BitmapDecoder
-import com.anadolstudio.core.view.BaseActivity
+import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.bitmap_util.BitmapDecoder
+import com.anadolstudio.core.rx_util.quickSingleFrom
+import com.anadolstudio.core.rx_util.smartSubscribe
+import com.anadolstudio.core.share_util.SharedAction.SharedItem
+import com.anadolstudio.core.share_util.SharedActionFactory
 
-class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem> {
+class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
 
     companion object {
         private const val PATH = "path"
         const val ANIM_DELTA_X = 70
 
-        fun start(context: Context, path: String?) {
+        fun start(context: Context, path: String) {
             val starter = Intent(context, SaveActivity::class.java)
             starter.putExtra(PATH, path)
             context.startActivity(starter)
@@ -42,7 +46,7 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
         path = intent.getStringExtra(PATH).toString()
         binding = ActivitySaveBinding.inflate(layoutInflater)
         FirebaseHelper.get().logEvent(FirebaseHelper.Event.SAVE_PHOTO)
-        init()
+        setupView()
         setContentView(binding.root)
     }
 
@@ -52,7 +56,7 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun init() {
+    private fun setupView() {
         setSupportActionBar(binding.navigationToolbar)
         binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.navigationToolbar.title = null
@@ -66,14 +70,14 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
         binding.savedImage.setOnTouchListener(ImageDialogTouchListener(path, this))
 
         // TODO ВЫнести во ViewModel
-        RxTask.Base.Quick {
-            BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400)
-        }
-            .onSuccess { binding.savedImage.setImageBitmap(it) }
-            .onError { it.printStackTrace() }
+        quickSingleFrom { BitmapDecoder.Manager.decodeBitmapFromPath(this, path, 400, 400) }
+                .smartSubscribe(
+                        onSuccess = { binding.savedImage.setImageBitmap(it) },
+                        onError = { it.printStackTrace() }
+                )
 
         binding.recyclerView.adapter =
-            SharedAdapter(com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.instance(), this@SaveActivity)
+                SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
 
         adController = SaveAdController(binding).apply {
             if (!SettingsPreference.hasPremium(this@SaveActivity))
@@ -81,28 +85,27 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
         }
     }
 
-    override fun toDetail(data: com.anadolstudio.adelaide.domain.shareaction.SharedAction.SharedItem) {
-
+    override fun action(data: SharedItem) {
         //TODO FB listener
         val fbEvent = when (data) {
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.VK -> FirebaseHelper.Event.SHARE_VK
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Instagram -> FirebaseHelper.Event.SHARE_INSTAGRAM
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Facebook -> FirebaseHelper.Event.SHARE_FACEBOOK
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Messenger -> FirebaseHelper.Event.SHARE_MESSENGER
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.WhatsApp -> FirebaseHelper.Event.SHARE_WHATS_APP
-            is com.anadolstudio.adelaide.domain.shareaction.SharedActionFactory.Twitter -> FirebaseHelper.Event.SHARE_TWITTER
+            is SharedActionFactory.Empty -> FirebaseHelper.Event.SHARE_OTHERS
+            is SharedActionFactory.VK -> FirebaseHelper.Event.SHARE_VK
+            is SharedActionFactory.Instagram -> FirebaseHelper.Event.SHARE_INSTAGRAM
+            is SharedActionFactory.Facebook -> FirebaseHelper.Event.SHARE_FACEBOOK
+            is SharedActionFactory.Messenger -> FirebaseHelper.Event.SHARE_MESSENGER
+            is SharedActionFactory.WhatsApp -> FirebaseHelper.Event.SHARE_WHATS_APP
+            is SharedActionFactory.Twitter -> FirebaseHelper.Event.SHARE_TWITTER
         }
 
         FirebaseHelper.get().logEvent(fbEvent)
-        data.createShareIntent(path, this)
+        data.runShareIntent(path, this, getString(R.string.save_func_another))
     }
 
     private fun updateAd() {
         SettingsPreference.hasPremium(this)
-            .also { hasPremium ->
-                adController.updateView(!hasPremium)
-            }
+                .also { hasPremium ->
+                    adController.updateView(!hasPremium)
+                }
     }
 
     override fun onResume() {
@@ -133,8 +136,8 @@ class SaveActivity : BaseActivity(), IDetailable<com.anadolstudio.adelaide.domai
         binding.recyclerView.apply {
             smoothScrollBy(ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt())
             postDelayed(
-                { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
-                DURATION_EXTRA_LONG + 200
+                    { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
+                    DURATION_EXTRA_LONG + 200
             )
         }
     }

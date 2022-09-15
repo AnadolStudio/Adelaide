@@ -1,0 +1,3 @@
+[submodule "AndroidCoreBase"]
+	path = AndroidCoreBase
+	url = git@github.com:AnadolStudio/AndroidCoreBase.git

@@ -17,4 +17,7 @@
     <color name="gray">#FF1B1B1B</color>
     <color name="white">#FFF</color>
 
+    <color name="colorMask">#991976D2</color>
+
+
 </resources>

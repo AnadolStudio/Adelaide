@@ -23,9 +23,6 @@ import androidx.annotation.Nullable;
 
 public class ImageLoader {
 
-    private ImageLoader() {
-    }
-
     public static void loadImage(ImageView imageView, @DrawableRes int id, ScaleType scaleType) {
         RequestBuilder<Drawable> builder = Glide
                 .with(imageView)
@@ -137,6 +134,9 @@ public class ImageLoader {
 
             }
         };
+    }
+
+    private ImageLoader() {
     }
 
     public enum ScaleType {

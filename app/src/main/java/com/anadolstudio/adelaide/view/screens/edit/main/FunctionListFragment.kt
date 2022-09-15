@@ -6,21 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.anadolstudio.adelaide.databinding.LayoutListBinding
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
+import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity.Companion.EDIT_TYPE
+import com.anadolstudio.adelaide.view.screens.main.EditType
+import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.adelaide.view.screens.main.MainActivity.Companion.EDIT_TYPE
-import com.anadolstudio.core.interfaces.IDetailable
 
 class FunctionListFragment : BaseEditFragment() {
 
     companion object {
 
         fun newInstance(
-            key: String,
-            detailableListener: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>
+                key: EditType,
+                detailableListener: ActionClick<FuncItem>
         ): FunctionListFragment = FunctionListFragment().apply {
 
             arguments = Bundle().apply {
-                putString(EDIT_TYPE, key)
+                putSerializable(EDIT_TYPE, key)
             }
 
             listener = detailableListener
@@ -28,17 +29,17 @@ class FunctionListFragment : BaseEditFragment() {
 
     }
 
-    private var listener: IDetailable<com.anadolstudio.photoeditorprocessor.functions.FuncItem>? = null
+    private var listener: ActionClick<FuncItem>? = null
     private lateinit var binding: LayoutListBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = LayoutListBinding.inflate(inflater)
         binding.recyclerView.adapter =
-            FunctionListAdapter(com.anadolstudio.photoeditorprocessor.functions.FuncItem.MainFunctions.values().toList(), listener)
+                FunctionListAdapter(FuncItem.MainFunctions.values().toList(), listener)
 
         return binding.root
     }

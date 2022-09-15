@@ -4,17 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ViewSliderEditBinding
-import com.anadolstudio.core.util.RealFormatter
+import com.anadolstudio.core.common_util.RealFormatter
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import kotlin.math.min
 
 class EditSliderView(
-    context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
     companion object {
 
@@ -31,7 +32,7 @@ class EditSliderView(
     constructor(context: Context) : this(context, null)
 
     private val binding: ViewSliderEditBinding = ViewSliderEditBinding.bind(
-        LayoutInflater.from(context).inflate(R.layout.view_slider_edit, this, true)
+            LayoutInflater.from(context).inflate(R.layout.view_slider_edit, this, true)
     )
 
     init {
@@ -45,16 +46,16 @@ class EditSliderView(
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.EditSliderView)
 
         setState(
-            State.values()[typeArray.getInt(R.styleable.EditSliderView_state, State.ALL.ordinal)]
+                State.values()[typeArray.getInt(R.styleable.EditSliderView_state, State.ALL.ordinal)]
         )
 
         binding.slider.apply {
             setSliderLabelFormatter(RealFormatter)
             setLabelBehavior()
             setupSlider(
-                typeArray.getFloat(R.styleable.EditSliderView_valueFrom, 0F),
-                typeArray.getFloat(R.styleable.EditSliderView_valueTo, 100F),
-                typeArray.getFloat(R.styleable.EditSliderView_value, 0F)
+                    typeArray.getFloat(R.styleable.EditSliderView_valueFrom, 0F),
+                    typeArray.getFloat(R.styleable.EditSliderView_valueTo, 100F),
+                    typeArray.getFloat(R.styleable.EditSliderView_value, 0F)
             )
         }
 
@@ -117,6 +118,22 @@ class EditSliderView(
 
     fun setCancelListener(listener: View.OnClickListener) {
         binding.cancelButton.setOnClickListener(listener)
+    }
+
+    fun setApplyIcon(@DrawableRes id: Int) {
+        binding.applyButton.setImageResource(id)
+    }
+
+    fun setCancelIcon(@DrawableRes id: Int) {
+        binding.cancelButton.setImageResource(id)
+    }
+
+    fun setApplyIconTint(color: Int) {
+        binding.applyButton.setColorFilter(color)
+    }
+
+    fun setCancelTint(color: Int) {
+        binding.cancelButton.setColorFilter(color)
     }
 
     fun setSliderVisible(visibility: Int) {

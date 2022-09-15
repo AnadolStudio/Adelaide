@@ -2,26 +2,25 @@ package com.anadolstudio.adelaide.view.screens.edit.effect
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MediatorLiveData
 import com.anadolstudio.adelaide.data.AssetData
 import com.anadolstudio.adelaide.data.AssetsDirections
-import com.anadolstudio.photoeditorprocessor.util.BitmapUtil
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.tasks.RxTask
-import com.anadolstudio.core.viewmodel.Communication
+import com.anadolstudio.core.livedata.onNext
+import com.anadolstudio.core.livedata.toImmutable
+import com.anadolstudio.core.rx_util.quickSingleFrom
+import com.anadolstudio.core.rx_util.smartSubscribe
+import com.anadolstudio.core.viewmodel.BaseViewModel
+import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
 
-class EffectEditViewModel : ViewModel() {
+class EffectEditViewModel : BaseViewModel() {
 
-    data class AdapterData(val thumbnail: Bitmap, val paths: MutableList<String>)
-
-    val adapterDataCommunication = Communication.UiUpdate<Result<AdapterData>>()
+    private val _adapterData = MediatorLiveData<AdapterData>()
+    val adapterData = _adapterData.toImmutable()
 
     fun loadData(context: Context, bitmap: Bitmap) {
-        adapterDataCommunication.map(Result.Loading())
-
-        RxTask.Base.Quick {
-            val crop = BitmapUtil.centerCrop(bitmap)
-            val thumbnail = BitmapUtil.scaleBitmap(400F, 400F, crop, true)
+        quickSingleFrom {
+            val crop = BitmapCommonUtil.centerCrop(bitmap)
+            val thumbnail = BitmapCommonUtil.scaleBitmap(400F, 400F, crop, true)
             crop.recycle()
 
             val paths: MutableList<String> = mutableListOf<String>().apply {
@@ -30,8 +29,11 @@ class EffectEditViewModel : ViewModel() {
             }
 
             AdapterData(thumbnail, paths)
-        }
-            .onSuccess { adapterDataCommunication.map(Result.Success(it)) }
-            .onError { ex -> adapterDataCommunication.map(Result.Error(ex)) }
+        }.smartSubscribe(
+                onSuccess = _adapterData::onNext
+        ).disposeOnViewModelDestroy()
     }
+
+    data class AdapterData(val thumbnail: Bitmap, val paths: List<String>)
+
 }

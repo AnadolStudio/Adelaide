@@ -6,10 +6,10 @@ import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
+import androidx.renderscript.Allocation
+import androidx.renderscript.Element
+import androidx.renderscript.RenderScript
+import androidx.renderscript.ScriptIntrinsicBlur
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,14 +46,14 @@ object BitmapRenderEffects {
     }
 
     val monochromeFilter = ColorMatrixColorFilter(
-        ColorMatrix(
-            floatArrayOf(
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.3F, 0.59F, 0.11F, 0F, 0F,
-                0.0F, 0.0F, 0.0F, 1.0F, 0.0F
+            ColorMatrix(
+                    floatArrayOf(
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.3F, 0.59F, 0.11F, 0F, 0F,
+                            0.0F, 0.0F, 0.0F, 1.0F, 0.0F
+                    )
             )
-        )
     )
 }
 

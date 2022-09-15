@@ -28,64 +28,64 @@ class SaveAdController(val binding: ActivitySaveBinding) : AdController.Abstract
     }
 
     private fun loadNative(
-        activity: AppCompatActivity,
-        adRequest: AdRequest
+            activity: AppCompatActivity,
+            adRequest: AdRequest
     ) {
         val adLoader = AdLoader.Builder(activity, AdKeys.KeyManager.nativeId)
-            .forNativeAd { ad ->
-                nativeAdView = activity.layoutInflater
-                    .inflate(R.layout.native_ad_layout, null) as NativeAdView
+                .forNativeAd { ad ->
+                    nativeAdView = activity.layoutInflater
+                            .inflate(R.layout.native_ad_layout, null) as NativeAdView
 
-                NativeAd.populateNativeAdView(ad, nativeAdView!!)
-                binding.adContainer.removeAllViews()
-                binding.adContainer.addView(nativeAdView)
-            }.withAdListener(
-                NativeAd.NativeAdListener(
-                    {
-                        AnimateUtil.showAnimX(
-                            binding.adCardView,
-                            binding.adCardView.width.toFloat(),
-                            0F
+                    NativeAd.populateNativeAdView(ad, nativeAdView!!)
+                    binding.adContainer.removeAllViews()
+                    binding.adContainer.addView(nativeAdView)
+                }.withAdListener(
+                        NativeAd.NativeAdListener(
+                                {
+                                    AnimateUtil.showAnimX(
+                                            binding.adCardView,
+                                            binding.adCardView.width.toFloat(),
+                                            0F
+                                    )
+                                }, {
+                            binding.adCardView.visibility = View.INVISIBLE
+                        }
                         )
-                    }, {
-                        binding.adCardView.visibility = View.INVISIBLE
-                    }
-                )
-            ).build()
+                ).build()
 
         adLoader.loadAd(adRequest)
     }
 
     private fun loadInterstitial(
-        activity: AppCompatActivity,
-        adRequest: AdRequest
+            activity: AppCompatActivity,
+            adRequest: AdRequest
     ) {
         val fullScreenContentCallback: FullScreenContentCallback =
-            object : FullScreenContentCallback() {
+                object : FullScreenContentCallback() {
 
-                override fun onAdShowedFullScreenContent() {
-                    mInterstitialAd = null
-                }
+                    override fun onAdShowedFullScreenContent() {
+                        mInterstitialAd = null
+                    }
 
-                override fun onAdDismissedFullScreenContent() {
-                    activity.onSupportNavigateUp()
-                    super.onAdDismissedFullScreenContent()
+                    override fun onAdDismissedFullScreenContent() {
+                        activity.onSupportNavigateUp()// TODO hardcode, довать гибкость а вместо активити использвать Context
+                        super.onAdDismissedFullScreenContent()
+                    }
                 }
-            }
 
         InterstitialAd.load(activity, AdKeys.KeyManager.interstitialId, adRequest,
 
-            object : InterstitialAdLoadCallback() {
+                object : InterstitialAdLoadCallback() {
 
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
-                    mInterstitialAd?.fullScreenContentCallback = fullScreenContentCallback
-                }
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        mInterstitialAd = interstitialAd
+                        mInterstitialAd?.fullScreenContentCallback = fullScreenContentCallback
+                    }
 
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                }
-            })
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        mInterstitialAd = null
+                    }
+                })
     }
 
     fun showInterstitialAd(activity: AppCompatActivity) {

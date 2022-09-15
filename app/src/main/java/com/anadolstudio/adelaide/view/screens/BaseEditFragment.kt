@@ -4,18 +4,23 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.core.dialogs.LoadingView
-import com.anadolstudio.core.interfaces.StateListener
 
-abstract class BaseEditFragment : Fragment(), StateListener {
+abstract class BaseEditFragment : Fragment() {
 
-    override fun isReadyToApply() = true
 
-    override fun apply(): Boolean = true
+    fun showLoadingDialog() {
+    }
 
-    override fun isReadyToBackClick() = true
+    fun hideLoadingDialog() {
+    }
 
-    override fun backClick() = true
+    open fun isReadyToApply() = true
+
+    open fun apply(): Boolean = true
+
+    open fun isReadyToBackClick() = true
+
+    open fun backClick() = true
 
     protected var hasEditObject = false
         private set
@@ -31,8 +36,8 @@ abstract class BaseEditFragment : Fragment(), StateListener {
     open fun nothingIsSelectedToast() = showToast(getString(R.string.edit_error_nothing_selected))
 
     protected fun showToast(@StringRes stringId: Int, duration: Int = Toast.LENGTH_SHORT) =
-        showToast(getString(stringId), duration)
+            showToast(getString(stringId), duration)
 
     protected fun showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
-        Toast.makeText(context, text, duration).show()
+            Toast.makeText(context, text, duration).show()
 }

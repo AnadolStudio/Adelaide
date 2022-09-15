@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class ImageDialogTouchListener(val path: String, private val activity: AppCompatActivity) :
-    View.OnTouchListener {
+        View.OnTouchListener {
     private val PHOTO_DIALOG = "photo_dialog"
     var dialog: ImageDialog? = null
 
