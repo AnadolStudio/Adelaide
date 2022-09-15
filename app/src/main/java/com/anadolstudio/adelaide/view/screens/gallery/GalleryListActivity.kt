@@ -23,7 +23,6 @@ import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.adapters.util.BaseSpaceItemDecoration
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.adapters.ILoadMore
-import com.anadolstudio.core.tasks.Result
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -177,7 +176,7 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
                     // permission granted
                     loadData()
                 } else if (PermissionUtil.ReadExternalStorage.shouldShowRequestPermissionRationale(this))
-                    showSettingsSnackbar(binding.root)
+                    showSettingsSnackbar()
                 else finish() // Закрывает activity
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }

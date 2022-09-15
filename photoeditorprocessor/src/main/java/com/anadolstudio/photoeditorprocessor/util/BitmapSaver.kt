@@ -11,7 +11,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.anadolstudio.core.tasks.ProgressListener
+import com.anadolstudio.core.common_util.ProgressListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -36,13 +36,13 @@ interface BitmapSaver {
             val resolver = context.contentResolver
 
             try {
-                progressListener?.onProgress("Get uri...")
+                progressListener?.onProgress(10,"Get uri...")
                 uri = getUri(resolver, nameDir, file)
 
-                progressListener?.onProgress("Compress...")
+                progressListener?.onProgress(40, "Compress...")
                 val path = compress(resolver, bitmap, uri, file)
 
-                progressListener?.onProgress("Done")
+                progressListener?.onProgress(100,"Done")
                 scanFile(context, path)
 
                 return path

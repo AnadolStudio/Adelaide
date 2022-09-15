@@ -2,7 +2,7 @@ package com.anadolstudio.photoeditorprocessor.util
 
 import android.os.Environment
 import android.util.Log
-import com.anadolstudio.core.util.TimeUtil
+import com.anadolstudio.core.common_util.TimeUtil
 import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat

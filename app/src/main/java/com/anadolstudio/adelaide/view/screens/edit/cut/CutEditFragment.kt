@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.utils.ViewState
 import androidx.core.graphics.toPoint
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -26,8 +27,7 @@ import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.adelaide.view.screens.edit.cut.CutViewModel.Companion.CUSTOM
 import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.view.ViewState
+import com.anadolstudio.core.view.util.ViewPositionState
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
 import com.anadolstudio.photoeditorprocessor.functions.cut.CutFunction
 import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
@@ -52,7 +52,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
     private val viewModel: CutViewModel by viewModels()
     private lateinit var sizeOriginal: Point
     private var touchListener: ImageTouchListener? = null
-    private lateinit var viewState: ViewState
+    private lateinit var viewState: ViewPositionState
     private lateinit var launcher: ActivityResultLauncher<String>
     private lateinit var photoEditor: PhotoEditor
     private lateinit var func: CutFunction
@@ -70,7 +70,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         val originalBitmap: Bitmap = activityViewModel.getEditProcessor().getCurrentImage()
         sizeOriginal = Point(originalBitmap.width, originalBitmap.height)
 
-        viewModel.mask.observe(viewLifecycleOwner) { result ->
+        viewModel.maskLiveData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Success -> defaultDraw(result.data)
                 is Result.Error -> showToast(R.string.cut_error_object_isnt_exist)
@@ -82,7 +82,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         }
 
         val sizePoint = activityViewModel.viewController.currentSizeOfMainPanel()
-        viewModel.createMask(requireContext(), originalBitmap, sizePoint)
+        viewModel.createMask(originalBitmap, sizePoint)
 
         viewModel.adapterDataCommunication.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -99,7 +99,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         viewModel.loadAdapterData(requireContext())
 
         val photoEditorView = activityViewModel.viewController.photoEditorView
-        viewState = ViewState(photoEditorView)
+        viewState = ViewPositionState(photoEditorView)
         touchListener = ImageTouchListener(photoEditorView, true, true)
         photoEditorView.setOnTouchListener(touchListener)
         setupView()
@@ -117,7 +117,7 @@ class CutEditFragment : BaseEditFragment(), ActionClick<String> {
         binding.editSliderView.setCancelListener {
             photoEditor.clearAllViews()
 
-            with(viewModel.mask.getValue()) {
+            with(viewModel.maskLiveData.value) {
                 if (this is Result.Success) defaultDraw(this.data)
             }
         }

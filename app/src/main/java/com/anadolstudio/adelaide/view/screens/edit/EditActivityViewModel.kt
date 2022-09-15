@@ -8,10 +8,8 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import com.anadolstudio.adelaide.domain.utils.ImageLoader
-import com.anadolstudio.core.tasks.ProgressListener
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.tasks.RxTask
-import com.anadolstudio.core.viewmodel.Communication
+import com.anadolstudio.core.common_util.ProgressListener
+import com.anadolstudio.core.rx_util.smartSubscribe
 import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
 import com.anadolstudio.photoeditorprocessor.processor.implementation.EditProcessorStudy
 import java.io.File
@@ -24,35 +22,41 @@ class EditActivityViewModel : ViewModel() {
     lateinit var viewController: EditViewController
         private set // TODO ?
 
-    fun initEditProcessor(context: Context, path: String): RxTask<Bitmap> {
+    fun initEditProcessor(context: Context, path: String) {
         currentBitmapCommunication.map(Result.Loading())
 
-        return editProcessor.init(context, path)
-            .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
-            .onError { currentBitmapCommunication.map(Result.Error(it)) }
+        editProcessor.init(context, path)
+                .smartSubscribe(
+                        onSuccess = { currentBitmapCommunication.map(Result.Success(it)) },
+                        onError = { currentBitmapCommunication.map(Result.Error(it)) }
+                )
     }
 
     fun getEditProcessor(): EditProcessorContract = editProcessor
 
-    fun processPreview(support: Bitmap? = null): RxTask<Bitmap> {
+    fun processPreview(support: Bitmap? = null) {
         currentBitmapCommunication.map(Result.Loading())
 
-        return editProcessor.processPreview(support)
-            .onSuccess { currentBitmapCommunication.map(Result.Success(it)) }
-            .onError { currentBitmapCommunication.map(Result.Error(it)) }
+        editProcessor.processPreview(support)
+                .smartSubscribe(
+                        onSuccess = { currentBitmapCommunication.map(Result.Success(it)) },
+                        onError = { currentBitmapCommunication.map(Result.Error(it)) }
+                )
     }
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     fun saveAsFile(
-        context: Context,
-        file: File,
-        progressListener: ProgressListener<String>?
+            context: Context,
+            file: File,
+            progressListener: ProgressListener<String>?
     ) {
         saveBitmapPath.map(Result.Loading())
 
         editProcessor.saveAsFile(context, file, progressListener)
-            .onSuccess { saveBitmapPath.map(Result.Success(it)) }
-            .onError { saveBitmapPath.map(Result.Error(it)) }
+                .smartSubscribe(
+                        onSuccess = { saveBitmapPath.map(Result.Success(it)) },
+                        onError = { saveBitmapPath.map(Result.Error(it)) }
+                )
     }
 
     fun setEditViewController(viewController: EditViewController) {
@@ -60,7 +64,7 @@ class EditActivityViewModel : ViewModel() {
     }
 
     fun setCurrentImage(
-        activity: AppCompatActivity, path: String, scaleType: ImageView.ScaleType?
+            activity: AppCompatActivity, path: String, scaleType: ImageView.ScaleType?
     ) {
         val size = viewController.workspaceSize(activity)
 

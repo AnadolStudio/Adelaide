@@ -19,9 +19,8 @@ import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
 import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.adapters.ActionClick
+import com.anadolstudio.core.common_util.doubleClickAction
 import com.anadolstudio.core.tasks.ProgressListener
-import com.anadolstudio.core.tasks.Result
-import com.anadolstudio.core.util.DoubleClickExit
 import com.anadolstudio.core.util.PermissionUtil
 import com.anadolstudio.core.util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.photoeditorprocessor.functions.FuncItem
@@ -43,7 +42,6 @@ class EditActivity : BaseEditActivity() {
         }
     }
 
-    private val doubleClickExit = DoubleClickExit.Base()
     private var bottomFragment: BaseEditFragment? = null
     private lateinit var currentEditMode: EditMode
 
@@ -91,19 +89,19 @@ class EditActivity : BaseEditActivity() {
         }
 
         intent.getStringExtra(EDIT_TYPE)
-            ?.let { key ->
-                setEditFragment(EditMode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
-            }
-            ?: finish()
+                ?.let { key ->
+                    setEditFragment(EditMode.MAIN, FunctionListFragment.newInstance(key, FunctionItemClick()))
+                }
+                ?: finish()
 
         path = intent.getStringExtra(IMAGE_PATH).toString()
 
         viewModel.initEditProcessor(this, path)
-            .onError { ex ->
-                ex.printStackTrace()
-                showToast(R.string.edit_error_cant_open_photo)
-                finish()
-            }
+                .onError { ex ->
+                    ex.printStackTrace()
+                    showToast(R.string.edit_error_cant_open_photo)
+                    finish()
+                }
 
     }
 
@@ -113,8 +111,6 @@ class EditActivity : BaseEditActivity() {
             is Result.Error -> showToast(R.string.edit_error_failed_save_image)
             else -> {}
         }
-
-        showLoadingDialog(result is Result.Loading)
     }
 
     private fun showChangeBitmapProgress(result: Result<Bitmap>?) {
@@ -146,10 +142,10 @@ class EditActivity : BaseEditActivity() {
 
             if (currentEditMode == EditMode.MAIN) { // Начальное состояние
 
-                doubleClickExit.click { isTrue ->
-                    if (isTrue) super.onBackPressed()
-                    else showToast(R.string.edit_func_double_click_for_exit)
-                }
+                doubleClickAction(
+                        onSimpleClick = { showToast(R.string.edit_func_double_click_for_exit) },
+                        onDoubleClick = { super.onBackPressed() }
+                )
 
             } else {
                 viewController.resetWorkSpace()
@@ -159,16 +155,16 @@ class EditActivity : BaseEditActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String?>,
+            grantResults: IntArray
     ) {
         when (requestCode) {
             DEFAULT_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     saveImage()
                 } else if (PermissionUtil.WriteExternalStorage.shouldShowRequestPermissionRationale(this)) {
-                    showSettingsSnackbar(binding.root)
+                    showSettingsSnackbar()
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -182,9 +178,9 @@ class EditActivity : BaseEditActivity() {
         }
 
         viewModel.saveAsFile(
-            this,
-            FileUtil.createAppDir(getString(R.string.app_name)),
-            loadingView
+                this,
+                FileUtil.createAppDir(getString(R.string.app_name)),
+                loadingView
         )
     }
 
@@ -195,19 +191,18 @@ class EditActivity : BaseEditActivity() {
         override fun action(data: FuncItem) {
             viewController.showWorkspace(true, needMoreSpace = false)
 
-            val pair = when (data) {//TODO упростить через Pair<Mode, Fragment>
-                FuncItem.MainFunctions.TRANSFORM -> Pair(EditMode.TRANSFORM, CropEditFragment.newInstance())
+            val (mode, fragment) = when (data) {//TODO упростить через Pair<Mode, Fragment>
+                FuncItem.MainFunctions.TRANSFORM -> EditMode.TRANSFORM to CropEditFragment.newInstance()
                 FuncItem.MainFunctions.EFFECT -> {
                     viewController.setupSupportImage(currentEditMode)
-                    Pair(EditMode.EFFECT, EffectEditFragment.newInstance())
+                    EditMode.EFFECT to EffectEditFragment.newInstance()
                 }
-                FuncItem.MainFunctions.CUT -> Pair(EditMode.CUT, CutEditFragment.newInstance())
-                FuncItem.MainFunctions.STICKER -> Pair(EditMode.STICKER, StickerEditFragment.newInstance())
-                else /*FuncItem.MainFunctions.BRUSH*/ -> Pair(EditMode.BRUSH, BrushEditFragment.newInstance())
+                FuncItem.MainFunctions.CUT -> EditMode.CUT to CutEditFragment.newInstance()
+                FuncItem.MainFunctions.STICKER -> EditMode.STICKER to StickerEditFragment.newInstance()
+                else /*FuncItem.MainFunctions.BRUSH*/ -> EditMode.BRUSH to BrushEditFragment.newInstance()
             }
 
-            setEditFragment(pair.first, pair.second)
+            setEditFragment(mode, fragment)
         }
     }
-
 }
