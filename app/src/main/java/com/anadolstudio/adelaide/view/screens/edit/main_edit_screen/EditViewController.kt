@@ -13,9 +13,9 @@ import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.domain.utils.ViewSizeUtil
 import com.anadolstudio.adelaide.view.animation.AnimateUtil
 import com.anadolstudio.adelaide.view.screens.edit.Settings
-import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
-import com.anadolstudio.photoeditorprocessor.processor.EditMode
-import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
+import com.anadolstudio.photoeditorcore.domain.functions.transform.TransformFunction
+import com.anadolstudio.photoeditorcore.domain.edit_processor.EditMode
+import com.anadolstudio.photoeditorcore.domain.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.shape.ShapeBuilder

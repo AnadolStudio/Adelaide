@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':photoeditorprocessor')
+    implementation project(path: ':photoeditorcore')
     implementation project(path: ':core')
     implementation project(path: ':data')
 

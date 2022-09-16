@@ -12,9 +12,9 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.sticker.StickerFunction
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
+import com.anadolstudio.photoeditorcore.domain.functions.sticker.StickerFunction
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCommonUtil
 
 class StickerEditFragment : BaseEditFragment(), ActionClick<String> {
 

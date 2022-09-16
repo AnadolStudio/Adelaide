@@ -6,9 +6,9 @@ import android.graphics.Color
 import android.graphics.Point
 import com.anadolstudio.core.common_util.ProgressListener
 import com.anadolstudio.domain.exceprions.SmallMaskException
-import com.anadolstudio.photoeditorprocessor.data.photo_segmenter.PhotoSegmenter
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
-import com.anadolstudio.photoeditorprocessor.util.BitmapCutUtil
+import com.anadolstudio.photoeditorcore.domain.photo_segmenter.PhotoSegmenter
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCutUtil
 import java.nio.ByteBuffer
 
 class CutBackgroundUseCase {

@@ -16,9 +16,9 @@ import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XLARGE
 import com.anadolstudio.adelaide.view.screens.edit.Settings.Companion.XSMALL
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.brush.BrushFunction
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
+import com.anadolstudio.photoeditorcore.domain.functions.brush.BrushFunction
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCommonUtil
 import ja.burhanrashid52.photoeditor.PhotoEditor
 
 class BrushEditFragment : BaseEditFragment(), ActionClick<String> {
