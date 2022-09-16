@@ -16,8 +16,8 @@ import com.anadolstudio.core.livedata.toImmutable
 import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.core.rx_util.smartSubscribe
 import com.anadolstudio.core.viewmodel.BaseViewModel
-import com.anadolstudio.photoeditorprocessor.processor.EditProcessorContract
-import com.anadolstudio.photoeditorprocessor.processor.implementation.EditProcessorStudy
+import com.anadolstudio.photoeditorcore.data.edit_processor.EditProcessorContract
+import com.anadolstudio.photoeditorcore.domain.edit_processor.EditProcessorStudy
 import java.io.File
 
 class EditActivityViewModel : BaseViewModel() {
