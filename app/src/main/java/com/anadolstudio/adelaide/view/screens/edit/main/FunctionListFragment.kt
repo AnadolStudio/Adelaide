@@ -9,7 +9,7 @@ import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity.Companion.EDIT_TYPE
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorprocessor.functions.FuncItem
+import com.anadolstudio.photoeditorcore.functions.FuncItem
 
 class FunctionListFragment : BaseEditFragment() {
 

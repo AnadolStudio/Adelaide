@@ -14,10 +14,10 @@ import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListAdapter
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.transform.RatioItem
-import com.anadolstudio.photoeditorprocessor.functions.transform.TransformFunction
-import com.anadolstudio.photoeditorprocessor.util.DisplayUtil
+import com.anadolstudio.photoeditorcore.functions.FuncItem
+import com.anadolstudio.photoeditorcore.functions.transform.RatioItem
+import com.anadolstudio.photoeditorcore.functions.transform.TransformFunction
+import com.anadolstudio.photoeditorcore.util.DisplayUtil
 import com.theartofdev.edmodo.cropper.CropImageView
 
 class CropEditFragment : BaseEditFragment(), ActionClick<FuncItem> {

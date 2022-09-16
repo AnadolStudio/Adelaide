@@ -10,7 +10,7 @@ import com.anadolstudio.core.livedata.toImmutable
 import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.core.rx_util.smartSubscribe
 import com.anadolstudio.core.viewmodel.BaseViewModel
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.util.BitmapCommonUtil
 
 class EffectEditViewModel : BaseViewModel() {
 

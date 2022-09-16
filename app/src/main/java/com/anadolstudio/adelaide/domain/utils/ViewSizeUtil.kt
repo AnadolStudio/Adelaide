@@ -25,7 +25,7 @@ object ViewSizeUtil {
     private fun getSupportPair(
             widthInto: Int, heightInto: Int, widthOut: Int, heightOut: Int
     ): Pair<Int, Int> {
-        val ratio: Float = com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatioMax(
+        val ratio: Float = com.anadolstudio.photoeditorcore.util.BitmapCommonUtil.getScaleRatioMax(
                 widthInto,
                 heightInto,
                 widthOut,
@@ -69,11 +69,11 @@ object ViewSizeUtil {
             view: View
     ) {
         val ratio = min(
-                com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatio(
+                com.anadolstudio.photoeditorcore.util.BitmapCommonUtil.getScaleRatio(
                         source.height.toFloat(),
                         heightContainer.toFloat()
                 ),
-                com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil.getScaleRatio(
+                com.anadolstudio.photoeditorcore.util.BitmapCommonUtil.getScaleRatio(
                         source.width.toFloat(),
                         widthContainer.toFloat()
                 )

@@ -15,9 +15,9 @@ import com.anadolstudio.adelaide.domain.utils.ImageLoader
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivityViewModel
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorprocessor.functions.FuncItem
-import com.anadolstudio.photoeditorprocessor.functions.effect.EffectFunction
-import com.anadolstudio.photoeditorprocessor.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.functions.FuncItem
+import com.anadolstudio.photoeditorcore.functions.effect.EffectFunction
+import com.anadolstudio.photoeditorcore.util.BitmapCommonUtil
 import com.google.android.material.slider.Slider
 import kotlin.math.roundToInt
 
