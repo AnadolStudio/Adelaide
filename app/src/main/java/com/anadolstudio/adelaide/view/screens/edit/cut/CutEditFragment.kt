@@ -28,11 +28,11 @@ import com.anadolstudio.adelaide.view.screens.gallery.GalleryListActivity
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.livedata.SingleEvent
 import com.anadolstudio.core.view.util.ViewPositionState
-import com.anadolstudio.photoeditorcore.functions.FuncItem
-import com.anadolstudio.photoeditorcore.functions.cut.CutFunction
-import com.anadolstudio.photoeditorcore.util.BitmapCommonUtil
-import com.anadolstudio.photoeditorcore.util.BitmapCutUtil
-import com.anadolstudio.photoeditorcore.util.BitmapInfoUtil
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
+import com.anadolstudio.photoeditorcore.domain.functions.cut.CutFunction
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCutUtil
+import com.anadolstudio.photoeditorcore.domain.util.BitmapInfoUtil
 import ja.burhanrashid52.photoeditor.PhotoEditor
 
 class CutEditFragment : BaseEditFragment(), ActionClick<String> {

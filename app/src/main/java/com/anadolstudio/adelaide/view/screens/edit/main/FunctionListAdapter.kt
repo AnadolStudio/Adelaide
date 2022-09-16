@@ -9,7 +9,7 @@ import com.anadolstudio.adelaide.databinding.ItemFunctionBinding
 import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.adapters.ActionClick
-import com.anadolstudio.photoeditorcore.functions.FuncItem
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
 
 class FunctionListAdapter(
         data: List<FuncItem>,

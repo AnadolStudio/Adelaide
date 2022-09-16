@@ -23,9 +23,9 @@ import com.anadolstudio.core.common_util.PermissionUtil
 import com.anadolstudio.core.common_util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.core.common_util.doubleClickAction
 import com.anadolstudio.core.livedata.SingleEvent
-import com.anadolstudio.photoeditorcore.functions.FuncItem
-import com.anadolstudio.photoeditorcore.processor.EditMode
-import com.anadolstudio.photoeditorcore.util.FileUtil
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
+import com.anadolstudio.photoeditorcore.domain.edit_processor.EditMode
+import com.anadolstudio.photoeditorcore.domain.util.FileUtil
 
 class EditActivity : BaseEditActivity() {
 

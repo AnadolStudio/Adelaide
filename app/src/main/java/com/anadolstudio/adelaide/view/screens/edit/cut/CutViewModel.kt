@@ -14,8 +14,8 @@ import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.core.rx_util.singleFrom
 import com.anadolstudio.core.rx_util.smartSubscribe
 import com.anadolstudio.domain.usecase.cut_background.CutBackgroundUseCase
-import com.anadolstudio.photoeditorcore.data.photo_segmenter.PhotoSegmenter
-import com.anadolstudio.photoeditorcore.util.BitmapCommonUtil
+import com.anadolstudio.photoeditorcore.domain.photo_segmenter.PhotoSegmenter
+import com.anadolstudio.photoeditorcore.domain.util.BitmapCommonUtil
 
 class CutViewModel : DrawingViewModel() {
     companion object {
