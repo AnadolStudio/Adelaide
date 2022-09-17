@@ -30,10 +30,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="start" />
+
             </LinearLayout>
 
-
         </androidx.appcompat.widget.Toolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -43,6 +44,8 @@
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
         android:scrollbarFadeDuration="1"
+        android:paddingTop="@dimen/margin_normal"
+        android:clipToPadding="false"
         android:scrollbarSize="4dp"
         android:scrollbars="vertical"
 

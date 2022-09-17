@@ -67,44 +67,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adView">
 
-        <ja.burhanrashid52.photoeditor.PhotoEditorView
-            android:id="@+id/photo_editor_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:visibility="gone" />
-
         <ImageView
-            android:id="@+id/support_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            />
-
-        <com.theartofdev.edmodo.cropper.CropImageView
-            android:id="@+id/crop_image"
+            android:id="@+id/main_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:visibility="gone"
-            app:cropBorderCornerColor="@color/colorPrimaryInverse"
-            app:cropBorderCornerLength="30dp"
-            app:cropBorderCornerOffset="6dp"
-            app:cropBorderCornerThickness="3dp"
-            app:cropBorderLineColor="@color/colorPrimaryInverse"
-            app:cropBorderLineThickness="3dp"
-            app:cropGuidelinesColor="@color/colorPrimaryInverse" />
+            android:layout_gravity="center" />
 
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/toolbar_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView"
+        tools:visibility="visible" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/toolbar_fragment"

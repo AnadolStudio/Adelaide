@@ -5,27 +5,27 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
 import com.anadolstudio.adelaide.view.adcontrollers.EditAdController
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.BaseEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.brush.BrushEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.crop.CropEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.cut.CutEditFragment
-import com.anadolstudio.adelaide.view.screens.edit.effect.EffectEditFragment
 import com.anadolstudio.adelaide.view.screens.edit.main.FunctionListFragment
-import com.anadolstudio.adelaide.view.screens.edit.stiker.StickerEditFragment
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.adelaide.view.screens.save.SaveActivity
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.common_util.PermissionUtil
 import com.anadolstudio.core.common_util.PermissionUtil.Abstract.Companion.DEFAULT_REQUEST_CODE
 import com.anadolstudio.core.common_util.doubleClickAction
+import com.anadolstudio.core.common_util.throttleClick
 import com.anadolstudio.core.livedata.SingleEvent
-import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
 import com.anadolstudio.photoeditorcore.domain.edit_processor.EditMode
+import com.anadolstudio.photoeditorcore.domain.edit_processor.PhotoEditException
+import com.anadolstudio.photoeditorcore.domain.edit_processor.implementation.EditProcessorEvent
+import com.anadolstudio.photoeditorcore.domain.functions.FuncItem
 import com.anadolstudio.photoeditorcore.domain.util.FileUtil
+import com.anadolstudio.photoeditorcore.view.PhotoEditorView
 
 class EditActivity : BaseEditActivity() {
 
@@ -42,12 +42,8 @@ class EditActivity : BaseEditActivity() {
         }
     }
 
-    private var bottomFragment: BaseEditFragment? = null
-    private lateinit var currentEditMode: EditMode
-
     private lateinit var path: String
-    private lateinit var binding: ActivityEditBinding
-    private lateinit var viewController: EditViewController
+    private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityEditBinding.inflate(layoutInflater) }
 
     private val viewModel: EditActivityViewModel by viewModels()
 
@@ -56,14 +52,10 @@ class EditActivity : BaseEditActivity() {
 
         if (savedInstanceState != null) {
             //Создаю активити заново ибо сохранять большой bitmap - проблема
-            val intent = intent
             finish()
             startActivity(intent)
         }
 
-        binding = ActivityEditBinding.inflate(layoutInflater)
-        viewController = EditViewController(this, binding)
-        viewModel.setEditViewController(viewController)
         viewModelSubscribes()
         EditAdController(binding).load(this)
         setupView()
@@ -71,19 +63,44 @@ class EditActivity : BaseEditActivity() {
 
     private fun viewModelSubscribes() {
         viewModel.currentBitmap.observe(this, this::render)
-        viewModel.event.observe(this, this::handleEvent)
+//        viewModel.event.observe(this, this::handleEvent)
+        viewModel.editProcessorEvent.observe(this, this::handleEditProcessorEvent)
+    }
+
+    private fun handleEditProcessorEvent(event: EditProcessorEvent) {
+        when (event) {
+            is EditProcessorEvent.Error -> handleEditProcessorError(event.error)
+            is EditProcessorEvent.Loading -> showLoading(event.isLoading)
+            is EditProcessorEvent.Success -> handleEditProcessorSuccess(event)
+        }
+    }
+
+    private fun handleEditProcessorSuccess(event: EditProcessorEvent.Success) {
+        when (event) {
+            is EditProcessorEvent.Success.ImageLoaded -> {}
+            is EditProcessorEvent.Success.ImageSaved -> SaveActivity.start(this@EditActivity, event.path)
+        }
+    }
+
+    private fun handleEditProcessorError(error: Throwable) {
+        when (error) {
+            is PhotoEditException.InvalidateBitmapException -> closeEditActivity()
+            is PhotoEditException.FailedSaveException -> {}
+            else -> {}
+        }
     }
 
     override fun handleEvent(event: SingleEvent) {
         when (event) {
-            is EditActivityEvent.CantOpenPhotoEvent -> closeEditActivity()
             is EditActivityEvent.LoadingEvent -> showLoading(event.isLoading)
-            is EditActivityEvent.SuccessSaveEvent -> SaveActivity.start(this@EditActivity, event.path)
             else -> super.handleEvent(event)
         }
     }
 
     private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.isVisible = isLoading
+        binding.applyBtn.isEnabled = !isLoading
+        binding.saveBtn.isEnabled = !isLoading
     }
 
     private fun closeEditActivity() {
@@ -92,22 +109,15 @@ class EditActivity : BaseEditActivity() {
     }
 
     private fun setupView() {
+        viewModel.bindWithPhotoEditorView(PhotoEditorView(binding.mainImage))
+
         setSupportActionBar(binding.navigationToolbar)
         setContentView(binding.root)
         binding.navigationToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.navigationToolbar.title = null
 
-        binding.saveBtn.setOnClickListener { saveImage() }
-
-        binding.applyBtn.setOnClickListener {
-            bottomFragment?.also {
-                if (it.isReadyToApply()) { //TODO правильно, ли такое обращение?
-                    currentEditMode = EditMode.MAIN
-                    it.apply()
-                    super.onBackPressed()
-                }
-            }
-        }
+        binding.saveBtn.throttleClick { saveImage() }
+        binding.applyBtn.throttleClick { }
 
         (intent.getSerializableExtra(EDIT_TYPE) as? EditType)
                 ?.let { key ->
@@ -123,40 +133,20 @@ class EditActivity : BaseEditActivity() {
 
     private fun render(state: EditActivityViewState) {
         when (state) {
-            is EditActivityViewState.Content -> {
-                viewController.setMainBitmap(this, state.bitmap)
-
-                if (currentEditMode == EditMode.CUT) {
-                    viewController.setupMainImage(this, state.bitmap)
-                } else {
-                    viewController.resetWorkSpace()
-                }
-            }
+            is EditActivityViewState.Content -> {}
             is EditActivityViewState.Error -> state.error.printStackTrace()
         }
     }
 
     private fun setEditFragment(editMode: EditMode, fragment: BaseEditFragment) {
-        this.currentEditMode = editMode
-        bottomFragment = fragment
         replaceFragment(fragment, R.id.toolbar_fragment, editMode != EditMode.MAIN)
     }
 
     override fun onBackPressed() {
-        if (bottomFragment != null && bottomFragment!!.backClick()) {
-
-            if (currentEditMode == EditMode.MAIN) { // Начальное состояние
-
-                doubleClickAction(
-                        onSimpleClick = { showToast(R.string.edit_func_double_click_for_exit) },
-                        onDoubleClick = { super.onBackPressed() }
-                )
-
-            } else {
-                viewController.resetWorkSpace()
-                super.onBackPressed()
-            }
-        }
+        doubleClickAction(
+                onSimpleClick = { showToast(R.string.edit_func_double_click_for_exit) },
+                onDoubleClick = { super.onBackPressed() }
+        )
     }
 
     override fun onRequestPermissionsResult(
@@ -191,7 +181,7 @@ class EditActivity : BaseEditActivity() {
     inner class FunctionItemClick : ActionClick<FuncItem> {
 
         override fun action(data: FuncItem) {
-            viewController.showWorkspace(true, needMoreSpace = false)
+            /*viewController.showWorkspace(true, needMoreSpace = false)
 
             val (mode, fragment) = when (data) {
                 FuncItem.MainFunctions.TRANSFORM -> EditMode.TRANSFORM to CropEditFragment.newInstance()
@@ -201,10 +191,10 @@ class EditActivity : BaseEditActivity() {
                 }
                 FuncItem.MainFunctions.CUT -> EditMode.CUT to CutEditFragment.newInstance()
                 FuncItem.MainFunctions.STICKER -> EditMode.STICKER to StickerEditFragment.newInstance()
-                else /*FuncItem.MainFunctions.BRUSH*/ -> EditMode.BRUSH to BrushEditFragment.newInstance()
+                else *//*FuncItem.MainFunctions.BRUSH*//* -> EditMode.BRUSH to BrushEditFragment.newInstance()
             }
 
-            setEditFragment(mode, fragment)
+            setEditFragment(mode, fragment)*/
         }
     }
 }
