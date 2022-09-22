@@ -72,7 +72,11 @@ class GalleryListViewModel(private val galleryRepository: GalleryRepository) : B
 
     @RequiresPermission(READ_EXTERNAL_STORAGE)
     fun updateImages(context: Context, size: Int?) {
-        if (_screenState.value !is GalleryScreenState.Content) return
+        when (_screenState.value) {
+            is GalleryScreenState.Error,
+            GalleryScreenState.Loading,
+            null -> return
+        }
 
         loadImages(context = context, size = max(size ?: 0, ONE_PORTION), loadMore = false)
     }
