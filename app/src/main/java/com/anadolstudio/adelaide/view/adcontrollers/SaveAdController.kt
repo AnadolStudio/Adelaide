@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.data.AdKeys
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
-import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.core.view.animation.AnimateUtil
 import com.anadolstudio.adelaide.view.screens.save.NativeAd
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest

@@ -13,8 +13,6 @@ import com.anadolstudio.adelaide.data.SettingsPreference
 import com.anadolstudio.adelaide.databinding.ActivitySaveBinding
 import com.anadolstudio.adelaide.domain.utils.FirebaseHelper
 import com.anadolstudio.adelaide.view.adcontrollers.SaveAdController
-import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.DURATION_EXTRA_LONG
-import com.anadolstudio.adelaide.view.animation.AnimateUtil.Companion.showAnimX
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
 import com.anadolstudio.adelaide.view.screens.dialogs.ImageDialogTouchListener
 import com.anadolstudio.core.adapters.ActionClick
@@ -23,6 +21,8 @@ import com.anadolstudio.core.rx_util.quickSingleFrom
 import com.anadolstudio.core.rx_util.smartSubscribe
 import com.anadolstudio.core.share_util.SharedAction.SharedItem
 import com.anadolstudio.core.share_util.SharedActionFactory
+import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_EXTRA_LONG
+import com.anadolstudio.core.view.animation.AnimateUtil.showAnimX
 
 class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
 
@@ -76,8 +76,7 @@ class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
                         onError = { it.printStackTrace() }
                 )
 
-        binding.recyclerView.adapter =
-                SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
+        binding.recyclerView.adapter = SharedAdapter(SharedActionFactory.instance(), this@SaveActivity)
 
         adController = SaveAdController(binding).apply {
             if (!SettingsPreference.hasPremium(this@SaveActivity))
@@ -103,9 +102,9 @@ class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
 
     private fun updateAd() {
         SettingsPreference.hasPremium(this)
-                .also { hasPremium ->
-                    adController.updateView(!hasPremium)
-                }
+            .also { hasPremium ->
+                adController.updateView(!hasPremium)
+            }
     }
 
     override fun onResume() {
@@ -136,8 +135,8 @@ class SaveActivity : BaseEditActivity(), ActionClick<SharedItem> {
         binding.recyclerView.apply {
             smoothScrollBy(ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt())
             postDelayed(
-                    { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
-                    DURATION_EXTRA_LONG + 200
+                { smoothScrollBy(-ANIM_DELTA_X, 0, null, DURATION_EXTRA_LONG.toInt()) },
+                DURATION_EXTRA_LONG + 200
             )
         }
     }

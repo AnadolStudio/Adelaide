@@ -3,7 +3,7 @@ package com.anadolstudio.adelaide.view.adcontrollers
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.anadolstudio.adelaide.databinding.ActivityEditBinding
-import com.anadolstudio.adelaide.view.animation.AnimateUtil
+import com.anadolstudio.core.view.animation.AnimateUtil
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError

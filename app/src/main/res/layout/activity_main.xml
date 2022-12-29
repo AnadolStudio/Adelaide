@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".view.screens.main.MainActivity">
 
+    <LinearLayout
+        android:id="@+id/confetti_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -69,7 +79,7 @@
         app:cardCornerRadius="@dimen/radius16"
         app:cardElevation="@dimen/elevation_normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintHeight_percent="0.225"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -93,7 +103,7 @@
         style="@style/HeaderSmall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="64dp"
         android:text="@string/beautiful"
         app:layout_constraintEnd_toEndOf="@+id/beautiful_card_view"
         app:layout_constraintStart_toStartOf="@+id/beautiful_card_view"
@@ -110,7 +120,7 @@
         android:layout_marginTop="8dp"
         app:cardCornerRadius="@dimen/radius16"
         app:cardElevation="@dimen/elevation_normal"
-        app:layout_constraintBottom_toTopOf="@+id/photo_card_view"
+        app:layout_constraintHeight_percent="0.225"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2">

@@ -18,7 +18,6 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ActivityGalleryBinding
 import com.anadolstudio.adelaide.view.ViewModelFactory
 import com.anadolstudio.adelaide.view.screens.BaseEditActivity
-import com.anadolstudio.adelaide.view.screens.edit.main_edit_screen.EditActivity
 import com.anadolstudio.adelaide.view.screens.main.EditType
 import com.anadolstudio.core.activity.hasPermission
 import com.anadolstudio.core.activity.requestPermission
@@ -84,7 +83,7 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
     }
 
     private fun initView() {
-        galleryListAdapter = GalleryImageAdapter(mutableListOf<String>(), this, this)
+        galleryListAdapter = GalleryImageAdapter(mutableListOf(), this, this)
 
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(this@GalleryListActivity, 3)
@@ -179,7 +178,7 @@ class GalleryListActivity : BaseEditActivity(), ActionClick<String>, ILoadMore {
     override fun action(data: String) {
         if (intent.getIntExtra(CHOOSE_PHOTO, 0) != REQUEST_CHOOSE_PHOTO) {
             val editType = intent.getSerializableExtra(EditType::class.java.name) as EditType
-            EditActivity.start(this, editType, data)
+//            EditActivity.start(this, editType, data)
         } else {
             setResult(RESULT_OK, Intent().putExtra(CHOOSE_PHOTO, data))
             finish()
