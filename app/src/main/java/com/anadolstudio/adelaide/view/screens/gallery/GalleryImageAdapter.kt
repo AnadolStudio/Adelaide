@@ -10,11 +10,12 @@ import com.anadolstudio.adelaide.view.adapters.SimpleAdapter
 import com.anadolstudio.core.adapters.AbstractViewHolder
 import com.anadolstudio.core.adapters.ActionClick
 import com.anadolstudio.core.adapters.ILoadMore
+import com.anadolstudio.core.view.animation.AnimateUtil.scaleAnimationOnClick
 
 class GalleryImageAdapter(
         data: List<String>,
         detailable: ActionClick<String>,
-        val loadMore: ILoadMore?
+        private val loadMore: ILoadMore?
 ) : SimpleAdapter<String>(data.toMutableList(), detailable) {
 
     private var isLoading = false
