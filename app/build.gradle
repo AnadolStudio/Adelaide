@@ -4,17 +4,30 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 31
+
+    signingConfigs {
+        debug {
+        }
+
+        release {
+            storeFile file('keystore_adelaide.jks')
+            storePassword 'adelaide2164'
+            keyAlias 'key_app_adelaide'
+            keyPassword 'adelaide2164'
+        }
+    }
 
     defaultConfig {
 
         applicationId "com.anadolstudio.adelaide"
         minSdk 23
         targetSdk 32
+        compileSdk 32
         versionCode 1
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        project.archivesBaseName = "Adelaide" + "_" + defaultConfig.versionName + "_(" + defaultConfig.versionCode + ")"
 
         renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
@@ -25,9 +38,16 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+            debuggable true
 
+            minifyEnabled false
+        }
+        release {
+            signingConfig signingConfigs.release
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
