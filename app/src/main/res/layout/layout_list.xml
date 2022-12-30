@@ -10,7 +10,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.anadolstudio.adelaide.view.customview.EditSliderView
+    <com.anadolstudio.adelaide.ui.customview.EditSliderView
         android:id="@+id/editSliderView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

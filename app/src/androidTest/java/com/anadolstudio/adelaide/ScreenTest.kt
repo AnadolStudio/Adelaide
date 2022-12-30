@@ -18,8 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.anadolstudio.adelaide.view.screens.gallery.GalleryImageAdapter
-import com.anadolstudio.adelaide.view.screens.main.MainActivity
+import com.anadolstudio.adelaide.ui.screens.gallery.GalleryImageAdapter
+import com.anadolstudio.adelaide.ui.screens.main.MainActivity
 import org.hamcrest.Matcher
 import org.junit.Rule
 import org.junit.Test
