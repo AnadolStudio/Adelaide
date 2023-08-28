@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_paging_error_root"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:layout_margin="@dimen/padding_main"
+    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardCornerRadius="@dimen/radius_medium">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:paddingVertical="@dimen/padding_main"
+        style="@style/Caption14"
+        android:textColor="@color/colorAccent"
+        tools:text="Не удалось загрузить страницу"/>
+
+</androidx.cardview.widget.CardView>

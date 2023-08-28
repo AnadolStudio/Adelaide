@@ -4,17 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/share"
-    style="@style/EditItem.LinearLayoutRipple"
+    android:background="@drawable/item_ripple_oval_without_mask"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="0dp"
     android:orientation="vertical">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_margin="@dimen/margin_small"
+        android:layout_margin="@dimen/padding_small"
         android:id="@+id/share_icon"
-        android:layout_width="@dimen/share_image_side"
-        android:layout_height="@dimen/share_image_side"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
         app:shapeAppearanceOverlay="@style/ImageViewRound"
         android:background="@color/colorPrimary"
         android:elevation="@dimen/elevation_large"

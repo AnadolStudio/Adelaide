@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:text="@string/app_name"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_header_large"
+                style="@style/Header34"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -63,12 +63,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/padding_small"
+                android:layout_marginBottom="@dimen/padding_medium"
                 android:gravity="center"
                 android:text="@string/save_title_thank_you"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_subtitle" />
+                style="@style/Body20" />
 
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>

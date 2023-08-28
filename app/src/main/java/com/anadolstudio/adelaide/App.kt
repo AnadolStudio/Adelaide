@@ -8,12 +8,15 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import com.anadolstudio.adelaide.data.SettingsPreference
+import com.anadolstudio.adelaide.di.DI
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
         setDefaultNightMode(SettingsPreference.getNightMode(this))
+
+        DI.init(applicationContext)
     }
 
     fun changeTheme() {
