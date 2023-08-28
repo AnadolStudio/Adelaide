@@ -4,12 +4,15 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate.*
 import com.anadolstudio.adelaide.data.SettingsPreference
+import com.anadolstudio.adelaide.di.DI
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
         setDefaultNightMode(SettingsPreference.getNightMode(this))
+
+        DI.init(applicationContext)
     }
 
     fun changeTheme() {

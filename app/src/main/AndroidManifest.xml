@@ -7,9 +7,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.vending.BILLING" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 
     <application
         android:name=".App"
@@ -34,7 +36,7 @@
         </provider>
 
         <activity
-            android:name=".ui.screens.splash.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashActivity">
@@ -44,22 +46,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".ui.screens.main.MainActivity"
+            android:name=".SingleActivity"
             android:exported="true"
+            android:theme="@style/Theme.Adelaide"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.screens.gallery.GalleryListActivity"
-            android:parentActivityName=".ui.screens.main.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.screens.edit.main_edit_screen.EditActivity"
-            android:parentActivityName=".ui.screens.main.MainActivity"
-            android:screenOrientation="portrait" /> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
-        <activity
-            android:name=".ui.screens.save.SaveActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.screens.main.MainActivity" />
+
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

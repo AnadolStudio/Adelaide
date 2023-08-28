@@ -1,7 +1,10 @@
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
+}
 
 android {
 
@@ -18,11 +21,10 @@ android {
     }
 
     defaultConfig {
-
         applicationId "com.anadolstudio.adelaide"
         minSdk 23
-        targetSdk 32
-        compileSdk 32
+        targetSdk 34
+        compileSdk 34
         versionCode 1
         versionName "1.0.0"
 
@@ -74,17 +76,21 @@ dependencies {
     implementation project(path: ':domain')
     implementation project(path: ':data')
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
 
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment-ktx:1.5.2'
-    implementation 'androidx.activity:activity-ktx:1.5.1'
+    implementation 'androidx.fragment:fragment-ktx:1.6.1'
+    implementation 'androidx.activity:activity-ktx:1.7.2'
 
-    def lifecycle_version = '2.5.1'
+    implementation 'com.google.android.material:material:1.9.0'
+
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.1'
+
+    def lifecycle_version = '2.6.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -92,7 +98,7 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-inappmessaging:20.1.3'
+    implementation 'com.google.firebase:firebase-inappmessaging:20.3.3'
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics'
@@ -100,11 +106,27 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.13.2'
 
     //Ad
-    implementation 'com.google.android.gms:play-services-ads:21.2.0'
+    implementation 'com.google.android.gms:play-services-ads:22.3.0'
 
-    //PhotoEditLibs
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-    implementation 'org.wysaid:gpuimage-plus:2.6.3'
+    // Dagger
+    def dagger = "2.28.3"
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt("com.google.dagger:dagger-compiler:$dagger")
+
+    // Rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // Groupie
+    def groupie = "2.10.1"
+    implementation "com.github.lisawray.groupie:groupie:$groupie"
+    implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:$groupie"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie"
+
+    // Room
+    def room_version = "2.5.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     // Confetti
     implementation 'com.github.jinatonic.confetti:confetti:1.1.2'

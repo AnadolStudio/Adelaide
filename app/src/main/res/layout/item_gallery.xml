@@ -4,8 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_image_height"
-    app:cardCornerRadius="@dimen/radius8"
+    android:layout_height="120dp"
+    app:cardCornerRadius="@dimen/radius_medium"
     android:stateListAnimator="@animator/item_card_large">
 
     <ImageView
@@ -14,5 +14,6 @@
         android:scaleType="centerCrop"
         android:layout_height="match_parent"
         android:foreground="@drawable/item_ripple_oval_without_mask"
-        app:layout_constraintCircleRadius="@dimen/radius8" />
+        app:layout_constraintCircleRadius="@dimen/radius_medium" />
+
 </androidx.cardview.widget.CardView>
