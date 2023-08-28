@@ -4,7 +4,6 @@ import androidx.annotation.LayoutRes
 import androidx.navigation.fragment.findNavController
 import com.anadolstudio.adelaide.navigation.NavigatableDelegate
 import com.anadolstudio.adelaide.navigation.NavigateData
-import com.anadolstudio.core.presentation.ContentableState
 import com.anadolstudio.core.presentation.Eventable
 import com.anadolstudio.core.presentation.Navigatable
 import com.anadolstudio.core.presentation.Renderable
@@ -13,7 +12,7 @@ import com.anadolstudio.core.viewmodel.BaseController
 import com.anadolstudio.core.viewmodel.CoreContentViewModel
 
 abstract class BaseContentFragment<
-        ViewState : ContentableState,
+        ViewState : Any,
         ViewModel : CoreContentViewModel<ViewState, NavigateData>,
         Controller : BaseController>(
         @LayoutRes layoutId: Int

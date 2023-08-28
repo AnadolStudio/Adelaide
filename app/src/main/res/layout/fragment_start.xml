@@ -96,18 +96,16 @@
 
     </androidx.cardview.widget.CardView>
 
-
     <androidx.cardview.widget.CardView
-        android:id="@+id/photo_card_view"
+        android:id="@+id/photo_button"
         style="@style/SimpleCardView"
         android:layout_marginBottom="@dimen/padding_main"
-        android:layout_marginStart="@dimen/padding_main"
+        android:layout_marginHorizontal="@dimen/padding_main"
         android:clickable="true"
         android:focusable="true"
         android:stateListAnimator="@animator/item_card_large"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="@+id/guideline">
+        app:layout_constraintEnd_toStartOf="@+id/guideline">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,6 +131,40 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/collage_button"
+        style="@style/SimpleCardView"
+        android:layout_marginBottom="@dimen/padding_main"
+        android:layout_marginHorizontal="@dimen/padding_main"
+        android:clickable="true"
+        android:focusable="true"
+        android:stateListAnimator="@animator/item_card_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/item_ripple"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_collage" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/collage"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

@@ -35,7 +35,9 @@
         android:paddingTop="@dimen/padding_medium"
         android:clipToPadding="false"
         android:scrollbarSize="4dp"
+        android:padding="@dimen/padding_medium"
         android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,15 +46,15 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
-        android:id="@+id/empty_text"
+    <com.anadolstudio.core.view.stub.EmptyStubView
+        android:id="@+id/empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/gallery_error_nothing_found"
+        app:title="@string/gallery_error_nothing_found"
+        app:src="@android:drawable/sym_def_app_icon"
+        app:srcSide="150dp"
         android:visibility="gone"
         tools:visibility="visible"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

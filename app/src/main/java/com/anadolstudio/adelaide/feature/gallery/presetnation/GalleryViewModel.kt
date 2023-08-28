@@ -1,5 +1,6 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
+import android.Manifest
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,10 +9,15 @@ import com.anadolstudio.adelaide.base.viewmodel.navigateUp
 import com.anadolstudio.adelaide.di.DI
 import com.anadolstudio.adelaide.feature.gallery.presetnation.model.Folder
 import com.anadolstudio.adelaide.feature.gallery.presetnation.model.toFolder
-import com.anadolstudio.core.common_extention.startAppSettingsActivity
-import com.anadolstudio.core.rx_util.lceSubscribe
-import com.anadolstudio.core.rx_util.schedulersIoToMain
+import com.anadolstudio.adelaide.feature.start.EditType
+import com.anadolstudio.core.util.common_extention.hasAllPermissions
+import com.anadolstudio.core.util.common_extention.hasAnyPermissions
+import com.anadolstudio.core.util.common_extention.startAppSettingsActivity
+import com.anadolstudio.core.viewmodel.livedata.onNext
+import com.anadolstudio.core.util.rx.lceSubscribe
+import com.anadolstudio.core.util.rx.schedulersIoToMain
 import com.anadolstudio.core.util.paginator.PaginatorImpl
+import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.util.paginator.PagingViewController
 import com.anadolstudio.data.repository.GalleryRepository
 import io.reactivex.Single
@@ -20,13 +26,30 @@ import javax.inject.Inject
 class GalleryViewModel(
         private val galleryRepository: GalleryRepository,
         private val context: Context,
+        editType: EditType,
 ) : BaseContentViewModel<GalleryState>(
-        GalleryState(currentFolder = Folder.getDefaultFolder(context))
+        GalleryState(
+                imageListState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
+                    true -> PagingDataState.Loading()
+                    false -> PagingDataState.Empty()
+                },
+                currentFolder = Folder.getDefaultFolder(context),
+                editType = editType
+        )
 ), GalleryController, PagingViewController<String> {
 
-    private companion object {
-        const val PAGE_SIZE = 66
-        const val FIRST_PAGE_NUMBER = 0
+    companion object {
+        private const val PAGE_SIZE = 66
+        private const val FIRST_PAGE_NUMBER = 0
+
+        const val REQUEST_STORAGE_PERMISSION = 1
+        const val EDIT_TYPE_KEY = "editType"
+
+        val STORAGE_PERMISSION = arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        )
+
     }
 
     private val requestFactory: ((Int) -> Single<List<String>>) = { pageIndex ->
@@ -52,7 +75,15 @@ class GalleryViewModel(
     )
 
     init {
-        initLoad()
+        checkPermissionAndLoad()
+    }
+
+    private fun checkPermissionAndLoad() {
+        if (context.hasAllPermissions(STORAGE_PERMISSION)) {
+            initLoad()
+        } else {
+            _singleEvent.onNext(RequestPermission)
+        }
     }
 
     private fun initLoad() {
@@ -96,9 +127,7 @@ class GalleryViewModel(
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(imageUri: String) {
-        // TODO("Not yet implemented")
-    }
+    override fun onImageSelected(imageUri: String) = showTodo()
 
     override fun onLoadMoreImages() = paginator.loadNewPage()
 
@@ -120,7 +149,7 @@ class GalleryViewModel(
     }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val editType: EditType) : ViewModelProvider.NewInstanceFactory() {
 
         @Inject
         lateinit var context: Context
@@ -132,7 +161,8 @@ class GalleryViewModel(
             DI.appComponent.inject(this)
             return GalleryViewModel(
                     galleryRepository = galleryRepository,
-                    context = context
+                    context = context,
+                    editType = editType
             ) as T
         }
     }

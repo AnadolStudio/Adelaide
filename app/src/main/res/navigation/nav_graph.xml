@@ -19,7 +19,14 @@
     <fragment
         android:id="@+id/galleryFragment"
         android:name="com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryFragment"
-        tools:layout="@layout/fragment_gallery"/>
+        tools:layout="@layout/fragment_gallery">
+
+        <argument
+            android:name="editType"
+            app:argType="com.anadolstudio.adelaide.feature.start.EditType"
+            android:defaultValue="PHOTO" />
+
+    </fragment>
 
 
 </navigation>
