@@ -13,15 +13,17 @@ import com.anadolstudio.adelaide.feature.start.EditType
 import com.anadolstudio.core.util.common_extention.hasAllPermissions
 import com.anadolstudio.core.util.common_extention.hasAnyPermissions
 import com.anadolstudio.core.util.common_extention.startAppSettingsActivity
-import com.anadolstudio.core.viewmodel.livedata.onNext
-import com.anadolstudio.core.util.rx.lceSubscribe
-import com.anadolstudio.core.util.rx.schedulersIoToMain
 import com.anadolstudio.core.util.paginator.PaginatorImpl
 import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.util.paginator.PagingViewController
+import com.anadolstudio.core.util.rx.lceSubscribe
+import com.anadolstudio.core.util.rx.schedulersIoToMain
+import com.anadolstudio.core.viewmodel.livedata.onNext
 import com.anadolstudio.data.repository.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 
 class GalleryViewModel(
         private val galleryRepository: GalleryRepository,
@@ -34,16 +36,19 @@ class GalleryViewModel(
                     false -> PagingDataState.Empty()
                 },
                 currentFolder = Folder.getDefaultFolder(context),
-                editType = editType
+                editType = editType,
+                columnSpan = DEFAULT_COLUM_COUNT
         )
 ), GalleryController, PagingViewController<String> {
 
     companion object {
         private const val PAGE_SIZE = 66
         private const val FIRST_PAGE_NUMBER = 0
+        private const val MAX_COLUM_COUNT = 4
+        private const val MIN_COLUM_COUNT = 2
 
-        const val REQUEST_STORAGE_PERMISSION = 1
         const val EDIT_TYPE_KEY = "editType"
+        const val DEFAULT_COLUM_COUNT = 3
 
         val STORAGE_PERMISSION = arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -147,6 +152,10 @@ class GalleryViewModel(
         updateState { copy(currentFolder = folder, unusedFolders = unusedFolders) }
         paginator.pullToRefresh()
     }
+
+    override fun onZoomIncreased() = updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }
+
+    override fun onZoomDecreased() = updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(private val editType: EditType) : ViewModelProvider.NewInstanceFactory() {

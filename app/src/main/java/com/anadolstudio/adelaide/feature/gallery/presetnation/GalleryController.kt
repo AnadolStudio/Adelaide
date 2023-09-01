@@ -8,4 +8,6 @@ interface GalleryController : BaseController {
     fun onImageSelected(imageUri: String)
     fun onNavigateToSettingsClicked()
     fun onLoadMoreImages()
+    fun onZoomIncreased()
+    fun onZoomDecreased()
 }

@@ -12,5 +12,6 @@ data class GalleryState(
         val unusedFolders: Set<Folder> = emptySet(),
         val currentFolder: Folder,
         val editType: EditType,
+        val columnSpan: Int,
 )
 

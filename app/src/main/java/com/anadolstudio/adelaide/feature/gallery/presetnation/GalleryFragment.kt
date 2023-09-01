@@ -1,13 +1,11 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
+import android.annotation.SuppressLint
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
-import com.anadolstudio.adelaide.base.adapter.paging.PagingErrorItem
-import com.anadolstudio.adelaide.base.adapter.paging.PagingLoadingItem
 import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
 import com.anadolstudio.adelaide.feature.gallery.presetnation.model.Folder
@@ -17,8 +15,6 @@ import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
 import com.anadolstudio.core.util.common.throttleClick
 import com.anadolstudio.core.util.paginator.PagingDataState
-import com.anadolstudio.core.view.recycler.BaseSpaceItemDecoration
-import com.anadolstudio.core.view.recycler.BaseSpaceItemDecoration.Companion.SMALL_SPACE
 import com.anadolstudio.core.viewbinding.viewBinding
 import com.anadolstudio.core.viewmodel.livedata.SingleEvent
 import com.anadolstudio.core.viewmodel.obtainViewModel
@@ -26,11 +22,11 @@ import com.xwray.groupie.Section
 
 class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, GalleryController>(R.layout.fragment_gallery) {
 
-    companion object {
-        private const val RENDER_FOLDERS = "RENDER_FOLDERS"
-        private const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
-        private const val RENDER_PAGING = "RENDER_PAGING"
-        private const val COLUM_COUNT = 3
+    private companion object {
+        const val RENDER_FOLDERS = "RENDER_FOLDERS"
+        const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
+        const val RENDER_PAGING = "RENDER_PAGING"
+        const val RENDER_SPAN = "RENDER_SPAN"
     }
 
     private val args: GalleryFragmentArgs by navArgs()
@@ -67,12 +63,13 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         }
 
         with(binding.recyclerView) {
-            addItemDecoration(BaseSpaceItemDecoration.All(SMALL_SPACE))
-            layoutManager = GridLayoutManager(requireContext(), COLUM_COUNT)
-            setItemViewCacheSize(50)
             adapter = GroupiePagingAdapter(
                     onNeedLoadMoreData = controller::onLoadMoreImages,
                     sections = arrayOf(mainListSection)
+            )
+            setZoomListener(
+                    onZoomIncreased = { controller.onZoomIncreased() },
+                    onZoomDecreased = { controller.onZoomDecreased() }
             )
         }
     }
@@ -86,6 +83,13 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         renderToolbar(state.currentFolder)
         renderFolders(state.unusedFolders)
         renderList(state.imageListState)
+        renderSpan(state.columnSpan)
+    }
+
+    private fun renderSpan(columnSpan: Int) {
+        columnSpan.render(RENDER_SPAN) {
+            binding.recyclerView.changeSpan(this)
+        }
     }
 
     private fun renderList(imageListState: PagingDataState<String>) {
@@ -97,10 +101,6 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                     onEmptyData = { viewStateDelegate.showStub() },
                     onLoading = { viewStateDelegate.showLoading() },
                     onContent = { viewStateDelegate.showContent() },
-                    onNextPageError = { mainListSection.setFooter(PagingErrorItem()) },
-                    onNextPageLoading = { mainListSection.setFooter(PagingLoadingItem()) },
-                    onRefresh = { mainListSection.removeFooter() },
-                    onAllData = { mainListSection.removeFooter() },
                     onPageData = { galleryItems -> mainListSection.addAll(galleryItems) },
                     onUpdateData = { galleryItems ->
                         mainListSection.update(galleryItems)
