@@ -16,7 +16,7 @@ class StartFragment : BaseActionFragment<StartViewModel, StartController>(R.layo
 
     override fun initView(controller: StartController) {
         binding.nightBtn.setOnClickListener { (requireActivity().application as App).changeTheme() } // TODO to VM
-        binding.photoButton.scaleAnimationOnClick(controller::onPhotoClicked)
-        binding.collageButton.scaleAnimationOnClick(controller::onCollageClicked)
+        binding.photoButton.scaleAnimationOnClick(action = controller::onPhotoClicked)
+        binding.collageButton.scaleAnimationOnClick(action = controller::onCollageClicked)
     }
 }

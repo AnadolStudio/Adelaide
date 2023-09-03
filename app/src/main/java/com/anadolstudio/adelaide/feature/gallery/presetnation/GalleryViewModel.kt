@@ -4,12 +4,12 @@ import android.Manifest
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.viewmodel.BaseContentViewModel
 import com.anadolstudio.adelaide.base.viewmodel.navigateUp
 import com.anadolstudio.adelaide.di.DI
-import com.anadolstudio.adelaide.feature.gallery.presetnation.model.Folder
-import com.anadolstudio.adelaide.feature.gallery.presetnation.model.toFolder
 import com.anadolstudio.adelaide.feature.start.EditType
+import com.anadolstudio.core.data_source.media.Folder
 import com.anadolstudio.core.util.common_extention.hasAllPermissions
 import com.anadolstudio.core.util.common_extention.hasAnyPermissions
 import com.anadolstudio.core.util.common_extention.startAppSettingsActivity
@@ -19,7 +19,7 @@ import com.anadolstudio.core.util.paginator.PagingViewController
 import com.anadolstudio.core.util.rx.lceSubscribe
 import com.anadolstudio.core.util.rx.schedulersIoToMain
 import com.anadolstudio.core.viewmodel.livedata.onNext
-import com.anadolstudio.data.repository.GalleryRepository
+import com.anadolstudio.domain.repository.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
 import kotlin.math.max
@@ -35,7 +35,6 @@ class GalleryViewModel(
                     true -> PagingDataState.Loading()
                     false -> PagingDataState.Empty()
                 },
-                currentFolder = Folder.getDefaultFolder(context),
                 editType = editType,
                 columnSpan = DEFAULT_COLUM_COUNT
         )
@@ -46,6 +45,7 @@ class GalleryViewModel(
         private const val FIRST_PAGE_NUMBER = 0
         private const val MAX_COLUM_COUNT = 4
         private const val MIN_COLUM_COUNT = 2
+        private const val MIN_FOLDER_COUNT = 1
 
         const val EDIT_TYPE_KEY = "editType"
         const val DEFAULT_COLUM_COUNT = 3
@@ -54,7 +54,6 @@ class GalleryViewModel(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
         )
-
     }
 
     private val requestFactory: ((Int) -> Single<List<String>>) = { pageIndex ->
@@ -62,7 +61,7 @@ class GalleryViewModel(
                 .loadImages(
                         pageIndex = pageIndex,
                         pageSize = PAGE_SIZE,
-                        folder = state.currentFolder.value,
+                        folder = state.currentFolder?.value,
                 )
                 .schedulersIoToMain()
     }
@@ -96,23 +95,31 @@ class GalleryViewModel(
         loadImage()
     }
 
-    private fun loadFolders() {
+    private fun loadFolders(onContent: (() -> Unit)? = null) {
         galleryRepository.loadFolders()
-                .map { folders -> folders.map { it.toFolder() } }
                 .map { folders ->
                     val folderList = folders.toMutableList()
 
-                    if (folders.isNotEmpty()) folderList.add(0, Folder.getDefaultFolder(context))
+                    if (folderList.size > MIN_FOLDER_COUNT) {
+                        val defaultFolder = folderList.first().copy(
+                                name = context.getString(R.string.gallery_toolbar_title),
+                                value = null,
+                        )
+                        folderList.add(0, defaultFolder)
+                    }
 
                     return@map folderList.toSet()
                 }
                 .lceSubscribe(
-                        onEach = { folders -> updateState { copy(folders = folders) } },
+                        onEach = { folders -> updateState { copy(foldersLce = folders) } },
                         onContent = { folders ->
-                            val unusedFolders = folders.filter { it != state.currentFolder }.toSet()
-                            updateState { copy(unusedFolders = unusedFolders) }
+                            val currentFolder = folders.firstOrNull { it == state.currentFolder }
+                                    ?: folders.firstOrNull()
+
+                            updateState { copy(currentFolder = currentFolder, folders = folders) }
+                            onContent?.invoke()
                         },
-                        onError = this::onError
+                        onError = this::showError
                 )
                 .disposeOnCleared()
     }
@@ -126,9 +133,17 @@ class GalleryViewModel(
     override fun onNextPageError(error: Throwable) = pagingViewControllerDelegate.onNextPageError(error)
     override fun onNextPageLoading() = pagingViewControllerDelegate.onNextPageLoading()
     override fun onAllData() = pagingViewControllerDelegate.onAllData()
-    override fun onRefreshError(exception: Throwable) = pagingViewControllerDelegate.onRefreshError(exception)
     override fun onRefresh() = pagingViewControllerDelegate.onRefresh()
-    override fun onUpdateData(data: List<String>) = pagingViewControllerDelegate.onUpdateData(data)
+
+    override fun onRefreshError(exception: Throwable) {
+        pagingViewControllerDelegate.onRefreshError(exception)
+        updateState { copy(isRefreshing = false) }
+    }
+
+    override fun onUpdateData(data: List<String>) {
+        pagingViewControllerDelegate.onUpdateData(data)
+        updateState { copy(isRefreshing = false) }
+    }
 
     override fun onPermissionGranted() = initLoad()
 
@@ -140,17 +155,16 @@ class GalleryViewModel(
 
     override fun onBackClicked() = _navigationEvent.navigateUp()
 
-    override fun onFolderChanged(folderName: String) {
-        if (folderName == state.currentFolder.name) return
+    override fun onFolderChanged(folder: Folder) {
+        if (folder == state.currentFolder) return
 
-        val folder = state.folders.contentOrNull.orEmpty()
-                .firstOrNull { it.name == folderName }
-                ?: Folder.getDefaultFolder(context)
-
-        val unusedFolders = state.folders.contentOrNull.orEmpty().filter { it != folder }.toSet()
-
-        updateState { copy(currentFolder = folder, unusedFolders = unusedFolders) }
+        updateState { copy(currentFolder = folder) }
         paginator.pullToRefresh()
+    }
+
+    override fun onRefreshed() {
+        updateState { copy(isRefreshing = true) }
+        loadFolders(onContent = paginator::pullToRefresh)
     }
 
     override fun onZoomIncreased() = updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }

@@ -1,9 +1,9 @@
 package com.anadolstudio.adelaide.feature.gallery.di
 
 import android.content.Context
-import com.anadolstudio.core.data_source.MediaDataStorage
-import com.anadolstudio.data.repository.GalleryRepository
-import com.anadolstudio.domain.repository.gallery.GalleryRepositoryImpl
+import com.anadolstudio.core.data_source.media.MediaDataStorage
+import com.anadolstudio.data.repository.gallery.GalleryRepositoryImpl
+import com.anadolstudio.domain.repository.GalleryRepository
 import dagger.Module
 import dagger.Provides
 

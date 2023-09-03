@@ -13,5 +13,5 @@ include ':core'
 project(':core').projectDir = new File(rootDir, '/AndroidCoreBase/core')
 include ':photoeditorcore'
 project(':photoeditorcore').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')
-include ':domain'
 include ':data'
+include ':domain'
