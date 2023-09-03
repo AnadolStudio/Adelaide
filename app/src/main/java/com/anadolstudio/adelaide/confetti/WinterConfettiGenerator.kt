@@ -6,6 +6,14 @@ import com.github.jinatonic.confetti.ConfettiManager
 import com.github.jinatonic.confetti.ConfettiManager.INFINITE_DURATION
 import com.github.jinatonic.confetti.ConfettoGenerator
 
+/**
+ * ```
+ * WinterConfettiGenerator(
+ *      confettiContainer,
+ *      isDarkTheme
+ * ).launchConfetti()
+ * ```
+ */
 class WinterConfettiGenerator(confettiContainer: ViewGroup, isDarkTheme: Boolean): BaseConfettiGenerator(confettiContainer) {
 
     private val alpha = if (isDarkTheme) 0.25F else 0.75F

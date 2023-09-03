@@ -1,5 +1,6 @@
-package com.anadolstudio.data.repository
+package com.anadolstudio.domain.repository
 
+import com.anadolstudio.core.data_source.media.Folder
 import io.reactivex.Single
 
 interface GalleryRepository {
@@ -10,5 +11,5 @@ interface GalleryRepository {
             folder: String?
     ): Single<List<String>>
 
-    fun loadFolders(): Single<Set<String>>
+    fun loadFolders(): Single<Set<Folder>>
 }

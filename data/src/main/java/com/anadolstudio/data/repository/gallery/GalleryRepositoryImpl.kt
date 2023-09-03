@@ -1,7 +1,8 @@
-package com.anadolstudio.domain.repository.gallery
+package com.anadolstudio.data.repository.gallery
 
-import com.anadolstudio.core.data_source.MediaDataStorage
-import com.anadolstudio.data.repository.GalleryRepository
+import com.anadolstudio.core.data_source.media.Folder
+import com.anadolstudio.core.data_source.media.MediaDataStorage
+import com.anadolstudio.domain.repository.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -17,6 +18,6 @@ class GalleryRepositoryImpl @Inject constructor(private val mediaDataStorage: Me
             folder = folder,
     )
 
-    override fun loadFolders(): Single<Set<String>> = mediaDataStorage.loadFolders()
+    override fun loadFolders(): Single<Set<Folder>> = mediaDataStorage.loadFolders()
 
 }

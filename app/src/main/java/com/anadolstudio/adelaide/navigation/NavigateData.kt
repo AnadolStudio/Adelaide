@@ -1,6 +1,9 @@
 package com.anadolstudio.adelaide.navigation
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
+
 data class NavigateData(
         val id: Int,
-        val args: Map<String, Any> = emptyMap()
+        val args: Bundle = bundleOf()
 )

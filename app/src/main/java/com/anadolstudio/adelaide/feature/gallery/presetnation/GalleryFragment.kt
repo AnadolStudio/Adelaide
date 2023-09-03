@@ -1,151 +1,187 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
-import android.Manifest
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import androidx.appcompat.widget.PopupMenu
+import android.view.GestureDetector
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.navArgs
 import com.anadolstudio.adelaide.R
+import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
-import com.anadolstudio.adelaide.base.adapter.paging.PagingErrorItem
-import com.anadolstudio.adelaide.base.adapter.paging.PagingLoadingItem
 import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
-import com.anadolstudio.core.common_extention.onTrue
-import com.anadolstudio.core.common_util.throttleClick
+import com.anadolstudio.core.data_source.media.Folder
+import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
+import com.anadolstudio.core.permission.registerPermissionRequest
 import com.anadolstudio.core.presentation.fold
-import com.anadolstudio.core.presentation.fragment.hasPermission
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
-import com.anadolstudio.core.recycler.SpaceItemDecoration
-import com.anadolstudio.core.recycler.SpaceItemDecoration.Companion.SMALL_SPACE
+import com.anadolstudio.core.util.common.dpToPx
+import com.anadolstudio.core.util.paginator.PagingDataState
+import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_EXTRA_SHORT
+import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
+import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
+import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopIn
+import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopOut
+import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationEndOutStartIn
+import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationStartOutEndIn
+import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
+import com.anadolstudio.core.view.recycler.ScrollListener
 import com.anadolstudio.core.viewbinding.viewBinding
+import com.anadolstudio.core.viewmodel.livedata.SingleEvent
 import com.anadolstudio.core.viewmodel.obtainViewModel
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import com.xwray.groupie.Section
 
 class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, GalleryController>(R.layout.fragment_gallery) {
 
-    companion object {
-        private const val RENDER_FOLDERS = "RENDER_FOLDERS"
-        private const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
-        private const val RENDER_PAGING = "RENDER_PAGING"
-        const val REQUEST_STORAGE_PERMISSION = 1
-        private val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
+    private companion object {
+        const val RENDER_FOLDERS = "RENDER_FOLDERS"
+        const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
+        const val RENDER_PAGING = "RENDER_PAGING"
+        const val RENDER_SPAN = "RENDER_SPAN"
+        const val RENDER_REFRESH = "RENDER_REFRESH"
+        val PROGRESS_END_TARGET = 160.dpToPx()
     }
 
+    private val args: GalleryFragmentArgs by navArgs()
     override val viewStateDelegate: ViewStateDelegate by lazy {
         ViewStateDelegate(
-                contentViews = listOf(binding.recyclerView),
+                contentViews = listOf(binding.recyclerView, binding.foldersViewPager),
                 loadingViews = listOf(binding.progressView),
-                stubViews = listOf(binding.emptyText),
-                errorViews = listOf(binding.emptyText),
+                stubViews = listOf(binding.emptyView),
+                errorViews = listOf(binding.emptyView),
         )
     }
+
     private val binding by viewBinding { FragmentGalleryBinding.bind(it) }
-    private val popupMenu: PopupMenu by lazy { PopupMenu(requireContext(), binding.pupupButton) }
-    private val mainListSection = Section()
+    private val folderSection = Section()
+    private val imageSection = Section()
 
-    override fun createViewModel(): GalleryViewModel = obtainViewModel(GalleryViewModel.Factory()) // TODO requireArguments()
+    private val permissionLauncher = registerPermissionRequest(
+            permission = READ_MEDIA_PERMISSION,
+            onGranted = { controller.onPermissionGranted() },
+            onDenied = { viewStateDelegate.showError() },
+            onDontAskAgain = { viewStateDelegate.showError() }
+    )
 
-    override fun initView(controller: GalleryController) {
-        binding.toolbar.setBackClickListener(controller::onBackClicked)
-        binding.pupupButton.throttleClick { popupMenu.show() }
+    private val horizontalMoveGestureDetector: GestureDetector by lazy {
+        GestureDetector(
+                context,
+                HorizontalMoveGesture(
+                        width = binding.recyclerView.width,
+                        onSwipeLeft = { controller.toRightFolderMoved() },
+                        onSwipeRight = { controller.toLeftFolderMoved() }
+                )
+        )
+    }
 
-        popupMenu.setOnMenuItemClickListener { item ->
-            popupMenu.dismiss()
-            controller.onFolderChanged(item.title.toString())
+    override fun createViewModel(): GalleryViewModel = obtainViewModel(GalleryViewModel.Factory(args.editType))
 
-            return@setOnMenuItemClickListener true
-        }
-        with(binding.recyclerView) {
-            addItemDecoration(SpaceItemDecoration(SMALL_SPACE))
-            layoutManager = GridLayoutManager(requireContext(), 3)
-            setItemViewCacheSize(50)
+    override fun initView(controller: GalleryController) = with(binding) {
+        toolbar.setBackClickListener(controller::onBackClicked)
+        swipeRefresh.setOnRefreshListener(controller::onRefreshed)
+        binding.swipeRefresh.setProgressViewEndTarget(false, PROGRESS_END_TARGET)
 
+        with(recyclerView) {
             adapter = GroupiePagingAdapter(
-                    onNeedLoadMoreData = { controller.onLoadMoreImages() },
-                    sections = arrayOf(mainListSection)
+                    imageSection,
+                    onNeedLoadMoreData = controller::onLoadMoreImages
             )
+            addOnScrollListener(
+                    ScrollListener(
+                            onScrollToBottom = { foldersViewPager.animSlideTopOut(DURATION_EXTRA_SHORT) },
+                            onScrollToTop = { foldersViewPager.animSlideTopIn(DURATION_EXTRA_SHORT) }
+                    )
+            )
+
+            addDispatchTouchListener { _, event -> horizontalMoveGestureDetector.onTouchEvent(event) }
+
+            setZoomListener(
+                    onZoomIncreased = { controller.onZoomIncreased() },
+                    onZoomDecreased = { controller.onZoomDecreased() }
+            )
+        }
+        with(foldersViewPager) {
+            adapter = BaseGroupAdapter(folderSection)
+            itemAnimator = null // TODO add custom itemAnimator
         }
     }
 
-    override fun showContent(content: GalleryState) {
-        super.showContent(content)
+    override fun handleEvent(event: SingleEvent) = when (event) {
+        is RequestPermission -> permissionLauncher.launch(READ_MEDIA_PERMISSION)
+        is MoveFolderEvent -> moveToFolder(event)
+        else -> super.handleEvent(event)
+    }
 
-        render(RENDER_CURRENT_FOLDER to content.currentFolder) {
-            binding.toolbar.setTitle(this.name)
+    private fun moveToFolder(event: MoveFolderEvent) {
+        binding.foldersViewPager.smoothScrollToPosition(event.index)
+
+        when (event.moveType) {
+            MoveType.TO_LEFT -> binding.recyclerView.showTranslationStartOutEndIn(DURATION_EXTRA_SHORT) {
+                controller.onFolderMovedAnimationEnd()
+            }
+
+            MoveType.TO_RIGHT -> binding.recyclerView.showTranslationEndOutStartIn(DURATION_EXTRA_SHORT) {
+                controller.onFolderMovedAnimationEnd()
+            }
         }
+    }
 
-        render(RENDER_FOLDERS to content.unusedFolders) {
-            fold(
-                    onContent = {
-                        binding.pupupButton.isVisible = true
+    override fun render(state: GalleryState, controller: GalleryController) {
+        renderFolders(state.folders, state.currentFolder)
+        renderList(state.imageListState)
+        renderSpan(state.columnSpan)
+        renderRefresh(state.isRefreshing)
+    }
 
-                        provideRootView().post {
-                            popupMenu.menu.clear()
-                            this@render.forEach { popupMenu.menu.add(it.name) }
-                        }
-                    },
-                    onEmpty = { binding.pupupButton.isVisible = false }
-            )
+    private fun renderRefresh(isRefreshing: Boolean) {
+        isRefreshing.render(RENDER_REFRESH) {
+            binding.swipeRefresh.isRefreshing = isRefreshing
         }
+    }
 
-        render(RENDER_PAGING to content.imageListState) {
+    private fun renderSpan(columnSpan: Int) {
+        columnSpan.render(RENDER_SPAN) {
+            binding.recyclerView.changeSpan(this)
+        }
+    }
+
+    private fun renderList(imageListState: PagingDataState<String>) {
+        imageListState.render(RENDER_PAGING) {
+            binding.swipeRefresh.isEnabled = this is PagingDataState.Content
+
             fold(
-                    transform = { GalleryItem(it) },
+                    transform = { GalleryItem(it) { controller.onImageSelected(it) } },
                     recyclerView = binding.recyclerView,
-                    onNextPageError = { mainListSection.setFooter(PagingErrorItem()) },
-                    onNextPageLoading = { mainListSection.setFooter(PagingLoadingItem()) },
-                    onRefresh = { mainListSection.removeFooter() },
-                    onAllData = { mainListSection.removeFooter() },
-                    onPageData = { galleryItems -> mainListSection.addAll(galleryItems) },
+                    onError = { viewStateDelegate.showError() },
+                    onEmptyData = { viewStateDelegate.showStub() },
+                    onLoading = { viewStateDelegate.showLoading() },
+                    onContent = {
+                        binding.recyclerView.animSlideBottomIn(DURATION_LONG)
+                        viewStateDelegate.showContent()
+                    },
+                    onPageData = { galleryItems -> imageSection.addAll(galleryItems) },
                     onUpdateData = { galleryItems ->
-                        mainListSection.update(galleryItems)
+                        imageSection.update(galleryItems)
                         binding.recyclerView.post { binding.recyclerView.smoothScrollToPosition(0) }
                     },
             )
         }
     }
 
-    override fun showFullScreenLoading(isFullScreenLoading: Boolean) {
-        binding.progressView.isVisible = false
-    }
-
-    override fun showError(error: Throwable, controller: GalleryController) {
-        super.showError(error, controller)
-        binding.emptyText.text = error.message
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
-    ) {
-        when (requestCode) {
-            REQUEST_STORAGE_PERMISSION ->
-                if (grantResults.all { it == PERMISSION_GRANTED }) { // permission granted
-                    controller.onPermissionGranted()
-                } else { // permission denied
-                    showSettingsSnackbar()
-                }
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    private fun renderFolders(folders: Set<Folder>, currentFolder: Folder?) {
+        folders.render(RENDER_FOLDERS, RENDER_CURRENT_FOLDER to currentFolder) {
+            fold(
+                    onContent = { folders ->
+                        val folderItems = folders.map {
+                            FolderItem(
+                                    folder = it,
+                                    isCurrent = it == currentFolder,
+                                    onClick = controller::onFolderChanged
+                            )
+                        }
+                        folderSection.update(folderItems)
+                    },
+                    onEach = { isNotEmpty -> binding.foldersViewPager.isVisible = isNotEmpty },
+            )
         }
     }
-
-    private fun showSettingsSnackbar() = Snackbar
-            .make(
-                    requireView().findViewById(android.R.id.content),
-                    getText(R.string.gallery_error_miss_permission),
-                    BaseTransientBottomBar.LENGTH_INDEFINITE
-            )
-            .setAction(R.string.gallery_snack_bar_settings) { controller.onNavigateToSettingsClicked() }
-            .show()
-
-    private fun withPermission(action: () -> Unit): Boolean =
-            hasPermission(STORAGE_PERMISSION[0]).onTrue { action.invoke() }
 
 }

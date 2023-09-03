@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--TODO add color and color style to text-->
-
     <style name="Header34">
         <item name="android:fontFamily">serif</item>
         <item name="android:textSize">34sp</item>
@@ -31,7 +29,6 @@
     <style name="Caption14">
         <item name="android:fontFamily">serif</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:lineSpacingExtra">2sp</item>
     </style>
 
     <style name="Caption12">

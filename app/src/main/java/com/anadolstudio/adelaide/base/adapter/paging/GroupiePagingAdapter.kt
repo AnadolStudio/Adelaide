@@ -1,21 +1,17 @@
 package com.anadolstudio.adelaide.base.adapter.paging
 
-import com.xwray.groupie.GroupAdapter
+import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 
 open class GroupiePagingAdapter(
+        vararg sections: Section,
         private val onNeedLoadMoreData: () -> Unit,
-        private val prefetchDistance: Int = PREFETCH_DISTANCE,
-        vararg sections: Section
-) : GroupAdapter<GroupieViewHolder>() {
+        private val prefetchDistance: Int = PREFETCH_DISTANCE
+) : BaseGroupAdapter(sections = sections) {
 
     private companion object {
         const val PREFETCH_DISTANCE = 10
-    }
-
-    init {
-        sections.forEach { add(it) }
     }
 
     override fun onBindViewHolder(holder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {

@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide
 
-import com.anadolstudio.core.share_util.SharedActionFactory
+import com.anadolstudio.core.util.share.SharedActionFactory
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
