@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
         app:back_icon="@drawable/ic_arrow_left"
-        app:tint="@color/colorAccent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/colorAccent"
         app:title="@string/gallery_toolbar_title" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -29,14 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingHorizontal="@dimen/padding_medium"
             android:paddingBottom="@dimen/padding_medium"
+            android:paddingHorizontal="@dimen/padding_medium"
             android:paddingTop="108dp"
             android:scrollbarFadeDuration="1"
             android:scrollbarSize="4dp"
             android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/item_gallery"/>
+            android:scrollbars="none"
+            tools:listitem="@layout/item_gallery" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -73,8 +73,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
-        android:visibility="gone"
         android:gravity="center"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

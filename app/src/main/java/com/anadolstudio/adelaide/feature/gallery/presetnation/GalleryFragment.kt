@@ -1,5 +1,6 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
+import android.view.GestureDetector
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.anadolstudio.adelaide.R
@@ -14,11 +15,14 @@ import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
 import com.anadolstudio.core.util.common.dpToPx
 import com.anadolstudio.core.util.paginator.PagingDataState
+import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_EXTRA_SHORT
 import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
-import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_SHORT
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopIn
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopOut
+import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationEndOutStartIn
+import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationStartOutEndIn
+import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
 import com.anadolstudio.core.view.recycler.ScrollListener
 import com.anadolstudio.core.viewbinding.viewBinding
 import com.anadolstudio.core.viewmodel.livedata.SingleEvent
@@ -57,6 +61,17 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
             onDontAskAgain = { viewStateDelegate.showError() }
     )
 
+    private val horizontalMoveGestureDetector: GestureDetector by lazy {
+        GestureDetector(
+                context,
+                HorizontalMoveGesture(
+                        width = binding.recyclerView.width,
+                        onSwipeLeft = { controller.toRightFolderMoved() },
+                        onSwipeRight = { controller.toLeftFolderMoved() }
+                )
+        )
+    }
+
     override fun createViewModel(): GalleryViewModel = obtainViewModel(GalleryViewModel.Factory(args.editType))
 
     override fun initView(controller: GalleryController) = with(binding) {
@@ -71,10 +86,12 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
             )
             addOnScrollListener(
                     ScrollListener(
-                            onScrollToBottom = { foldersViewPager.animSlideTopOut(DURATION_SHORT) },
-                            onScrollToTop = { foldersViewPager.animSlideTopIn(DURATION_SHORT) }
+                            onScrollToBottom = { foldersViewPager.animSlideTopOut(DURATION_EXTRA_SHORT) },
+                            onScrollToTop = { foldersViewPager.animSlideTopIn(DURATION_EXTRA_SHORT) }
                     )
             )
+
+            addDispatchTouchListener { _, event -> horizontalMoveGestureDetector.onTouchEvent(event) }
 
             setZoomListener(
                     onZoomIncreased = { controller.onZoomIncreased() },
@@ -89,7 +106,22 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     override fun handleEvent(event: SingleEvent) = when (event) {
         is RequestPermission -> permissionLauncher.launch(READ_MEDIA_PERMISSION)
+        is MoveFolderEvent -> moveToFolder(event)
         else -> super.handleEvent(event)
+    }
+
+    private fun moveToFolder(event: MoveFolderEvent) {
+        binding.foldersViewPager.smoothScrollToPosition(event.index)
+
+        when (event.moveType) {
+            MoveType.TO_LEFT -> binding.recyclerView.showTranslationStartOutEndIn(DURATION_EXTRA_SHORT) {
+                controller.onFolderMovedAnimationEnd()
+            }
+
+            MoveType.TO_RIGHT -> binding.recyclerView.showTranslationEndOutStartIn(DURATION_EXTRA_SHORT) {
+                controller.onFolderMovedAnimationEnd()
+            }
+        }
     }
 
     override fun render(state: GalleryState, controller: GalleryController) {

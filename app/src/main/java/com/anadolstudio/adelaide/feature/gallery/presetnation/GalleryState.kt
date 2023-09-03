@@ -13,6 +13,7 @@ data class GalleryState(
         val foldersLce: LceState<Set<Folder>> = LceState.Loading(),
         val folders: Set<Folder> = emptySet(),
         val currentFolder: Folder? = null,
-        val isRefreshing: Boolean = false
+        val isRefreshing: Boolean = false,
+        val folderIsMoving: Boolean = false,
 )
 

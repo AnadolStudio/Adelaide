@@ -18,7 +18,6 @@ import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.util.paginator.PagingViewController
 import com.anadolstudio.core.util.rx.lceSubscribe
 import com.anadolstudio.core.util.rx.schedulersIoToMain
-import com.anadolstudio.core.viewmodel.livedata.onNext
 import com.anadolstudio.domain.repository.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
@@ -86,7 +85,7 @@ class GalleryViewModel(
         if (context.hasAllPermissions(STORAGE_PERMISSION)) {
             initLoad()
         } else {
-            _singleEvent.onNext(RequestPermission)
+            showEvent(RequestPermission)
         }
     }
 
@@ -147,7 +146,10 @@ class GalleryViewModel(
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(imageUri: String) = showTodo()
+    override fun onImageSelected(imageUri: String) {
+        if (state.folderIsMoving) return
+        showTodo()
+    }
 
     override fun onLoadMoreImages() = paginator.loadNewPage()
 
@@ -170,6 +172,22 @@ class GalleryViewModel(
     override fun onZoomIncreased() = updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }
 
     override fun onZoomDecreased() = updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
+
+    override fun toRightFolderMoved() = moveToFolder(MoveType.TO_RIGHT)
+
+    override fun toLeftFolderMoved() = moveToFolder(MoveType.TO_LEFT)
+
+    override fun onFolderMovedAnimationEnd() = updateState { copy(folderIsMoving = false) }
+
+    private fun moveToFolder(moveType: MoveType) {
+        val index = state.folders.indexOfFirst { it == state.currentFolder } + moveType.increment
+
+        if (index !in 0 until state.folders.size) return
+        updateState { copy(folderIsMoving = true) }
+
+        showEvent(MoveFolderEvent(index, moveType))
+        onFolderChanged(state.folders.toList()[index])
+    }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(private val editType: EditType) : ViewModelProvider.NewInstanceFactory() {
