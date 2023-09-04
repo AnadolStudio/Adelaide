@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':core')
+    implementation project(path: ':android-core-base')
     implementation project(path: ':domain')
 
     // Dagger

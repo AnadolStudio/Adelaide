@@ -9,8 +9,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Adelaide"
 include ':app'
-include ':core'
-project(':core').projectDir = new File(rootDir, '/AndroidCoreBase/core')
+include ':android-core-base'
+project(':android-core-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
 include ':photoeditorcore'
 project(':photoeditorcore').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')
 include ':data'
