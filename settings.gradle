@@ -8,10 +8,16 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Adelaide"
-include ':app'
-include ':android-core-base'
-project(':android-core-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
-include ':photoeditorcore'
-project(':photoeditorcore').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')
-include ':data'
-include ':domain'
+include(
+        ":app",
+        ":core:android-base",
+        ":core:photoeditor",
+        ":core:base",
+        ":core:common",
+        ":core:utils",
+        ":core:resources",
+        ":features:gallery",
+        ":features:home",
+)
+project(':core:android-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
+project(':core:photoeditor').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')

@@ -18,7 +18,7 @@ import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.util.paginator.PagingViewController
 import com.anadolstudio.core.util.rx.lceSubscribe
 import com.anadolstudio.core.util.rx.schedulersIoToMain
-import com.anadolstudio.domain.repository.GalleryRepository
+import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
 import kotlin.math.max
