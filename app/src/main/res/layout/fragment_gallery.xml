@@ -24,19 +24,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <com.anadolstudio.core.view.recycler.GridRecyclerView
-            android:id="@+id/recycler_view"
+        <com.anadolstudio.core.view.TouchFrameLayout
+            android:id="@+id/recycler_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/padding_medium"
-            android:paddingHorizontal="@dimen/padding_medium"
-            android:paddingTop="108dp"
-            android:scrollbarFadeDuration="1"
-            android:scrollbarSize="4dp"
-            android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="none"
-            tools:listitem="@layout/item_gallery" />
+            android:layout_height="match_parent">
+
+            <com.anadolstudio.core.view.recycler.GridRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/padding_medium"
+                android:paddingHorizontal="@dimen/padding_medium"
+                android:paddingTop="108dp"
+                android:scrollbarFadeDuration="1"
+                android:scrollbarSize="4dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="none"
+                tools:listitem="@layout/item_gallery" />
+
+        </com.anadolstudio.core.view.TouchFrameLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

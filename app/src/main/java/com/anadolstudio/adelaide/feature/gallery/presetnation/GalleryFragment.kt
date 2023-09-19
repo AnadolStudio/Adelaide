@@ -3,6 +3,7 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 import android.view.GestureDetector
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
@@ -37,6 +38,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         const val RENDER_PAGING = "RENDER_PAGING"
         const val RENDER_SPAN = "RENDER_SPAN"
         const val RENDER_REFRESH = "RENDER_REFRESH"
+        const val RENDER_HORIZONTAL_ANIMATION = "RENDER_HORIZONTAL_ANIMATION"
         val PROGRESS_END_TARGET = 160.dpToPx()
     }
 
@@ -78,6 +80,9 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         toolbar.setBackClickListener(controller::onBackClicked)
         swipeRefresh.setOnRefreshListener(controller::onRefreshed)
         binding.swipeRefresh.setProgressViewEndTarget(false, PROGRESS_END_TARGET)
+        binding.recyclerContainer.addDispatchTouchListener {
+            _, event -> horizontalMoveGestureDetector.onTouchEvent(event)
+        }
 
         with(recyclerView) {
             adapter = GroupiePagingAdapter(
@@ -90,8 +95,6 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                             onScrollToTop = { foldersViewPager.animSlideTopIn(DURATION_EXTRA_SHORT) }
                     )
             )
-
-            addDispatchTouchListener { _, event -> horizontalMoveGestureDetector.onTouchEvent(event) }
 
             setZoomListener(
                     onZoomIncreased = { controller.onZoomIncreased() },
@@ -129,6 +132,13 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         renderList(state.imageListState)
         renderSpan(state.columnSpan)
         renderRefresh(state.isRefreshing)
+        renderRecyclerView(state.folderIsMoving)
+    }
+
+    private fun renderRecyclerView(folderIsMoving: Boolean) {
+        folderIsMoving.render(RENDER_HORIZONTAL_ANIMATION) {
+//            binding.recyclerView.itemAnimator = if (this) null else DefaultItemAnimator()
+        }
     }
 
     private fun renderRefresh(isRefreshing: Boolean) {
