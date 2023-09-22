@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <attr name="text" format="string|reference" />
+
     <declare-styleable name="EditSliderView">
         <attr name="state" format="enum">
             <enum name="all" value="0" />
@@ -9,8 +12,13 @@
             <enum name="withoutApply" value="4" />
         </attr>
 
-        <attr name="valueFrom" format="float"/>
-        <attr name="valueTo" format="float"/>
-        <attr name="value" format="float"/>
+        <attr name="valueFrom" format="float" />
+        <attr name="valueTo" format="float" />
+        <attr name="value" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="StartButton">
+        <attr name="src" />
+        <attr name="text" />
     </declare-styleable>
 </resources>

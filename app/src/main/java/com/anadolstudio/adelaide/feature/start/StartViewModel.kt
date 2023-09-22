@@ -11,8 +11,10 @@ import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryViewModel.C
 
 class StartViewModel : BaseActionViewModel(), StartController {
 
-    override fun onPhotoClicked() = navigateToGallery(EditType.PHOTO)
-    override fun onCollageClicked() = navigateToGallery(EditType.COLLAGE)
+    override fun onGalleryClicked() = navigateToGallery(EditType.PHOTO)
+    override fun onTakePhotoClicked() = showTodo()
+    override fun onDraftClicked() = showTodo()
+    override fun onInfoClicked() = showTodo()
 
     private fun navigateToGallery(editType: EditType) {
         _navigationEvent.navigateTo(

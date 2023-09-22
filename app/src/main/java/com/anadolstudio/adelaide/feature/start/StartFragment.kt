@@ -14,9 +14,15 @@ class StartFragment : BaseActionFragment<StartViewModel, StartController>(R.layo
 
     override fun createViewModel(): StartViewModel = obtainViewModel(StartViewModel.Factory())
 
+    // TODO
+    //  1) hide statusBar (insetWindow)
+    //  2) set WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = boolean
+
     override fun initView(controller: StartController) {
-        binding.nightBtn.setOnClickListener { (requireActivity().application as App).changeTheme() } // TODO to VM
-        binding.photoButton.scaleAnimationOnClick(action = controller::onPhotoClicked)
-        binding.collageButton.scaleAnimationOnClick(action = controller::onCollageClicked)
+        binding.nightBtn.scaleAnimationOnClick { (requireActivity().application as App).changeTheme() } // TODO to VM
+        binding.galleryButton.scaleAnimationOnClick(action = controller::onGalleryClicked)
+        binding.takePhotoButton.scaleAnimationOnClick(action = controller::onTakePhotoClicked)
+        binding.draftButton.scaleAnimationOnClick(action = controller::onDraftClicked)
+        binding.infoButton.scaleAnimationOnClick(action = controller::onInfoClicked)
     }
 }

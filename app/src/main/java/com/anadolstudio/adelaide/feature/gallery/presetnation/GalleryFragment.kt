@@ -169,7 +169,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                     },
                     onPageData = { galleryItems -> imageSection.addAll(galleryItems) },
                     onUpdateData = { galleryItems ->
-                        imageSection.update(galleryItems)
+                        imageSection.update(galleryItems, false)
                         binding.recyclerView.post { binding.recyclerView.smoothScrollToPosition(0) }
                     },
             )

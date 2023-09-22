@@ -1,7 +1,10 @@
 package com.anadolstudio.adelaide
 
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.anadolstudio.adelaide.databinding.ActivityMainBinding
@@ -12,6 +15,7 @@ class SingleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         setContentView(binding.root)
     }
 

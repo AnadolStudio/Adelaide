@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Header40">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
     <style name="Header34">
         <item name="android:fontFamily">serif</item>
         <item name="android:textSize">34sp</item>

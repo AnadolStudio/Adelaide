@@ -6,215 +6,78 @@
     android:layout_height="match_parent"
     android:background="@color/colorSecondary">
 
-    <LinearLayout
-        android:id="@+id/confetti_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="parent"
+    <ImageButton
+        android:id="@+id/night_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/padding_main"
+        android:background="@drawable/bg_oval"
+        android:src="@drawable/ic_mode_night"
+        android:elevation="@dimen/elevation_normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
-        style="@style/Body18"
-        android:layout_width="0dp"
+        style="@style/Header40"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_main"
-        android:text="@string/popular"
-        app:layout_constraintEnd_toEndOf="@+id/ad_card_view"
-        app:layout_constraintStart_toStartOf="@+id/ad_card_view"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar" />
-
-
-    <TextView
-        android:id="@+id/textView2"
-        style="@style/Body18"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="@string/beautiful"
-        app:layout_constraintEnd_toEndOf="@+id/beautiful_card_view"
-        app:layout_constraintStart_toStartOf="@+id/beautiful_card_view"
-        app:layout_constraintTop_toBottomOf="@+id/ad_card_view" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/ad_card_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="@dimen/radius_large"
-        app:cardElevation="@dimen/elevation_normal"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/app_name_label"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        app:fontFamily="@font/amadeus_ap"
+        app:layout_constraintBottom_toTopOf="@+id/take_photo_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.225"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/test" />
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/beautiful_card_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="@dimen/radius_large"
-        app:cardElevation="@dimen/elevation_normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.225"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/test" />
-        </LinearLayout>
-
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/photo_button"
-        style="@style/SimpleCardView"
-        android:layout_marginBottom="@dimen/padding_main"
-        android:layout_marginHorizontal="@dimen/padding_main"
-        android:clickable="true"
-        android:focusable="true"
-        android:stateListAnimator="@animator/item_card_large"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/item_ripple"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_image" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/photo"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/collage_button"
-        style="@style/SimpleCardView"
-        android:layout_marginBottom="@dimen/padding_main"
-        android:layout_marginHorizontal="@dimen/padding_main"
-        android:clickable="true"
-        android:focusable="true"
-        android:stateListAnimator="@animator/item_card_large"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/item_ripple"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_collage" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/collage"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@+id/night_btn" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
+    <com.anadolstudio.adelaide.view.StartButton
+        android:id="@+id/take_photo_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation_normal"
+        app:layout_constraintBottom_toTopOf="@+id/gallery_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:src="@drawable/ic_take_photo" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/navigation_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize">
+    <com.anadolstudio.adelaide.view.StartButton
+        android:id="@+id/gallery_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:src="@drawable/ic_photo_gallery" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center">
+    <com.anadolstudio.adelaide.view.StartButton
+        android:id="@+id/draft_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery_button"
+        app:src="@drawable/ic_draft" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding_small"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/app_name_label"
-                    android:textColor="@color/colorAccent"
-                    style="@style/Header34"
-                    android:textStyle="bold"
-                    app:fontFamily="@font/amadeus_ap" />
+    <ImageButton
+        android:id="@+id/info_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_oval"
+        android:elevation="@dimen/elevation_normal"
+        android:src="@drawable/ic_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/padding_large"/>
 
-                <ImageButton
-                    android:id="@+id/night_btn"
-                    android:layout_width="48dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/item_ripple_oval_without_mask"
-                    android:src="@drawable/ic_mode_night" />
-
-            </LinearLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
