@@ -1,9 +1,9 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
 import android.view.GestureDetector
+import android.view.Gravity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
@@ -14,20 +14,17 @@ import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
 import com.anadolstudio.core.permission.registerPermissionRequest
 import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
-import com.anadolstudio.core.util.common.dpToPx
 import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_EXTRA_SHORT
 import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
-import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopIn
-import com.anadolstudio.core.view.animation.AnimateUtil.animSlideTopOut
 import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationEndOutStartIn
 import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationStartOutEndIn
 import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
-import com.anadolstudio.core.view.recycler.ScrollListener
 import com.anadolstudio.core.viewbinding.viewBinding
 import com.anadolstudio.core.viewmodel.livedata.SingleEvent
 import com.anadolstudio.core.viewmodel.obtainViewModel
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.xwray.groupie.Section
 
 class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, GalleryController>(R.layout.fragment_gallery) {
@@ -37,9 +34,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
         const val RENDER_PAGING = "RENDER_PAGING"
         const val RENDER_SPAN = "RENDER_SPAN"
-        const val RENDER_REFRESH = "RENDER_REFRESH"
         const val RENDER_HORIZONTAL_ANIMATION = "RENDER_HORIZONTAL_ANIMATION"
-        val PROGRESS_END_TARGET = 160.dpToPx()
     }
 
     private val args: GalleryFragmentArgs by navArgs()
@@ -78,22 +73,14 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     override fun initView(controller: GalleryController) = with(binding) {
         toolbar.setBackClickListener(controller::onBackClicked)
-        swipeRefresh.setOnRefreshListener(controller::onRefreshed)
-        binding.swipeRefresh.setProgressViewEndTarget(false, PROGRESS_END_TARGET)
-        binding.recyclerContainer.addDispatchTouchListener {
-            _, event -> horizontalMoveGestureDetector.onTouchEvent(event)
+        binding.recyclerContainer.addDispatchTouchListener { _, event ->
+            horizontalMoveGestureDetector.onTouchEvent(event)
         }
 
         with(recyclerView) {
             adapter = GroupiePagingAdapter(
                     imageSection,
                     onNeedLoadMoreData = controller::onLoadMoreImages
-            )
-            addOnScrollListener(
-                    ScrollListener(
-                            onScrollToBottom = { foldersViewPager.animSlideTopOut(DURATION_EXTRA_SHORT) },
-                            onScrollToTop = { foldersViewPager.animSlideTopIn(DURATION_EXTRA_SHORT) }
-                    )
             )
 
             setZoomListener(
@@ -103,7 +90,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         }
         with(foldersViewPager) {
             adapter = BaseGroupAdapter(folderSection)
-            itemAnimator = null // TODO add custom itemAnimator
+            GravitySnapHelper(Gravity.CENTER).attachToRecyclerView(this)
         }
     }
 
@@ -131,19 +118,12 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         renderFolders(state.folders, state.currentFolder)
         renderList(state.imageListState)
         renderSpan(state.columnSpan)
-        renderRefresh(state.isRefreshing)
         renderRecyclerView(state.folderIsMoving)
     }
 
     private fun renderRecyclerView(folderIsMoving: Boolean) {
         folderIsMoving.render(RENDER_HORIZONTAL_ANIMATION) {
 //            binding.recyclerView.itemAnimator = if (this) null else DefaultItemAnimator()
-        }
-    }
-
-    private fun renderRefresh(isRefreshing: Boolean) {
-        isRefreshing.render(RENDER_REFRESH) {
-            binding.swipeRefresh.isRefreshing = isRefreshing
         }
     }
 
@@ -155,7 +135,6 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     private fun renderList(imageListState: PagingDataState<String>) {
         imageListState.render(RENDER_PAGING) {
-            binding.swipeRefresh.isEnabled = this is PagingDataState.Content
 
             fold(
                     transform = { GalleryItem(it) { controller.onImageSelected(it) } },

@@ -131,6 +131,9 @@ dependencies {
     // Confetti
     implementation 'com.github.jinatonic.confetti:confetti:1.1.2'
 
+    // Gravity Snap Helper
+    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

@@ -12,12 +12,13 @@
     <color name="colorSecondaryInverse">#616161</color>
     <color name="colorAccentInverse">#FAFAFA</color>
 
+    <color name="overlay">#801B1B1B</color>
+
     <color name="notification">#B71C1C</color>
     <color name="black">#000</color>
     <color name="gray">#FF1B1B1B</color>
     <color name="white">#FFF</color>
 
     <color name="colorMask">#991976D2</color>
-
 
 </resources>

@@ -12,9 +12,7 @@
         android:id="@+id/cardView"
         android:layout_width="64dp"
         android:layout_height="64dp"
-
         android:animateLayoutChanges="true"
-        android:stateListAnimator="@animator/item_card_large"
         app:cardCornerRadius="@dimen/radius_small"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,22 +23,21 @@
             android:id="@+id/imageView"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:foreground="@drawable/item_ripple_oval_without_mask"
             android:scaleType="centerCrop"
             tools:src="@android:drawable/sym_def_app_icon" />
+
         <View
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0.5"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/overlay"
             android:visibility="gone" />
 
     </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/title"
-        style="@style/Caption12"
+        style="@style/Caption14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -53,6 +50,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Name" />
+        tools:text="Name"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

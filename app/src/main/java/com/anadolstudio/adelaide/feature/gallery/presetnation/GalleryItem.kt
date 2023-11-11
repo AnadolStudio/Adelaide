@@ -16,7 +16,7 @@ class GalleryItem(
 
     override fun getLayout(): Int = R.layout.item_gallery
 
-    override fun bind(viewBinding: ItemGalleryBinding, position: Int) {
+    override fun bind(viewBinding: ItemGalleryBinding, item: BaseGroupItem<ItemGalleryBinding>) {
         Glide.with(viewBinding.imageView)
                 .asBitmap()
                 .centerCrop()
@@ -24,4 +24,20 @@ class GalleryItem(
                 .into(viewBinding.imageView)
         viewBinding.cardView.scaleAnimationOnClick(action = onClick)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GalleryItem
+
+        if (path != other.path) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return path.hashCode()
+    }
+
 }

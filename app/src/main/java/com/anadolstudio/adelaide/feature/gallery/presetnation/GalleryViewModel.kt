@@ -8,6 +8,7 @@ import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.viewmodel.BaseContentViewModel
 import com.anadolstudio.adelaide.base.viewmodel.navigateUp
 import com.anadolstudio.adelaide.di.DI
+import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
 import com.anadolstudio.adelaide.feature.start.EditType
 import com.anadolstudio.core.data_source.media.Folder
 import com.anadolstudio.core.util.common_extention.hasAllPermissions
@@ -18,7 +19,6 @@ import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.util.paginator.PagingViewController
 import com.anadolstudio.core.util.rx.lceSubscribe
 import com.anadolstudio.core.util.rx.schedulersIoToMain
-import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
 import io.reactivex.Single
 import javax.inject.Inject
 import kotlin.math.max
@@ -133,16 +133,8 @@ class GalleryViewModel(
     override fun onNextPageLoading() = pagingViewControllerDelegate.onNextPageLoading()
     override fun onAllData() = pagingViewControllerDelegate.onAllData()
     override fun onRefresh() = pagingViewControllerDelegate.onRefresh()
-
-    override fun onRefreshError(exception: Throwable) {
-        pagingViewControllerDelegate.onRefreshError(exception)
-        updateState { copy(isRefreshing = false) }
-    }
-
-    override fun onUpdateData(data: List<String>) {
-        pagingViewControllerDelegate.onUpdateData(data)
-        updateState { copy(isRefreshing = false) }
-    }
+    override fun onRefreshError(exception: Throwable) = pagingViewControllerDelegate.onRefreshError(exception)
+    override fun onUpdateData(data: List<String>) = pagingViewControllerDelegate.onUpdateData(data)
 
     override fun onPermissionGranted() = initLoad()
 
@@ -162,11 +154,6 @@ class GalleryViewModel(
 
         updateState { copy(currentFolder = folder) }
         paginator.pullToRefresh()
-    }
-
-    override fun onRefreshed() {
-        updateState { copy(isRefreshing = true) }
-        loadFolders(onContent = paginator::pullToRefresh)
     }
 
     override fun onZoomIncreased() = updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }

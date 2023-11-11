@@ -11,7 +11,6 @@ interface GalleryController : BaseController {
     fun onLoadMoreImages()
     fun onZoomIncreased()
     fun onZoomDecreased()
-    fun onRefreshed()
     fun toRightFolderMoved()
     fun toLeftFolderMoved()
     fun onFolderMovedAnimationEnd()
