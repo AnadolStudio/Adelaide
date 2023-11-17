@@ -6,23 +6,29 @@ import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class BaseGroupItem<VB : ViewBinding>(id: Long) : BindableItem<VB>(id) {
 
-    override fun bind(viewBinding: VB, position: Int, payloads: MutableList<Any>) {
+    override fun bind(binding: VB, position: Int, payloads: MutableList<Any>) {
         val newItem = payloads.filterIsInstance(this::class.java).firstOrNull()
 
         if (newItem != null) {
-            bind(viewBinding, newItem)
+            bind(binding, newItem)
+            onPayloadBinding(binding, newItem)
         } else {
-            super.bind(viewBinding, position, payloads)
+            super.bind(binding, position, payloads)
+            onSimpleBinding(binding, this)
         }
     }
 
-    override fun bind(viewBinding: VB, position: Int) = bind(viewBinding, this)
+    override fun bind(binding: VB, position: Int) = bind(binding, this)
 
-    protected abstract fun bind(viewBinding: VB, item: BaseGroupItem<VB>)
+    protected abstract fun bind(binding: VB, item: BaseGroupItem<VB>)
 
     abstract override fun equals(other: Any?): Boolean
 
     abstract override fun hashCode(): Int
 
     override fun getChangePayload(newItem: Item<*>): Any = newItem
+
+    protected open fun onPayloadBinding(binding: VB, item: BaseGroupItem<VB>) = Unit
+
+    protected open fun onSimpleBinding(binding: VB, item: BaseGroupItem<VB>) = Unit
 }

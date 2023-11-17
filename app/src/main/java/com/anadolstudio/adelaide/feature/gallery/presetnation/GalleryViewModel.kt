@@ -138,10 +138,7 @@ class GalleryViewModel(
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(imageUri: String) {
-        if (state.folderIsMoving) return
-        showTodo()
-    }
+    override fun onImageSelected(imageUri: String) = showTodo()
 
     override fun onLoadMoreImages() = paginator.loadNewPage()
 
@@ -160,21 +157,9 @@ class GalleryViewModel(
 
     override fun onZoomDecreased() = updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
 
-    override fun toRightFolderMoved() = moveToFolder(MoveType.TO_RIGHT)
+    override fun onFolderClosed() = updateState { copy(folderVisible = false) }
 
-    override fun toLeftFolderMoved() = moveToFolder(MoveType.TO_LEFT)
-
-    override fun onFolderMovedAnimationEnd() = updateState { copy(folderIsMoving = false) }
-
-    private fun moveToFolder(moveType: MoveType) {
-        val index = state.folders.indexOfFirst { it == state.currentFolder } + moveType.increment
-
-        if (index !in 0 until state.folders.size) return
-        updateState { copy(folderIsMoving = true) }
-
-        showEvent(MoveFolderEvent(index, moveType))
-        onFolderChanged(state.folders.toList()[index])
-    }
+    override fun onFolderOpened() = updateState { copy(folderVisible = folders.isNotEmpty()) }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(private val editType: EditType) : ViewModelProvider.NewInstanceFactory() {

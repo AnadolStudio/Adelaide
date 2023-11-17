@@ -2,9 +2,9 @@ package com.anadolstudio.adelaide
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.anadolstudio.core.presentation.activity.CoreActivity
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : CoreActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

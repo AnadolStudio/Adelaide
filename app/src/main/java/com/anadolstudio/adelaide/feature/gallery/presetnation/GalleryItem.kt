@@ -16,13 +16,13 @@ class GalleryItem(
 
     override fun getLayout(): Int = R.layout.item_gallery
 
-    override fun bind(viewBinding: ItemGalleryBinding, item: BaseGroupItem<ItemGalleryBinding>) {
-        Glide.with(viewBinding.imageView)
+    override fun bind(binding: ItemGalleryBinding, item: BaseGroupItem<ItemGalleryBinding>) {
+        Glide.with(binding.imageView)
                 .asBitmap()
                 .centerCrop()
                 .load(path)
-                .into(viewBinding.imageView)
-        viewBinding.cardView.scaleAnimationOnClick(action = onClick)
+                .into(binding.imageView)
+        binding.cardView.scaleAnimationOnClick(action = onClick)
     }
 
     override fun equals(other: Any?): Boolean {

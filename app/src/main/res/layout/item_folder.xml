@@ -3,16 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginHorizontal="@dimen/padding_small"
-    android:layout_marginVertical="@dimen/padding_medium"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/padding_small"
+    android:layout_marginVertical="@dimen/padding_xsmall">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/Caption12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:maxWidth="64dp"
+        android:paddingHorizontal="@dimen/padding_small"
+        android:paddingVertical="@dimen/padding_xsmall"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Name" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:animateLayoutChanges="true"
         app:cardCornerRadius="@dimen/radius_small"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,27 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/overlay"
-            android:visibility="gone" />
+            tools:visibility="gone" />
 
     </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/title"
-        style="@style/Caption14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:maxWidth="64dp"
-        android:paddingHorizontal="@dimen/padding_small"
-        android:paddingVertical="@dimen/padding_xsmall"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Name"
-        android:clickable="true"
-        android:focusable="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,11 +15,8 @@ import com.anadolstudio.core.permission.registerPermissionRequest
 import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
 import com.anadolstudio.core.util.paginator.PagingDataState
-import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_EXTRA_SHORT
 import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
-import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationEndOutStartIn
-import com.anadolstudio.core.view.animation.AnimateUtil.showTranslationStartOutEndIn
 import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
 import com.anadolstudio.core.viewbinding.viewBinding
 import com.anadolstudio.core.viewmodel.livedata.SingleEvent
@@ -31,16 +28,16 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     private companion object {
         const val RENDER_FOLDERS = "RENDER_FOLDERS"
+        const val RENDER_FOLDERS_VISIBLE = "RENDER_FOLDERS_VISIBLE"
         const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
         const val RENDER_PAGING = "RENDER_PAGING"
         const val RENDER_SPAN = "RENDER_SPAN"
-        const val RENDER_HORIZONTAL_ANIMATION = "RENDER_HORIZONTAL_ANIMATION"
     }
 
     private val args: GalleryFragmentArgs by navArgs()
     override val viewStateDelegate: ViewStateDelegate by lazy {
         ViewStateDelegate(
-                contentViews = listOf(binding.recyclerView, binding.foldersViewPager),
+                contentViews = listOf(binding.recyclerView),
                 loadingViews = listOf(binding.progressView),
                 stubViews = listOf(binding.emptyView),
                 errorViews = listOf(binding.emptyView),
@@ -63,8 +60,8 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                 context,
                 HorizontalMoveGesture(
                         width = binding.recyclerView.width,
-                        onSwipeLeft = { controller.toRightFolderMoved() },
-                        onSwipeRight = { controller.toLeftFolderMoved() }
+                        onSwipeLeft = { controller.onFolderClosed() },
+                        onSwipeRight = { controller.onFolderOpened() }
                 )
         )
     }
@@ -96,35 +93,18 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     override fun handleEvent(event: SingleEvent) = when (event) {
         is RequestPermission -> permissionLauncher.launch(READ_MEDIA_PERMISSION)
-        is MoveFolderEvent -> moveToFolder(event)
         else -> super.handleEvent(event)
     }
 
-    private fun moveToFolder(event: MoveFolderEvent) {
-        binding.foldersViewPager.smoothScrollToPosition(event.index)
-
-        when (event.moveType) {
-            MoveType.TO_LEFT -> binding.recyclerView.showTranslationStartOutEndIn(DURATION_EXTRA_SHORT) {
-                controller.onFolderMovedAnimationEnd()
-            }
-
-            MoveType.TO_RIGHT -> binding.recyclerView.showTranslationEndOutStartIn(DURATION_EXTRA_SHORT) {
-                controller.onFolderMovedAnimationEnd()
-            }
-        }
-    }
-
     override fun render(state: GalleryState, controller: GalleryController) {
+        renderFoldersVisible(state.folderVisible)
         renderFolders(state.folders, state.currentFolder)
         renderList(state.imageListState)
         renderSpan(state.columnSpan)
-        renderRecyclerView(state.folderIsMoving)
     }
 
-    private fun renderRecyclerView(folderIsMoving: Boolean) {
-        folderIsMoving.render(RENDER_HORIZONTAL_ANIMATION) {
-//            binding.recyclerView.itemAnimator = if (this) null else DefaultItemAnimator()
-        }
+    private fun renderFoldersVisible(isVisible: Boolean) = isVisible.render(RENDER_FOLDERS_VISIBLE) {
+        binding.foldersViewPager.isVisible = isVisible // TODO add anim
     }
 
     private fun renderSpan(columnSpan: Int) {
@@ -168,7 +148,6 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                         }
                         folderSection.update(folderItems)
                     },
-                    onEach = { isNotEmpty -> binding.foldersViewPager.isVisible = isNotEmpty },
             )
         }
     }
