@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccentInverse"
+    android:background="@color/colorSecondary"
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,14 +81,13 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccentInverse"
+        android:background="@android:color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_gravity="bottom"
-            android:background="@color/colorAccentInverse"
             android:elevation="0dp"
             app:layout_scrollFlags="scroll">
 
@@ -107,8 +106,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:back_icon="@drawable/ic_arrow_left"
-            app:cardBackgroundColor="@color/colorAccentInverse"
             app:cardElevation="0dp"
+            android:background="@color/colorPrimary"
             app:tint="@color/colorAccent"
             app:title="@string/gallery_toolbar_title" />
 
