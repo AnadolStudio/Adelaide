@@ -11,7 +11,7 @@ import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
 import com.anadolstudio.core.data_source.media.Folder
 import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
-import com.anadolstudio.core.permission.registerPermissionRequest
+import com.anadolstudio.core.permission.registerPermissionListRequest
 import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
 import com.anadolstudio.core.util.paginator.PagingDataState
@@ -48,11 +48,10 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     private val folderSection = Section()
     private val imageSection = Section()
 
-    private val permissionLauncher = registerPermissionRequest(
-            permission = READ_MEDIA_PERMISSION,
-            onGranted = { controller.onPermissionGranted() },
-            onDenied = { viewStateDelegate.showError() },
-            onDontAskAgain = { viewStateDelegate.showError() }
+    private val permissionLauncher = registerPermissionListRequest(
+            onAllGranted = { controller.onPermissionGranted() },
+            onAnyDenied = { viewStateDelegate.showError() },
+            onAnyNotAskAgain = { viewStateDelegate.showError() }
     )
 
     private val horizontalMoveGestureDetector: GestureDetector by lazy {
@@ -92,7 +91,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     }
 
     override fun handleEvent(event: SingleEvent) = when (event) {
-        is RequestPermission -> permissionLauncher.launch(READ_MEDIA_PERMISSION)
+        is RequestPermission -> permissionLauncher.launch(arrayOf(READ_MEDIA_PERMISSION))
         else -> super.handleEvent(event)
     }
 

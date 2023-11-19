@@ -12,10 +12,10 @@ class NavigatableDelegate(private val navController: NavController) : Navigatabl
 
     override fun handleNavigationEvent(event: NavigationEvent<NavigateData>) {
         when (event) {
+            is Replace -> navController.navigate(event.data.id, event.data.args)
             is Add -> navController.navigate(event.data.id, event.data.args)
             is Back -> navController.navigateUp()
             is BackTo -> Unit
-            is Replace -> Unit
         }
     }
 }
