@@ -30,7 +30,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         const val RENDER_FOLDERS = "RENDER_FOLDERS"
         const val RENDER_FOLDERS_VISIBLE = "RENDER_FOLDERS_VISIBLE"
         const val RENDER_CURRENT_FOLDER = "RENDER_CURRENT_FOLDER"
-        const val RENDER_PAGING = "RENDER_PAGING"
+        const val RENDER_IMAGES = "RENDER_IMAGES"
         const val RENDER_SPAN = "RENDER_SPAN"
     }
 
@@ -98,22 +98,26 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     override fun render(state: GalleryState, controller: GalleryController) {
         renderFoldersVisible(state.folderVisible)
         renderFolders(state.folders, state.currentFolder)
-        renderList(state.imageListState)
+        renderImages(state.imageListState)
         renderSpan(state.columnSpan)
     }
 
     private fun renderFoldersVisible(isVisible: Boolean) = isVisible.render(RENDER_FOLDERS_VISIBLE) {
-        binding.foldersViewPager.isVisible = isVisible // TODO add anim
-    }
-
-    private fun renderSpan(columnSpan: Int) {
-        columnSpan.render(RENDER_SPAN) {
-            binding.recyclerView.changeSpan(this)
+        binding.foldersViewPager.isVisible = isVisible
+        /*
+        when (isVisible) {
+            true -> binding.foldersViewPager.animSlideStartIn(DURATION_NORMAL)
+            false -> binding.foldersViewPager.animSlideStartOut(DURATION_NORMAL)
         }
+        */
     }
 
-    private fun renderList(imageListState: PagingDataState<String>) {
-        imageListState.render(RENDER_PAGING) {
+    private fun renderSpan(columnSpan: Int) = columnSpan.render(RENDER_SPAN) {
+        binding.recyclerView.changeSpan(this)
+    }
+
+    private fun renderImages(imageListState: PagingDataState<String>) {
+        imageListState.render(RENDER_IMAGES) {
 
             fold(
                     transform = { GalleryItem(it) { controller.onImageSelected(it) } },
@@ -149,6 +153,14 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                     },
             )
         }
+        renderToolbar(currentFolder)
     }
 
+    private fun renderToolbar(currentFolder: Folder?) {
+        if (currentFolder == null) return
+
+        binding.toolbar.setTitle("${currentFolder.name} ${currentFolder.imageCount}")
+        binding.collapsingTitle.text = currentFolder.name
+        binding.collapsingDesctiption.text = currentFolder.imageCount.toString()
+    }
 }

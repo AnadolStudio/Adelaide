@@ -51,12 +51,14 @@ class FolderItem(
                 .into(imageView)
 
         title.text = item.folder.name
+        count.text = item.folder.imageCount.toString()
     }
 
     override fun onSimpleBinding(binding: ItemFolderBinding, item: BaseGroupItem<ItemFolderBinding>) {
         if (item !is FolderItem) return
         binding.overlay.alpha = if (item.isCurrent) OVERLAY_CURRENT_ALPHA else OVERLAY_DEFAULT_ALPHA
         binding.title.alpha = if (item.isCurrent) TITLE_CURRENT_ALPHA else TITLE_DEFAULT_ALPHA
+        binding.count.alpha = if (item.isCurrent) TITLE_CURRENT_ALPHA else TITLE_DEFAULT_ALPHA
     }
 
     override fun onPayloadBinding(binding: ItemFolderBinding, item: BaseGroupItem<ItemFolderBinding>) {
@@ -93,6 +95,11 @@ class FolderItem(
                         max(textAlphaStart, textAlphaEnd)
                 )
 
+                binding.count.alpha = MathUtils.clamp(
+                        textAlphaStart + direction * value * textAlphaDelta,
+                        min(textAlphaStart, textAlphaEnd),
+                        max(textAlphaStart, textAlphaEnd)
+                )
             }
             start()
         }

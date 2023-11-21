@@ -20,7 +20,7 @@ abstract class BaseContentFragment<
 
     override val eventableDelegate: Eventable get() = Eventable.Delegate(uiEntity = this) // TODO change delegate
     override val navigatableDelegate: Navigatable<NavigateData> get() = NavigatableDelegate(findNavController())
-    override val stateMap: MutableMap<String, Int> = mutableMapOf()
+    override val stateMap: MutableMap<String, Any?> = mutableMapOf()
 
     override var isStatusBarByNightMode: Boolean = true
 }

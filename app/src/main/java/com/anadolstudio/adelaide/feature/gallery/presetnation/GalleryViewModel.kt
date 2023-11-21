@@ -100,9 +100,11 @@ class GalleryViewModel(
                     val folderList = folders.toMutableList()
 
                     if (folderList.size > MIN_FOLDER_COUNT) {
+                        val totalCount = folderList.sumOf { it.imageCount }
                         val defaultFolder = folderList.first().copy(
                                 name = context.getString(R.string.gallery_toolbar_title),
                                 value = null,
+                                imageCount = totalCount
                         )
                         folderList.add(0, defaultFolder)
                     }

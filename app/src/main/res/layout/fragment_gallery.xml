@@ -7,97 +7,117 @@
     android:background="@color/colorSecondary"
     android:fitsSystemWindows="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/progress_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:visibility="gone"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <LinearLayout
-            android:id="@+id/progress_view"
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/colorAccent" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folders_view_pager"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingVertical="@dimen/padding_small"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_insetEdge="start"
+        tools:listitem="@layout/item_folder"
+        tools:visibility="visible"
+        tools:ignore="RtlSymmetry" />
+
+    <com.anadolstudio.core.view.TouchFrameLayout
+        android:id="@+id/recycler_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_dodgeInsetEdges="start">
+
+        <com.anadolstudio.core.view.recycler.GridRecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/folders_view_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingHorizontal="@dimen/padding_small"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_folder"
-            tools:visibility="visible" />
+            android:paddingBottom="@dimen/padding_medium"
+            android:paddingHorizontal="@dimen/padding_medium"
+            android:scrollbarFadeDuration="1"
+            android:scrollbarSize="4dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="none"
+            tools:listitem="@layout/item_gallery" />
 
-        <com.anadolstudio.core.view.TouchFrameLayout
-            android:id="@+id/recycler_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/folders_view_pager"
-            app:layout_constraintTop_toTopOf="parent">
+    </com.anadolstudio.core.view.TouchFrameLayout>
 
-            <com.anadolstudio.core.view.recycler.GridRecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/padding_medium"
-                android:paddingHorizontal="@dimen/padding_medium"
-                android:scrollbarFadeDuration="1"
-                android:scrollbarSize="4dp"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="none"
-                tools:listitem="@layout/item_gallery" />
-
-        </com.anadolstudio.core.view.TouchFrameLayout>
-
-        <com.anadolstudio.core.view.stub.EmptyStubView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:src="@android:drawable/sym_def_app_icon"
-            app:srcSide="150dp"
-            app:title="@string/gallery_error_nothing_found" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.anadolstudio.core.view.stub.EmptyStubView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:src="@android:drawable/sym_def_app_icon"
+        app:srcSide="150dp"
+        app:title="@string/gallery_error_nothing_found" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:layout_behavior="com.anadolstudio.adelaide.feature.gallery.presetnation.behavior.AppBarBehavior">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:elevation="0dp"
+            app:statusBarScrim="@color/colorPrimary"
+            app:contentScrim="@color/colorPrimary"
+            app:scrimVisibleHeightTrigger="1dp"
+            app:scrimAnimationDuration="0"
             app:layout_scrollFlags="scroll">
 
-            <ImageView
-                android:id="@+id/imageView"
+            <LinearLayout
+                android:id="@+id/collapsing_toolbar_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:foreground="@drawable/item_ripple_oval_without_mask"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/sym_def_app_icon"/>
+                android:layout_height="150dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/padding_main"
+                android:layout_marginTop="?android:actionBarSize">
+
+                <TextView
+                    android:id="@+id/collapsing_title"
+                    style="@style/Header34"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="@string/gallery_toolbar_title"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/collapsing_desctiption"
+                    style="@style/Header26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    tools:text="777" />
+
+            </LinearLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -109,6 +129,8 @@
             app:cardElevation="0dp"
             android:background="@color/colorPrimary"
             app:tint="@color/colorAccent"
+            android:alpha="0"
+            android:visibility="invisible"
             app:title="@string/gallery_toolbar_title" />
 
     </com.google.android.material.appbar.AppBarLayout>

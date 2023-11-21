@@ -18,12 +18,30 @@
         android:maxLines="1"
         android:maxWidth="64dp"
         android:paddingHorizontal="@dimen/padding_small"
-        android:paddingVertical="@dimen/padding_xsmall"
+        android:paddingTop="@dimen/padding_xsmall"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Name" />
+
+    <TextView
+        android:id="@+id/count"
+        style="@style/Caption10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:maxWidth="64dp"
+        android:paddingHorizontal="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_xsmall"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="164" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
