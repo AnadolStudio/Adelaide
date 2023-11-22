@@ -14,7 +14,6 @@ import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
 import com.anadolstudio.core.permission.registerPermissionListRequest
 import com.anadolstudio.core.presentation.fold
 import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
-import com.anadolstudio.core.util.paginator.PagingDataState
 import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
 import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
 import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
@@ -86,7 +85,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         }
         with(foldersViewPager) {
             adapter = BaseGroupAdapter(folderSection)
-            GravitySnapHelper(Gravity.CENTER).attachToRecyclerView(this)
+            GravitySnapHelper(Gravity.TOP).attachToRecyclerView(this)
         }
     }
 
@@ -96,9 +95,9 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     }
 
     override fun render(state: GalleryState, controller: GalleryController) {
-        renderFoldersVisible(state.folderVisible)
-        renderFolders(state.folders, state.currentFolder)
-        renderImages(state.imageListState)
+        renderFoldersVisible(state.folderState.folderVisible)
+        renderFolders(state.folderState.folders, state.folderState.currentFolder)
+        renderImages(state.imageState)
         renderSpan(state.columnSpan)
     }
 
@@ -116,11 +115,12 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         binding.recyclerView.changeSpan(this)
     }
 
-    private fun renderImages(imageListState: PagingDataState<String>) {
+    private fun renderImages(imageListState: ImageState) {
         imageListState.render(RENDER_IMAGES) {
+            val galleryItems = imageList.map { GalleryItem(it) { controller.onImageSelected(it) } }
+            imageSection.update(galleryItems, false)
 
-            fold(
-                    transform = { GalleryItem(it) { controller.onImageSelected(it) } },
+            pagingDataState.fold(
                     recyclerView = binding.recyclerView,
                     onError = { viewStateDelegate.showError() },
                     onEmptyData = { viewStateDelegate.showStub() },
@@ -128,11 +128,6 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
                     onContent = {
                         binding.recyclerView.animSlideBottomIn(DURATION_LONG)
                         viewStateDelegate.showContent()
-                    },
-                    onPageData = { galleryItems -> imageSection.addAll(galleryItems) },
-                    onUpdateData = { galleryItems ->
-                        imageSection.update(galleryItems, false)
-                        binding.recyclerView.post { binding.recyclerView.smoothScrollToPosition(0) }
                     },
             )
         }

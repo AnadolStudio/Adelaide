@@ -30,12 +30,12 @@ class GalleryViewModel(
         editType: EditType,
 ) : BaseContentViewModel<GalleryState>(
         GalleryState(
-                imageListState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
+                editType = editType,
+                columnSpan = DEFAULT_COLUM_COUNT,
+                pagingDataState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
                     true -> PagingDataState.Loading()
                     false -> PagingDataState.Empty()
                 },
-                editType = editType,
-                columnSpan = DEFAULT_COLUM_COUNT
         )
 ), GalleryController, PagingViewController<String> {
 
@@ -60,15 +60,15 @@ class GalleryViewModel(
                 .loadImages(
                         pageIndex = pageIndex,
                         pageSize = PAGE_SIZE,
-                        folder = state.currentFolder?.value,
+                        folder = state.folderState.currentFolder?.value,
                 )
                 .schedulersIoToMain()
     }
 
     private val pagingViewControllerDelegate = PagingViewController.Delegate(
-            getCurrentDataAction = { state.imageList },
-            updateStateAction = { updateState { copy(imageListState = it) } },
-            updateData = { updateState { copy(imageList = it) } }
+            getCurrentDataAction = { state.imageState.imageList },
+            updateStateAction = { updateState { copy(imageState = imageState.copy(pagingDataState = it)) } },
+            updateData = { updateState { copy(imageState = imageState.copy(imageList = it)) } }
     )
 
     private val paginator = PaginatorImpl(
@@ -97,7 +97,7 @@ class GalleryViewModel(
     private fun loadFolders(onContent: (() -> Unit)? = null) {
         galleryRepository.loadFolders()
                 .map { folders ->
-                    val folderList = folders.toMutableList()
+                    val folderList = folders.filter { it.imageCount > 0 }.toMutableList()
 
                     if (folderList.size > MIN_FOLDER_COUNT) {
                         val totalCount = folderList.sumOf { it.imageCount }
@@ -112,12 +112,16 @@ class GalleryViewModel(
                     return@map folderList.toSet()
                 }
                 .lceSubscribe(
-                        onEach = { folders -> updateState { copy(foldersLce = folders) } },
+                        onEach = { state ->
+                            updateState { copy(folderState = folderState.copy(foldersLce = state)) }
+                        },
                         onContent = { folders ->
-                            val currentFolder = folders.firstOrNull { it == state.currentFolder }
+                            val currentFolder = folders.firstOrNull { it == state.folderState.currentFolder }
                                     ?: folders.firstOrNull()
 
-                            updateState { copy(currentFolder = currentFolder, folders = folders) }
+                            updateState {
+                                copy(folderState = folderState.copy(currentFolder = currentFolder, folders = folders))
+                            }
                             onContent?.invoke()
                         },
                         onError = this::showError
@@ -149,9 +153,9 @@ class GalleryViewModel(
     override fun onBackClicked() = _navigationEvent.navigateUp()
 
     override fun onFolderChanged(folder: Folder) {
-        if (folder == state.currentFolder) return
+        if (folder == state.folderState.currentFolder) return
 
-        updateState { copy(currentFolder = folder) }
+        updateState { copy(folderState = folderState.copy(currentFolder = folder)) }
         paginator.pullToRefresh()
     }
 
@@ -159,9 +163,11 @@ class GalleryViewModel(
 
     override fun onZoomDecreased() = updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
 
-    override fun onFolderClosed() = updateState { copy(folderVisible = false) }
+    override fun onFolderClosed() = updateState { copy(folderState = folderState.copy(folderVisible = false)) }
 
-    override fun onFolderOpened() = updateState { copy(folderVisible = folders.isNotEmpty()) }
+    override fun onFolderOpened() = updateState {
+        copy(folderState = folderState.copy(folderVisible = folderState.folders.isNotEmpty()))
+    }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(private val editType: EditType) : ViewModelProvider.NewInstanceFactory() {
