@@ -158,9 +158,13 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     private fun renderToolbar(currentFolder: Folder?) {
         if (currentFolder == null) return
+        val description = getString(R.string.gallery_toolbar_description, "${currentFolder.imageCount}")
 
-        binding.toolbar.setTitle("${currentFolder.name} ${currentFolder.imageCount}")
-        binding.collapsingTitle.text = currentFolder.name
-        binding.collapsingDesctiption.text = currentFolder.imageCount.toString()
+        with(binding) {
+            toolbar.setTitle(currentFolder.name)
+            toolbar.setDescription(description)
+            collapsingTitle.text = currentFolder.name
+            collapsingDesctiption.text = description
+        }
     }
 }

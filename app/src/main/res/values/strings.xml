@@ -11,6 +11,7 @@
     <!--    GalleryActivity-->
     <string name="gallery_snack_bar_settings">Settings</string>
     <string name="gallery_toolbar_title">Gallery</string>
+    <string name="gallery_toolbar_description">count: %s</string>
     <string name="gallery_error_miss_permission">Please, give permission</string>
     <string name="gallery_error_nothing_found">There is nothing here</string>
 
