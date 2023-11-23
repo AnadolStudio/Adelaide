@@ -66,7 +66,8 @@ class GalleryViewModel(
     }
 
     private val pagingViewControllerDelegate = PagingViewController.Delegate(
-            getCurrentDataAction = { state.imageState.imageList },
+            provideCurrentData = { state.imageState.imageList },
+            provideCurrentPagingData = { state.imageState.pagingDataState },
             updateStateAction = { updateState { copy(imageState = imageState.copy(pagingDataState = it)) } },
             updateData = { updateState { copy(imageState = imageState.copy(imageList = it)) } }
     )
