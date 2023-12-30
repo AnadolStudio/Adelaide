@@ -86,7 +86,7 @@ class GalleryViewModel(
         if (context.hasAllPermissions(STORAGE_PERMISSION)) {
             initLoad()
         } else {
-            showEvent(RequestPermission)
+            showEvent(GalleryEvent.RequestPermissionEvent)
         }
     }
 
@@ -145,7 +145,7 @@ class GalleryViewModel(
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(imageUri: String) = showTodo()
+    override fun onImageSelected(imageUri: String) = showEvent(GalleryEvent.DetailPhotoEvent(imageUri))
 
     override fun onLoadMoreImages() = paginator.loadNewPage()
 

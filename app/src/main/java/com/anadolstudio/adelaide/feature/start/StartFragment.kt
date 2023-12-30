@@ -28,7 +28,7 @@ class StartFragment : BaseActionFragment<StartViewModel, StartController>(R.layo
 
     override fun createViewModel(): StartViewModel = obtainViewModel(StartViewModel.Factory())
 
-    override fun initView(controller: StartController) {
+    override fun initView() {
         binding.nightBtn.scaleAnimationOnClick { (requireActivity().application as App).changeTheme() } // TODO to VM
         binding.galleryButton.scaleAnimationOnClick(action = controller::onGalleryClicked)
         binding.takePhotoButton.scaleAnimationOnClick(action = this::requestCameraPermissions)

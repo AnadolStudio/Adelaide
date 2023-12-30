@@ -132,6 +132,7 @@
             app:tint="@color/colorAccent"
             android:alpha="0"
             android:visibility="invisible"
+            app:needDivider="false"
             app:title="@string/gallery_toolbar_title" />
 
     </com.google.android.material.appbar.AppBarLayout>

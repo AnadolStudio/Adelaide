@@ -9,6 +9,9 @@ import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
 import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
+import com.anadolstudio.adelaide.feature.detail.ImageDetailDialog
+import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.DetailPhotoEvent
+import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.RequestPermissionEvent
 import com.anadolstudio.core.data_source.media.Folder
 import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
 import com.anadolstudio.core.permission.registerPermissionListRequest
@@ -66,7 +69,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     override fun createViewModel(): GalleryViewModel = obtainViewModel(GalleryViewModel.Factory(args.editType))
 
-    override fun initView(controller: GalleryController) = with(binding) {
+    override fun initView() = with(binding) {
         toolbar.setBackClickListener(controller::onBackClicked)
         binding.recyclerContainer.addDispatchTouchListener { _, event ->
             horizontalMoveGestureDetector.onTouchEvent(event)
@@ -90,11 +93,12 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     }
 
     override fun handleEvent(event: SingleEvent) = when (event) {
-        is RequestPermission -> permissionLauncher.launch(arrayOf(READ_MEDIA_PERMISSION))
+        is RequestPermissionEvent -> permissionLauncher.launch(arrayOf(READ_MEDIA_PERMISSION))
+        is DetailPhotoEvent -> ImageDetailDialog.newInstance(event.path).show(childFragmentManager, null)
         else -> super.handleEvent(event)
     }
 
-    override fun render(state: GalleryState, controller: GalleryController) {
+    override fun render(state: GalleryState) {
         renderFoldersVisible(state.folderState.folderVisible)
         renderFolders(state.folderState.folders, state.folderState.currentFolder)
         renderImages(state.imageState)
