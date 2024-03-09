@@ -1,0 +1,77 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.anadolstudio.compose.ui'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+}
+
+dependencies {
+    def composeBom = platform('androidx.compose:compose-bom:2024.02.02')
+    api composeBom
+    androidTestImplementation composeBom
+
+    // Choose one of the following:
+    // Material Design 3
+    api 'androidx.compose.material3:material3'
+    // or Material Design 2
+    api 'androidx.compose.material:material'
+    // or skip Material Design and build directly on top of foundational components
+    api 'androidx.compose.foundation:foundation'
+    // or only import the main APIs for the underlying toolkit systems,
+    // such as input and measurement/layout
+    api 'androidx.compose.ui:ui'
+
+    // Android Studio Preview support
+    api 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+
+    // UI Tests
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Optional - Included automatically by material, only add when you need
+    // the icons but not the material library (e.g. when using Material3 or a
+    // custom design system based on Foundation)
+    api 'androidx.compose.material:material-icons-core'
+    // Optional - Add full set of material icons
+    api 'androidx.compose.material:material-icons-extended'
+    // Optional - Add window size utils
+    api 'androidx.compose.material3:material3-window-size-class'
+
+    // Optional - Integration with activities
+    api 'androidx.activity:activity-compose:1.8.2'
+    // Optional - Integration with ViewModels
+    api 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    api 'androidx.compose.runtime:runtime'
+}

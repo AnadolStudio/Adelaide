@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.anadolstudio.compose.ui">
+
+    <application android:theme="@style/Theme.App" />
+</manifest>
