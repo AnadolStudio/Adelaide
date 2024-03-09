@@ -4,6 +4,7 @@ import androidx.viewbinding.ViewBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 
+@Deprecated("Добавлено в core")
 abstract class BaseGroupItem<VB : ViewBinding>(id: Long) : BindableItem<VB>(id) {
 
     override fun bind(binding: VB, position: Int, payloads: MutableList<Any>) {

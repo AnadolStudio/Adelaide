@@ -1,5 +1,6 @@
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
     repositories {
         google()
         mavenCentral()
@@ -7,17 +8,11 @@ dependencyResolutionManagement {
         jcenter()
     }
 }
+
 rootProject.name = "Adelaide"
 include(
         ":app",
         ":core:android-base",
-        ":core:photoeditor",
-        ":core:base",
-        ":core:common",
-        ":core:utils",
-        ":core:resources",
-        ":features:gallery",
-        ":features:home",
+        ":core:compose-ui",
 )
 project(':core:android-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
-project(':core:photoeditor').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')

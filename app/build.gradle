@@ -58,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        compose true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -65,6 +66,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '17'
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     lintOptions {
         abortOnError false
@@ -74,7 +78,6 @@ android {
 
 dependencies {
     implementation project(path: ':core:android-base')
-    implementation project(path: ':core:photoeditor')
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
@@ -109,7 +112,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:22.3.0'
 
     // Dagger (kapt don't work on 2.28)
-    def dagger = "2.43.2"
+    def dagger = "2.46"
     implementation "com.google.dagger:dagger:$dagger"
     kapt("com.google.dagger:dagger-compiler:$dagger")
 

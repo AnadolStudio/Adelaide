@@ -9,7 +9,6 @@ import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
 import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
-import com.anadolstudio.adelaide.feature.detail.ImageDetailDialog
 import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.DetailPhotoEvent
 import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.RequestPermissionEvent
 import com.anadolstudio.core.data_source.media.Folder
@@ -94,7 +93,7 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     override fun handleEvent(event: SingleEvent) = when (event) {
         is RequestPermissionEvent -> permissionLauncher.launch(arrayOf(READ_MEDIA_PERMISSION))
-        is DetailPhotoEvent -> ImageDetailDialog.newInstance(event.path).show(childFragmentManager, null)
+        is DetailPhotoEvent -> Unit
         else -> super.handleEvent(event)
     }
 

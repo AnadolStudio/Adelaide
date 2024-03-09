@@ -1,7 +1,6 @@
 package com.anadolstudio.adelaide.feature.start
 
 import android.Manifest
-import com.anadolstudio.adelaide.App
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.fragment.BaseActionFragment
 import com.anadolstudio.adelaide.databinding.FragmentStartBinding
@@ -29,7 +28,6 @@ class StartFragment : BaseActionFragment<StartViewModel, StartController>(R.layo
     override fun createViewModel(): StartViewModel = obtainViewModel(StartViewModel.Factory())
 
     override fun initView() {
-        binding.nightBtn.scaleAnimationOnClick { (requireActivity().application as App).changeTheme() } // TODO to VM
         binding.galleryButton.scaleAnimationOnClick(action = controller::onGalleryClicked)
         binding.takePhotoButton.scaleAnimationOnClick(action = this::requestCameraPermissions)
         binding.draftButton.scaleAnimationOnClick(action = controller::onDraftClicked)
