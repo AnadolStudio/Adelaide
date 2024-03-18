@@ -1,7 +1,7 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
-import com.anadolstudio.core.data_source.media.Folder
-import com.anadolstudio.core.viewmodel.BaseController
+import com.anadolstudio.ui.viewmodel.BaseController
+import com.anadolstudio.utils.data_source.media.Folder
 
 interface GalleryController : BaseController {
     fun onPermissionGranted()

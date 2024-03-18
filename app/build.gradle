@@ -57,27 +57,33 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
         compose true
     }
+    def javaVersion = JavaVersion.VERSION_17
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility javaVersion
+        targetCompatibility javaVersion
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = javaVersion.toString()
+        freeCompilerArgs = freeCompilerArgs + ["-opt-in=androidx.compose.foundation.ExperimentalFoundationApi"]
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
     lintOptions {
         abortOnError false
+    }
+    kapt {
+        correctErrorTypes true
+        generateStubs true
     }
     namespace 'com.anadolstudio.adelaide'
 }
 
 dependencies {
-    implementation project(path: ':core:android-base')
+    implementation project(path: ':core:ui')
+    implementation project(path: ':core:utils')
     implementation project(path: ':core:compose-ui')
 
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -112,7 +118,6 @@ dependencies {
     //Ad
     implementation 'com.google.android.gms:play-services-ads:22.3.0'
 
-    // Dagger (kapt don't work on 2.28)
     def dagger = "2.46"
     implementation "com.google.dagger:dagger:$dagger"
     kapt("com.google.dagger:dagger-compiler:$dagger")
@@ -137,6 +142,10 @@ dependencies {
 
     // Gravity Snap Helper
     implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
+
+    implementation 'androidx.paging:paging-runtime-ktx:3.2.1'
+    implementation 'androidx.paging:paging-compose:3.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

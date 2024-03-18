@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.modifier.noRippleClickable
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 
 @Composable
@@ -69,7 +68,7 @@ fun LoaderLayout(
 @Preview(showBackground = true)
 @Composable
 private fun LoaderPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         LoaderLayout(showLoader = true)
     }
 }

@@ -49,7 +49,6 @@ import androidx.core.text.isDigitsOnly
 import com.anadolstudio.compose.ui.modifier.autofill
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.Shapes
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.theme.tiny
@@ -251,7 +250,7 @@ private fun OtpChar(
 @Preview(showBackground = true)
 @Composable
 private fun OtpInputPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         var value by remember { mutableStateOf("") }
         Column(modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
             OtpInputField(

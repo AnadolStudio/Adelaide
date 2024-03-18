@@ -1,24 +1,30 @@
 package com.anadolstudio.adelaide.di
 
 import android.content.Context
-import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryViewModel
-import com.anadolstudio.adelaide.feature.start.StartViewModel
+import com.anadolstudio.adelaide.di.viewmodel.ViewModelsInjector
+import com.anadolstudio.adelaide.feature.gallery.di.GalleryModule
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
-@Component(modules = [AppModule::class])
-interface AppComponent {
 
-    @Component.Builder
-    interface Builder {
+@Singleton
+@Component(
+    modules = [
+        AppModule::class,
+        GalleryModule::class,
+    ]
+)
+internal interface AppComponent {
 
-        @BindsInstance
-        fun appContext(appContext: Context): Builder
+    val viewModelsInjector: ViewModelsInjector
 
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+
+        fun create(
+            @BindsInstance appContext: Context
+        ): AppComponent
     }
 
-//    fun inject(entry: DaysFragment)
-    fun inject(entry: StartViewModel.Factory)
-    fun inject(entry: GalleryViewModel.Factory)
 }

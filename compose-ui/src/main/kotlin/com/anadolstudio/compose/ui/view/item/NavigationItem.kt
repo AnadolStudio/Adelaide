@@ -25,7 +25,6 @@ import com.anadolstudio.compose.ui.drawable.LicardIcon
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.WSpacer
 import com.anadolstudio.compose.ui.view.text.Text
@@ -81,7 +80,7 @@ fun NavigationItem(
 @Preview
 @Composable
 private fun PreviewNavigationItem(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column {
             NavigationItem(
                 icon = LicardIcon.Invoice,

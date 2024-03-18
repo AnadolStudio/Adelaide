@@ -1,9 +1,9 @@
 package com.anadolstudio.adelaide.base.viewmodel
 
-import com.anadolstudio.core.viewmodel.livedata.SingleEvent
-import com.anadolstudio.core.viewmodel.livedata.SingleLiveEvent
-import com.anadolstudio.core.viewmodel.livedata.onNext
-import com.anadolstudio.core.presentation.event.SingleMessageSnack
+import com.anadolstudio.ui.SingleMessageSnack
+import com.anadolstudio.ui.viewmodel.livedata.SingleEvent
+import com.anadolstudio.ui.viewmodel.livedata.SingleLiveEvent
+import com.anadolstudio.ui.viewmodel.livedata.onNext
 
 interface BaseViewModelDelegate {
     fun showTodo()

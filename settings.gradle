@@ -12,8 +12,10 @@ dependencyResolutionManagement {
 rootProject.name = "Adelaide"
 include(
         ":app",
-        ":core:android-base",
+        ":core:ui",
+        ":core:utils",
         ":core:compose-ui",
 )
-project(':core:android-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
+project(':core:ui').projectDir = new File(rootDir, '/AndroidCoreBase/ui')
+project(':core:utils').projectDir = new File(rootDir, '/AndroidCoreBase/utils')
 project(':core:compose-ui').projectDir = new File(rootDir, '/compose-ui')

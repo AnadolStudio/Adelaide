@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.largeShimmer
 import com.anadolstudio.compose.ui.theme.micro
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
@@ -112,7 +111,7 @@ private fun getShimmerColors() = listOf(
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column(Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
             ShimmerItem(size = DpSize(100.dp, 32.dp))
             VSpacer(16.dp)

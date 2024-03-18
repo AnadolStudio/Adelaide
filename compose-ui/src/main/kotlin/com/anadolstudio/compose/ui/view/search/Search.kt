@@ -43,7 +43,6 @@ import com.anadolstudio.compose.ui.drawable.LicardIcon
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.Shapes
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.theme.tiny
@@ -239,7 +238,7 @@ private fun createSearchTextFieldColors(): TextFieldColors = TextFieldDefaults.t
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column {
             Search(value = "", placeholderText = "Поиск", onValueChange = {})
             Search(value = "Пример текста", placeholderText = "Номер карты", onValueChange = {})

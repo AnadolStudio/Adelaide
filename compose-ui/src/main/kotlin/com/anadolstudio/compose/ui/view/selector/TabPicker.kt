@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.text.Text
 
@@ -88,7 +87,7 @@ private fun TabItem(
 @Preview()
 @Composable
 private fun TabPickerPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column(modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
             TabPicker(
                 tabs = listOf("First", "Second", "Any"),

@@ -7,16 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.anadolstudio.compose.ui.theme.color.AdelaideColorDarkPalette
+import com.anadolstudio.compose.ui.theme.color.AdelaideColorLightPalette
 import com.anadolstudio.compose.ui.theme.color.AdelaideThemeColors
-import com.anadolstudio.compose.ui.theme.color.LicardColorDarkPalette
-import com.anadolstudio.compose.ui.theme.color.LicardColorLightPalette
 
 @Composable
-fun LicardTheme(
+fun AdelaideTheme(
     useDarkTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val colorPalette = remember(useDarkTheme) { if (useDarkTheme) LicardColorDarkPalette else LicardColorLightPalette }
+    val colorPalette = remember(useDarkTheme) { if (useDarkTheme) AdelaideColorDarkPalette else AdelaideColorLightPalette }
     MaterialTheme(
         typography = MaterialTypography,
         shapes = Shapes,

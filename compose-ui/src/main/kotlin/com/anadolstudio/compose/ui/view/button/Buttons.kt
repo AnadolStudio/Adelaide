@@ -42,7 +42,6 @@ import com.anadolstudio.compose.ui.modifier.consumeTouches
 import com.anadolstudio.compose.ui.modifier.rememberMinSize
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.micro
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.theme.tiny
@@ -243,7 +242,7 @@ fun TextButton(
 @Composable
 @Suppress("LongMethod", "StringLiteralDuplication")
 private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)

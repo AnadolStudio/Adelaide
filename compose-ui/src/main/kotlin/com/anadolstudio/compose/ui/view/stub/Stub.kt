@@ -21,7 +21,6 @@ import com.anadolstudio.compose.ui.drawable.LicardIllustration
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.VSpacer
 import com.anadolstudio.compose.ui.view.button.OutlineButtonLarge
@@ -210,7 +209,7 @@ fun BaseStub(
 @Preview
 @Composable
 private fun PreviewPagingStubs(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column {
             PagingItemLoadingStub(
                 modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
@@ -229,7 +228,7 @@ private fun PreviewPagingStubs(@PreviewParameter(ThemePreviewParameter::class) u
 @Preview
 @Composable
 private fun PreviewEmptyStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         EmptyStub(
             modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
             title = "Нет топливных карт",
@@ -242,7 +241,7 @@ private fun PreviewEmptyStub(@PreviewParameter(ThemePreviewParameter::class) use
 @Preview
 @Composable
 private fun PreviewEmptyStubWithButton(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         EmptyStub(
             modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
             title = "Нет топливных карт",
@@ -254,7 +253,7 @@ private fun PreviewEmptyStubWithButton(@PreviewParameter(ThemePreviewParameter::
 @Preview
 @Composable
 private fun PreviewErrorStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         ErrorStub(
             modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
             errorTitle = "Что-то пошло не так",
@@ -268,7 +267,7 @@ private fun PreviewErrorStub(@PreviewParameter(ThemePreviewParameter::class) use
 @Preview
 @Composable
 private fun PreviewSuccessStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         SuccessStub(
             modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
             image = LicardIllustration.EmptyTransaction,

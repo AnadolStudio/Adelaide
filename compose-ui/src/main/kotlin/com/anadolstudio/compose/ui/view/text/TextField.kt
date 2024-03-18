@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.VSpacer
 
@@ -484,7 +483,7 @@ object AccountingTextFieldDefaults {
 @Composable
 @Suppress("StringLiteralDuplication")
 private fun TextFieldPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column(
             Modifier
                 .padding(8.dp)

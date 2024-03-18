@@ -6,7 +6,7 @@ private val gradientStatusDark = GradientColor(
     colorEnd = AdelaideColor.BlackSmoky
 )
 
-val LicardColorDarkPalette: AdelaideThemeColors = AdelaideThemeColors(
+val AdelaideColorDarkPalette: AdelaideThemeColors = AdelaideThemeColors(
     isLight = false,
     active = AdelaideColor.Green,
     backgroundPrimary = AdelaideColor.Black,

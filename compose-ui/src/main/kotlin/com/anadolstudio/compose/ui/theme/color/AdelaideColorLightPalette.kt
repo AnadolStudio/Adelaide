@@ -1,6 +1,6 @@
 package com.anadolstudio.compose.ui.theme.color
 
-val LicardColorLightPalette: AdelaideThemeColors = AdelaideThemeColors(
+val AdelaideColorLightPalette: AdelaideThemeColors = AdelaideThemeColors(
     isLight = true,
     active = AdelaideColor.Green,
     backgroundPrimary = AdelaideColor.White,

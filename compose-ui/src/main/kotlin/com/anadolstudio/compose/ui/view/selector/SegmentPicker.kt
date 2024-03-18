@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.modifier.noRippleClickable
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.HSpacer
 import com.anadolstudio.compose.ui.view.VSpacer
@@ -97,7 +96,7 @@ private fun Segment(
 @Preview
 @Composable
 private fun SegmentPickerPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column(modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
             SegmentPicker(
                 segments = listOf("First", "Second", "Any"),

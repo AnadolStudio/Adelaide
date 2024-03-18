@@ -32,9 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.HSpacer
 import com.anadolstudio.compose.ui.view.VSpacer
@@ -155,7 +155,7 @@ private val SnackbarMinWidth = 64.dp
 @Composable
 @Suppress("StringLiteralDuplication")
 private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         val continuation = object : CancellableContinuation<SnackbarResult> {
             override val context: CoroutineContext
                 get() = TODO("Not yet implemented")

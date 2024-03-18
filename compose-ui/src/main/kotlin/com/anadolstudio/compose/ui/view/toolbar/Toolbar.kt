@@ -34,7 +34,6 @@ import com.anadolstudio.compose.ui.modifier.surface
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
 import com.anadolstudio.compose.ui.theme.LicardDimension
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.button.LicardButtonColors
 import com.anadolstudio.compose.ui.view.search.Search
@@ -199,7 +198,7 @@ enum class NavigationIcon(
 @Composable
 @Suppress("LongMethod")
 private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         Column {
             Toolbar(title = "Title")
             Divider()

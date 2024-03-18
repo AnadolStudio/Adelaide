@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.button.TextButton
 
@@ -75,7 +74,7 @@ fun CalendarDialog(
 @Composable
 private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     val datePickerState = rememberDatePickerState()
-    LicardTheme(useDarkMode) {
+    AdelaideTheme(useDarkMode) {
         CalendarDialog(
             datePickerState = datePickerState,
             applyText = "Ok",

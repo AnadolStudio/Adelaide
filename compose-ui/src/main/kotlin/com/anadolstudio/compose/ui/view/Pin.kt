@@ -42,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardTheme
 import com.anadolstudio.compose.ui.view.text.Text
 
 @Composable
@@ -214,7 +213,7 @@ private fun NumberKey(number: String) {
 @Preview(showBackground = true)
 @Composable
 private fun PinFieldPreview() {
-    LicardTheme {
+    AdelaideTheme {
         PinField(
             digitsCount = 4,
             value = "23",
@@ -225,7 +224,7 @@ private fun PinFieldPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun KeyboardPreview() {
-    LicardTheme {
+    AdelaideTheme {
         PinKeyboard(onKeyClick = {})
     }
 }
