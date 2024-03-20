@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide.base.adapter.paging
 
-import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
+import com.anadolstudio.ui.adapters.groupie.BaseGroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 

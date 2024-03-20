@@ -39,14 +39,14 @@
         tools:visibility="visible"
         tools:ignore="RtlSymmetry" />
 
-    <com.anadolstudio.core.view.TouchFrameLayout
+    <com.anadolstudio.view.TouchFrameLayout
         android:id="@+id/recycler_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:layout_dodgeInsetEdges="start">
 
-        <com.anadolstudio.core.view.recycler.GridRecyclerView
+        <com.anadolstudio.view.recycler.GridRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,9 +59,9 @@
             android:scrollbars="none"
             tools:listitem="@layout/item_gallery" />
 
-    </com.anadolstudio.core.view.TouchFrameLayout>
+    </com.anadolstudio.view.TouchFrameLayout>
 
-    <com.anadolstudio.core.view.stub.EmptyStubView
+    <com.anadolstudio.view.stub.EmptyStubView
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -122,11 +122,10 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <com.anadolstudio.core.view.toolbar.BaseToolbar
+        <com.anadolstudio.view.toolbar.BaseToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:back_icon="@drawable/ic_arrow_left"
             app:cardElevation="0dp"
             android:background="@color/colorPrimary"
             app:tint="@color/colorAccent"

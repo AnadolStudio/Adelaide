@@ -1,22 +1,18 @@
 package com.anadolstudio.adelaide.feature.gallery.presetnation
 
-import com.anadolstudio.adelaide.feature.start.EditType
-import com.anadolstudio.core.data_source.media.Folder
-import com.anadolstudio.core.util.paginator.PagingDataState
-import com.anadolstudio.core.viewmodel.LceState
+import com.anadolstudio.paginator.PagingDataState
+import com.anadolstudio.ui.viewmodel.states.ProgressState
+import com.anadolstudio.utils.data_source.media.Folder
 
 data class GalleryState(
-        val editType: EditType,
         val columnSpan: Int,
         val imageState: ImageState = ImageState(),
         val folderState: FolderState = FolderState()
 ) {
     constructor(
-            editType: EditType,
             columnSpan: Int,
             pagingDataState: PagingDataState<String>
     ) : this(
-            editType = editType,
             columnSpan = columnSpan,
             imageState = ImageState(pagingDataState = pagingDataState)
     )
@@ -24,7 +20,7 @@ data class GalleryState(
 
 data class FolderState(
         val folderVisible: Boolean = false,
-        val foldersLce: LceState<Set<Folder>> = LceState.Loading(),
+        val progressState: ProgressState = ProgressState.Loading,
         val folders: Set<Folder> = emptySet(),
         val currentFolder: Folder? = null,
 )

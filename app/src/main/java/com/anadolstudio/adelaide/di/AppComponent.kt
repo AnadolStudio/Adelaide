@@ -1,13 +1,14 @@
 package com.anadolstudio.adelaide.di
 
 import android.content.Context
-import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryViewModel
-import com.anadolstudio.adelaide.feature.start.StartViewModel
+import com.anadolstudio.adelaide.App
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
 @Component(modules = [AppModule::class])
-interface AppComponent {
+@Singleton
+interface AppComponent : SharedComponent {
 
     @Component.Builder
     interface Builder {
@@ -18,7 +19,6 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-//    fun inject(entry: DaysFragment)
-    fun inject(entry: StartViewModel.Factory)
-    fun inject(entry: GalleryViewModel.Factory)
+    fun inject(entry: App)
+
 }

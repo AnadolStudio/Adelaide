@@ -3,29 +3,30 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 import android.view.GestureDetector
 import android.view.Gravity
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.viewModels
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.base.adapter.BaseGroupAdapter
 import com.anadolstudio.adelaide.base.adapter.paging.GroupiePagingAdapter
 import com.anadolstudio.adelaide.base.fragment.BaseContentFragment
 import com.anadolstudio.adelaide.databinding.FragmentGalleryBinding
 import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.DetailPhotoEvent
 import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryEvent.RequestPermissionEvent
-import com.anadolstudio.core.data_source.media.Folder
-import com.anadolstudio.core.permission.READ_MEDIA_PERMISSION
-import com.anadolstudio.core.permission.registerPermissionListRequest
-import com.anadolstudio.core.presentation.fold
-import com.anadolstudio.core.presentation.fragment.state_util.ViewStateDelegate
-import com.anadolstudio.core.view.animation.AnimateUtil.DURATION_LONG
-import com.anadolstudio.core.view.animation.AnimateUtil.animSlideBottomIn
-import com.anadolstudio.core.view.gesture.HorizontalMoveGesture
-import com.anadolstudio.core.viewbinding.viewBinding
-import com.anadolstudio.core.viewmodel.livedata.SingleEvent
-import com.anadolstudio.core.viewmodel.obtainViewModel
+import com.anadolstudio.paginator.fold
+import com.anadolstudio.ui.adapters.groupie.BaseGroupAdapter
+import com.anadolstudio.ui.fold
+import com.anadolstudio.ui.fragment.state_util.ViewStateDelegate
+import com.anadolstudio.ui.viewbinding.viewBinding
+import com.anadolstudio.ui.viewmodel.livedata.SingleEvent
+import com.anadolstudio.utils.animation.AnimateUtil.DURATION_LONG
+import com.anadolstudio.utils.animation.AnimateUtil.animSlideBottomIn
+import com.anadolstudio.utils.data_source.media.Folder
+import com.anadolstudio.utils.permission.READ_MEDIA_PERMISSION
+import com.anadolstudio.utils.permission.registerPermissionListRequest
+import com.anadolstudio.view.gesture.HorizontalMoveGesture
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import com.xwray.groupie.Section
 
-class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, GalleryController>(R.layout.fragment_gallery) {
+class GalleryFragment :
+    BaseContentFragment<GalleryState, GalleryViewModel, GalleryController>(R.layout.fragment_gallery) {
 
     private companion object {
         const val RENDER_FOLDERS = "RENDER_FOLDERS"
@@ -35,13 +36,12 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         const val RENDER_SPAN = "RENDER_SPAN"
     }
 
-    private val args: GalleryFragmentArgs by navArgs()
     override val viewStateDelegate: ViewStateDelegate by lazy {
         ViewStateDelegate(
-                contentViews = listOf(binding.recyclerView),
-                loadingViews = listOf(binding.progressView),
-                stubViews = listOf(binding.emptyView),
-                errorViews = listOf(binding.emptyView),
+            contentViews = listOf(binding.recyclerView),
+            loadingViews = listOf(binding.progressView),
+            stubViews = listOf(binding.emptyView),
+            errorViews = listOf(binding.emptyView),
         )
     }
 
@@ -50,23 +50,23 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     private val imageSection = Section()
 
     private val permissionLauncher = registerPermissionListRequest(
-            onAllGranted = { controller.onPermissionGranted() },
-            onAnyDenied = { viewStateDelegate.showError() },
-            onAnyNotAskAgain = { viewStateDelegate.showError() }
+        onAllGranted = { controller.onPermissionGranted() },
+        onAnyDenied = { viewStateDelegate.showError() },
+        onAnyNotAskAgain = { viewStateDelegate.showError() }
     )
 
     private val horizontalMoveGestureDetector: GestureDetector by lazy {
         GestureDetector(
-                context,
-                HorizontalMoveGesture(
-                        width = binding.recyclerView.width,
-                        onSwipeLeft = { controller.onFolderClosed() },
-                        onSwipeRight = { controller.onFolderOpened() }
-                )
+            context,
+            HorizontalMoveGesture(
+                width = binding.recyclerView.width,
+                onSwipeLeft = { controller.onFolderClosed() },
+                onSwipeRight = { controller.onFolderOpened() }
+            )
         )
     }
 
-    override fun createViewModel(): GalleryViewModel = obtainViewModel(GalleryViewModel.Factory(args.editType))
+    override fun createViewModelLazy() = viewModels<GalleryViewModel> { viewModelFactory }
 
     override fun initView() = with(binding) {
         toolbar.setBackClickListener(controller::onBackClicked)
@@ -76,13 +76,13 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
         with(recyclerView) {
             adapter = GroupiePagingAdapter(
-                    imageSection,
-                    onNeedLoadMoreData = controller::onLoadMoreImages
+                imageSection,
+                onNeedLoadMoreData = controller::onLoadMoreImages
             )
 
             setZoomListener(
-                    onZoomIncreased = { controller.onZoomIncreased() },
-                    onZoomDecreased = { controller.onZoomDecreased() }
+                onZoomIncreased = { controller.onZoomIncreased() },
+                onZoomDecreased = { controller.onZoomDecreased() }
             )
         }
         with(foldersViewPager) {
@@ -104,15 +104,16 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
         renderSpan(state.columnSpan)
     }
 
-    private fun renderFoldersVisible(isVisible: Boolean) = isVisible.render(RENDER_FOLDERS_VISIBLE) {
-        binding.foldersViewPager.isVisible = isVisible
-        /*
-        when (isVisible) {
-            true -> binding.foldersViewPager.animSlideStartIn(DURATION_NORMAL)
-            false -> binding.foldersViewPager.animSlideStartOut(DURATION_NORMAL)
+    private fun renderFoldersVisible(isVisible: Boolean) =
+        isVisible.render(RENDER_FOLDERS_VISIBLE) {
+            binding.foldersViewPager.isVisible = isVisible
+            /*
+            when (isVisible) {
+                true -> binding.foldersViewPager.animSlideStartIn(DURATION_NORMAL)
+                false -> binding.foldersViewPager.animSlideStartOut(DURATION_NORMAL)
+            }
+            */
         }
-        */
-    }
 
     private fun renderSpan(columnSpan: Int) = columnSpan.render(RENDER_SPAN) {
         binding.recyclerView.changeSpan(this)
@@ -124,14 +125,14 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
             imageSection.update(galleryItems, false)
 
             pagingDataState.fold(
-                    recyclerView = binding.recyclerView,
-                    onError = { viewStateDelegate.showError() },
-                    onEmptyData = { viewStateDelegate.showStub() },
-                    onLoading = { viewStateDelegate.showLoading() },
-                    onContent = {
-                        binding.recyclerView.animSlideBottomIn(DURATION_LONG)
-                        viewStateDelegate.showContent()
-                    },
+                recyclerView = binding.recyclerView,
+                onError = { viewStateDelegate.showError() },
+                onEmptyData = { viewStateDelegate.showStub() },
+                onLoading = { viewStateDelegate.showLoading() },
+                onContent = {
+                    binding.recyclerView.animSlideBottomIn(DURATION_LONG)
+                    viewStateDelegate.showContent()
+                },
             )
         }
     }
@@ -139,16 +140,16 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
     private fun renderFolders(folders: Set<Folder>, currentFolder: Folder?) {
         folders.render(RENDER_FOLDERS, RENDER_CURRENT_FOLDER to currentFolder) {
             fold(
-                    onContent = { folders ->
-                        val folderItems = folders.map {
-                            FolderItem(
-                                    folder = it,
-                                    isCurrent = it == currentFolder,
-                                    onClick = controller::onFolderChanged
-                            )
-                        }
-                        folderSection.update(folderItems)
-                    },
+                onContent = { folders ->
+                    val folderItems = folders.map {
+                        FolderItem(
+                            folder = it,
+                            isCurrent = it == currentFolder,
+                            onClick = controller::onFolderChanged
+                        )
+                    }
+                    folderSection.update(folderItems)
+                },
             )
         }
         renderToolbar(currentFolder)
@@ -156,7 +157,8 @@ class GalleryFragment : BaseContentFragment<GalleryState, GalleryViewModel, Gall
 
     private fun renderToolbar(currentFolder: Folder?) {
         if (currentFolder == null) return
-        val description = getString(R.string.gallery_toolbar_description, "${currentFolder.imageCount}")
+        val description =
+            getString(R.string.gallery_toolbar_description, "${currentFolder.imageCount}")
 
         with(binding) {
             toolbar.setTitle(currentFolder.name)

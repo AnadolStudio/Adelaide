@@ -5,13 +5,10 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.ViewStartButtonBinding
 import com.anadolstudio.adelaide.view.function.Imageble
-import com.anadolstudio.adelaide.view.function.Textable
-import com.anadolstudio.core.util.common.RealFormatter
 
 class StartButton @JvmOverloads constructor(
         context: Context,

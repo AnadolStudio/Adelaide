@@ -1,25 +1,23 @@
-package com.anadolstudio.adelaide.base.fragment
+package com.anadolstudio.adelaide.base
 
-import androidx.annotation.LayoutRes
-import androidx.navigation.fragment.findNavController
+import androidx.annotation.IdRes
+import androidx.navigation.findNavController
 import com.anadolstudio.adelaide.base.viewmodel.BaseActionViewModel
 import com.anadolstudio.adelaide.di.SharedComponent
 import com.anadolstudio.adelaide.di.getSharedModule
 import com.anadolstudio.adelaide.navigation.NavigatableDelegate
 import com.anadolstudio.adelaide.navigation.NavigateData
-import com.anadolstudio.ui.Eventable
 import com.anadolstudio.ui.Navigatable
-import com.anadolstudio.ui.fragment.CoreActionFragment
+import com.anadolstudio.ui.activity.CoreActionActivity
 import com.anadolstudio.ui.viewmodel.BaseController
 
-abstract class BaseActionFragment<ViewModel : BaseActionViewModel, Controller : BaseController>(
-        @LayoutRes layoutId: Int
-) : CoreActionFragment<Controller, NavigateData, ViewModel>(layoutId) {
+abstract class BaseActionActivity<
+        ViewModel : BaseActionViewModel,
+        Controller : BaseController>(
+        @IdRes val navigateContainerId: Int,
+) : CoreActionActivity<Controller, NavigateData, ViewModel>() {
 
-    override val eventableDelegate: Eventable get() = Eventable.Delegate(uiEntity = this)
-    override val navigatableDelegate: Navigatable<NavigateData> get() = NavigatableDelegate(findNavController())
-
-    override var isStatusBarByNightMode: Boolean = true
+    override val navigatableDelegate: Navigatable<NavigateData> get() = NavigatableDelegate(findNavController(navigateContainerId))
 
     protected val viewModelFactory by lazy { getSharedComponent().viewModelsFactory() }
 

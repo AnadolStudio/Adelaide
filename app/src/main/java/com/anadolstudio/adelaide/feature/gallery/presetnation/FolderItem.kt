@@ -6,11 +6,11 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.math.MathUtils
 import com.anadolstudio.adelaide.R
-import com.anadolstudio.adelaide.base.adapter.BaseGroupItem
 import com.anadolstudio.adelaide.databinding.ItemFolderBinding
-import com.anadolstudio.core.data_source.media.Folder
-import com.anadolstudio.core.util.common.throttleClick
-import com.anadolstudio.core.view.animation.AnimateUtil
+import com.anadolstudio.ui.adapters.groupie.BaseGroupItem
+import com.anadolstudio.utils.animation.AnimateUtil
+import com.anadolstudio.utils.data_source.media.Folder
+import com.anadolstudio.utils.util.common.throttleClick
 import com.bumptech.glide.Glide
 import com.xwray.groupie.Item
 import kotlin.math.abs
@@ -18,10 +18,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 class FolderItem(
-        private val folder: Folder,
-        private val isCurrent: Boolean,
-        private val onClick: (Folder) -> Unit
-) : BaseGroupItem<ItemFolderBinding>(folder.hashCode().toLong()) {
+    private val folder: Folder,
+    private val isCurrent: Boolean,
+    private val onClick: (Folder) -> Unit
+) : BaseGroupItem<ItemFolderBinding>(folder.hashCode().toLong(), R.layout.item_folder) {
 
     private companion object {
         const val TITLE_CURRENT_ALPHA = 0.5F
@@ -33,8 +33,6 @@ class FolderItem(
     override fun getId(): Long = folder.hashCode().toLong()
 
     override fun initializeViewBinding(view: View): ItemFolderBinding = ItemFolderBinding.bind(view)
-
-    override fun getLayout(): Int = R.layout.item_folder
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(binding: ItemFolderBinding, item: BaseGroupItem<ItemFolderBinding>) = with(binding) {

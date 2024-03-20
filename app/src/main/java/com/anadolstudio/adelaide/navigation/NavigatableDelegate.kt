@@ -1,12 +1,12 @@
 package com.anadolstudio.adelaide.navigation
 
 import androidx.navigation.NavController
-import com.anadolstudio.core.navigation.Add
-import com.anadolstudio.core.navigation.Back
-import com.anadolstudio.core.navigation.BackTo
-import com.anadolstudio.core.navigation.NavigationEvent
-import com.anadolstudio.core.navigation.Replace
-import com.anadolstudio.core.presentation.Navigatable
+import com.anadolstudio.ui.Navigatable
+import com.anadolstudio.ui.navigation.Add
+import com.anadolstudio.ui.navigation.Back
+import com.anadolstudio.ui.navigation.BackTo
+import com.anadolstudio.ui.navigation.NavigationEvent
+import com.anadolstudio.ui.navigation.Replace
 
 class NavigatableDelegate(private val navController: NavController) : Navigatable<NavigateData> {
 

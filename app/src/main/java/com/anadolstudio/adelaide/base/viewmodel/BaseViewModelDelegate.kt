@@ -1,14 +1,15 @@
 package com.anadolstudio.adelaide.base.viewmodel
 
-import com.anadolstudio.core.viewmodel.livedata.SingleEvent
-import com.anadolstudio.core.viewmodel.livedata.SingleLiveEvent
-import com.anadolstudio.core.viewmodel.livedata.onNext
-import com.anadolstudio.core.presentation.event.SingleMessageSnack
+import com.anadolstudio.ui.SingleMessageSnack
+import com.anadolstudio.ui.viewmodel.livedata.SingleEvent
+import com.anadolstudio.ui.viewmodel.livedata.SingleLiveEvent
+import com.anadolstudio.ui.viewmodel.livedata.onNext
 
 interface BaseViewModelDelegate {
-    fun showTodo()
+    fun showTodo(text: String? = null)
 
-    class Delegate(private val singleLiveEvent: SingleLiveEvent<SingleEvent>) : BaseViewModelDelegate {
+    class Delegate(private val singleLiveEvent: SingleLiveEvent<SingleEvent>) :
+        BaseViewModelDelegate {
 
         private val todoMessages = listOf(
                 "Извините, этот функционал пока не реализован \uD83D\uDE43",
@@ -16,8 +17,9 @@ interface BaseViewModelDelegate {
                 "Эта функция будет доступна в ближайшее время \uD83C\uDFC3",
         )
 
-        override fun showTodo() {
-            singleLiveEvent.onNext(SingleMessageSnack.Short(todoMessages.random()))
+        override fun showTodo(text: String?) {
+            val message = text ?: todoMessages.random()
+            singleLiveEvent.onNext(SingleMessageSnack.Short(message))
         }
     }
 

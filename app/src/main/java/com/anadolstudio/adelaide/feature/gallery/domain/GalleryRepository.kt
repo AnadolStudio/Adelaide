@@ -1,6 +1,6 @@
 package com.anadolstudio.adelaide.feature.gallery.domain
 
-import com.anadolstudio.core.data_source.media.Folder
+import com.anadolstudio.utils.data_source.media.Folder
 import io.reactivex.Single
 
 interface GalleryRepository {

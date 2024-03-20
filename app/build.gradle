@@ -58,7 +58,6 @@ android {
 
     buildFeatures {
         viewBinding true
-        compose true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -67,9 +66,6 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
     lintOptions {
         abortOnError false
     }
@@ -77,7 +73,10 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':core:android-base')
+    implementation project(path: ':core:utils')
+    implementation project(path: ':core:ui')
+    implementation project(path: ':core:paginator')
+    implementation project(path: ':core:view')
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
