@@ -22,7 +22,7 @@ class SingleActivity : FragmentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            LicardEntryPoint()
+            AdelaideEntryPoint()
         }
     }
 
@@ -33,7 +33,7 @@ class SingleActivity : FragmentActivity() {
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
-internal fun LicardEntryPoint() {
+internal fun AdelaideEntryPoint() {
     val context = LocalContext.current
 
     val navigator = rememberLicardNavigator()

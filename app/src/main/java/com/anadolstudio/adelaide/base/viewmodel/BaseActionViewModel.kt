@@ -5,8 +5,9 @@ import com.anadolstudio.ui.viewmodel.CoreActionViewModel
 
 abstract class BaseActionViewModel : CoreActionViewModel<NavigateData>(), BaseViewModelDelegate {
 
-    protected val baseViewModelDelegate: BaseViewModelDelegate = BaseViewModelDelegate.Delegate(_singleEvent)
+    protected val baseViewModelDelegate: BaseViewModelDelegate =
+        BaseViewModelDelegate.Delegate(_singleEvent)
 
-    override fun showTodo() = baseViewModelDelegate.showTodo()
+    override fun showTodo(text: String?) = baseViewModelDelegate.showTodo(text)
 
 }

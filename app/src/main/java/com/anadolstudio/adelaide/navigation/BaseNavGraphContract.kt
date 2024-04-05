@@ -4,6 +4,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavOptionsBuilder
 import com.anadolstudio.adelaide.event.EventsDispatcher
 import com.anadolstudio.adelaide.navigation.placeholder
+import com.anadolstudio.adelaide.navigation.withQueryParameter
 
 internal abstract class BaseNavGraphContract {
 

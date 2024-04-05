@@ -7,7 +7,7 @@ internal object DI {
 
     private var application: Application? = null
 
-    private val appComponent: AppComponent by lazy {
+    val appComponent: AppComponent by lazy {
         val application = checkNotNull(application) { "App is null" }
         DaggerAppComponent.factory().create(application)
     }

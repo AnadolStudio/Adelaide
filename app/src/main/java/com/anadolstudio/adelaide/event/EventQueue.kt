@@ -25,6 +25,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.anadolstudio.adelaide.feature.main.LicardNavigator
 import com.anadolstudio.compose.ui.view.snackbar.SnackbarHostState
 import com.anadolstudio.compose.ui.view.snackbar.SnackbarStyle
+import com.anadolstudio.compose.ui.view.text.Text
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
