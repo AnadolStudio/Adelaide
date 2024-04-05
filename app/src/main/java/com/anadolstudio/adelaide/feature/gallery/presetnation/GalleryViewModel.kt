@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.viewmodel.BaseContentViewModel
-import com.anadolstudio.adelaide.feature.common.domain.NightModeRepository
 import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
 import com.anadolstudio.paginator.PaginatorImpl
 import com.anadolstudio.paginator.PagingDataState
@@ -23,7 +22,6 @@ import kotlin.math.min
 
 class GalleryViewModel @Inject constructor(
     private val galleryRepository: GalleryRepository,
-    private val nightModeRepository: NightModeRepository,
     private val context: Context,
 ) : BaseContentViewModel<GalleryState>(
     GalleryState(
@@ -142,10 +140,7 @@ class GalleryViewModel @Inject constructor(
 
     override fun onNavigateToSettingsClicked() = context.startAppSettingsActivity()
 
-    override fun onBackClicked() {
-        nightModeRepository.toggleNightMode()
-    }
-//    override fun onBackClicked() = navigateUp()
+    override fun onBackClicked() = navigateUp()
 
     override fun onFolderChanged(folder: Folder) {
         if (folder == state.folderState.currentFolder) return

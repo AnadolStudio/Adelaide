@@ -4,14 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/galleryFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/galleryFragment"
-        android:name="com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryFragment"
-        tools:layout="@layout/fragment_gallery">
+        android:id="@+id/homeFragment"
+        android:name="com.anadolstudio.adelaide.feature.home.presentation.HomeFragment"
+        tools:layout="@layout/fragment_home">
 
     </fragment>
-
 
 </navigation>

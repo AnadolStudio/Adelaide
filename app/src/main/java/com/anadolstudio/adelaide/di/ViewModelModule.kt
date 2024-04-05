@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.anadolstudio.adelaide.di.viewmodel.ViewModelFactory
 import com.anadolstudio.adelaide.di.viewmodel.ViewModelKey
 import com.anadolstudio.adelaide.feature.gallery.presetnation.GalleryViewModel
+import com.anadolstudio.adelaide.feature.home.presentation.HomeViewModel
 import com.anadolstudio.adelaide.feature.start.single.SingleViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,6 +25,12 @@ interface ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(GalleryViewModel::class)
-    fun bindMainViewModel(viewModel: GalleryViewModel): ViewModel
+    fun bindGalleryViewModel(viewModel: GalleryViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeViewModel::class)
+    fun bindHomeViewModel(viewModel: HomeViewModel): ViewModel
 
 }
