@@ -6,5 +6,4 @@ sealed class GalleryEvent : SingleCustomEvent() {
 
     object RequestPermissionEvent : GalleryEvent()
 
-    class DetailPhotoEvent(val path: String) : GalleryEvent()
 }

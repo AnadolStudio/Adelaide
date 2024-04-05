@@ -1,17 +1,20 @@
 package com.anadolstudio.adelaide.di
 
-import android.content.Context
+import android.app.Application
+import com.anadolstudio.adelaide.di.viewmodel.ViewModelsInjector
 
-object DI {
+internal object DI {
 
-    lateinit var appComponent: AppComponent
+    private var application: Application? = null
 
-    fun init(context: Context) {
-        appComponent = DaggerAppComponent.builder()
-                .appContext(context)
-                .build()
+    private val appComponent: AppComponent by lazy {
+        val application = checkNotNull(application) { "App is null" }
+        DaggerAppComponent.factory().create(application)
     }
 
-    fun getComponent(): AppComponent = appComponent
+    fun init(application: Application) {
+        this.application = application
+    }
 
+    val viewModelsInjector: ViewModelsInjector get() = appComponent.viewModelsInjector
 }

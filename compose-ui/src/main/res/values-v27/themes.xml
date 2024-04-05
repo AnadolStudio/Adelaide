@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Theme.App" parent="Base.V27.Theme.App"/>
+
+    <style name="Base.V27.Theme.App" parent="Base.V23.Theme.App">
+        <!--System UI-->
+        <item name="android:navigationBarColor">@color/app_system_ui_scrim_light</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>

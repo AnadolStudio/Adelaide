@@ -1,15 +1,12 @@
 package com.anadolstudio.adelaide.feature.gallery.domain
 
+import androidx.paging.PagingData
 import com.anadolstudio.utils.data_source.media.Folder
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface GalleryRepository {
 
-    fun loadImages(
-            pageIndex: Int,
-            pageSize: Int,
-            folder: String?
-    ): Single<List<String>>
+    suspend fun loadImages(pageSize: Int, folder: String?): Flow<PagingData<String>>
 
-    fun loadFolders(): Single<Set<Folder>>
+    suspend fun loadFolders(): Set<Folder>
 }

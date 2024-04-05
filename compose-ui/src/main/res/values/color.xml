@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Цвета в этом файле используются только для базовой темизации.
+    Для палитры приложения стоит использовать отдельный object-->
+
+    <color name="app_splash_screen_background">#ffffff</color>
+    <color name="app_system_ui_scrim_light">#B3FFFFFF</color>
+    <color name="app_system_ui_scrim_dark">#B3000000</color>
+
+</resources>

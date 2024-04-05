@@ -1,24 +1,24 @@
 package com.anadolstudio.adelaide.feature.gallery.data
 
+import androidx.paging.PagingData
 import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
+import com.anadolstudio.adelaide.util.pagingFlow
 import com.anadolstudio.utils.data_source.media.Folder
 import com.anadolstudio.utils.data_source.media.MediaDataStorage
-import com.anadolstudio.utils.util.rx.singleFrom
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GalleryRepositoryImpl @Inject constructor(private val mediaDataStorage: MediaDataStorage) : GalleryRepository {
+class GalleryRepositoryImpl @Inject constructor(private val mediaDataStorage: MediaDataStorage) :
+    GalleryRepository {
 
-    override fun loadImages(
-            pageIndex: Int,
-            pageSize: Int,
-            folder: String?
-    ): Single<List<String>> = singleFrom {
-        mediaDataStorage.loadImages(pageIndex = pageIndex, pageSize = pageSize, folder = folder)
-    }
+    override suspend fun loadImages(
+        pageSize: Int,
+        folder: String?
+    ): Flow<PagingData<String>> =
+        pagingFlow(pageSize) { pageIndex: Int, _: Int ->
+            mediaDataStorage.loadImages(pageIndex = pageIndex, pageSize = pageSize, folder = folder)
+        }
 
-    override fun loadFolders(): Single<Set<Folder>> = singleFrom {
-        mediaDataStorage.loadFolders()
-    }
+    override suspend fun loadFolders(): Set<Folder> = mediaDataStorage.loadFolders()
 
 }

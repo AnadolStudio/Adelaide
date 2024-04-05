@@ -2,20 +2,21 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 
 import android.Manifest
 import android.content.Context
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.viewmodel.BaseContentViewModel
+import com.anadolstudio.adelaide.base.viewmodel.navigateUp
 import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
-import com.anadolstudio.paginator.PaginatorImpl
-import com.anadolstudio.paginator.PagingDataState
-import com.anadolstudio.paginator.PagingViewController
-import com.anadolstudio.ui.viewmodel.states.LoadingDataContext
-import com.anadolstudio.ui.viewmodel.states.smartSubscribeWithUpdatingState
+import com.anadolstudio.adelaide.lce.lceFlow
+import com.anadolstudio.adelaide.lce.mapLceContent
+import com.anadolstudio.adelaide.lce.onEachContent
 import com.anadolstudio.utils.data_source.media.Folder
 import com.anadolstudio.utils.util.extentions.hasAllPermissions
-import com.anadolstudio.utils.util.extentions.hasAnyPermissions
 import com.anadolstudio.utils.util.extentions.startAppSettingsActivity
-import com.anadolstudio.utils.util.rx.schedulersIoToMain
-import io.reactivex.Single
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -26,12 +27,8 @@ class GalleryViewModel @Inject constructor(
 ) : BaseContentViewModel<GalleryState>(
     GalleryState(
         columnSpan = DEFAULT_COLUM_COUNT,
-        pagingDataState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
-            true -> PagingDataState.Loading()
-            false -> PagingDataState.Empty()
-        },
     )
-), GalleryController{
+), GalleryController {
 
     companion object {
         private const val PAGE_SIZE = 66
@@ -40,6 +37,7 @@ class GalleryViewModel @Inject constructor(
         private const val MIN_COLUM_COUNT = 2
         private const val MIN_FOLDER_COUNT = 1
 
+        const val EDIT_TYPE_KEY = "editType"
         const val DEFAULT_COLUM_COUNT = 3
 
         val STORAGE_PERMISSION = arrayOf(
@@ -48,32 +46,11 @@ class GalleryViewModel @Inject constructor(
         )
     }
 
-    private val requestFactory: ((Int) -> Single<List<String>>) = { pageIndex ->
-        galleryRepository
-            .loadImages(
-                pageIndex = pageIndex,
-                pageSize = PAGE_SIZE,
-                folder = state.folderState.currentFolder?.value,
-            )
-            .schedulersIoToMain()
-    }
-
-    private val pagingViewControllerDelegate = PagingViewController.Delegate(
-        provideCurrentData = { state.imageState.imageList },
-        provideCurrentPagingData = { state.imageState.pagingDataState },
-        updateStateAction = { updateState { copy(imageState = imageState.copy(pagingDataState = it)) } },
-        updateData = { updateState { copy(imageState = imageState.copy(imageList = it)) } }
-    )
-
-    private val paginator = PaginatorImpl(
-        requestFactory = requestFactory,
-        viewController = pagingViewControllerDelegate,
-        firstPageNumber = FIRST_PAGE_NUMBER
-    )
-
     init {
         checkPermissionAndLoad()
     }
+
+    val galleryFlow = MutableStateFlow<PagingData<String>>(PagingData.empty())
 
     private fun checkPermissionAndLoad() {
         if (context.hasAllPermissions(STORAGE_PERMISSION)) {
@@ -84,69 +61,50 @@ class GalleryViewModel @Inject constructor(
     }
 
     private fun initLoad() {
-        loadFolders(LoadingDataContext.INIT_LOADING)
+        loadFolders()
         loadImage()
     }
 
-    private fun loadFolders(loadingDataContext: LoadingDataContext) {
-        galleryRepository.loadFolders()
-            .map(this::mapFolders)
-            .smartSubscribeWithUpdatingState(
-                loadingContext = loadingDataContext,
-                previousState = state.folderState.progressState,
-                onNewState = { updateState { copy(folderState = folderState.copy(progressState = it)) } },
-                onSuccess = { folders ->
-                    val currentFolder =
-                        folders.firstOrNull { it == state.folderState.currentFolder }
-                            ?: folders.firstOrNull()
+    private fun loadFolders() {
+        lceFlow { emit(galleryRepository.loadFolders()) }
+            .mapLceContent { folders ->
+                val folderList = folders.filter { it.imageCount > 0 }.toMutableList()
 
-                    updateState {
-                        copy(
-                            folderState = folderState.copy(
-                                currentFolder = currentFolder,
-                                folders = folders
-                            )
-                        )
-                    }
-                },
-                onError = this::showError,
-            )
-            .disposeOnCleared()
+                if (folderList.size > MIN_FOLDER_COUNT) {
+                    val totalCount = folderList.sumOf { it.imageCount }
+                    val defaultFolder = folderList.first().copy(
+                        name = context.getString(R.string.gallery_toolbar_title),
+                        value = null,
+                        imageCount = totalCount
+                    )
+                    folderList.add(0, defaultFolder)
+                }
+
+                return@mapLceContent folderList.toSet()
+            }
+            .onEachContent { folders ->
+                updateState { copy(folderState = folderState.copy(folders = folders)) }
+            }
+            .onEach { updateState { copy(folderState = folderState.copy(foldersLce = it)) } }
+            .launchIn(viewModelScope)
     }
 
-    private fun mapFolders(folders: Set<Folder>): Set<Folder> {
-        val folderList = folders.filter { it.imageCount > 0 }.toMutableList()
-
-        if (folderList.size > MIN_FOLDER_COUNT) {
-            val totalCount = folderList.sumOf { it.imageCount }
-            val defaultFolder = folderList.first().copy(
-                name = context.getString(R.string.gallery_toolbar_title),
-                value = null,
-                imageCount = totalCount
-            )
-            folderList.add(0, defaultFolder)
-        }
-        return folderList.toSet()
-    }
-
-    private fun loadImage() = paginator.restart()
+    private fun loadImage() = showTodo()
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(imageUri: String) =
-        showEvent(GalleryEvent.DetailPhotoEvent(imageUri))
+    override fun onImageSelected(imageUri: String) = showTodo()
 
-    override fun onLoadMoreImages() = paginator.loadNewPage()
+    override fun onLoadMoreImages() = showTodo()
 
     override fun onNavigateToSettingsClicked() = context.startAppSettingsActivity()
 
-    override fun onBackClicked() = navigateUp()
+    override fun onBackClicked() = _navigationEvent.navigateUp()
 
     override fun onFolderChanged(folder: Folder) {
         if (folder == state.folderState.currentFolder) return
 
         updateState { copy(folderState = folderState.copy(currentFolder = folder)) }
-        paginator.pullToRefresh()
     }
 
     override fun onZoomIncreased() =

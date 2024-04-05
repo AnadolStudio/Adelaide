@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App" parent="Base.Theme.App"/>
+
+    <style name="Base.Theme.App" parent="Base.V23.Theme.App" />
+
+    <style name="Base.V23.Theme.App" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--System UI-->
+        <item name="android:statusBarColor">@color/app_system_ui_scrim_light</item>
+        <item name="android:navigationBarColor">@color/app_system_ui_scrim_dark</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+
+</resources>

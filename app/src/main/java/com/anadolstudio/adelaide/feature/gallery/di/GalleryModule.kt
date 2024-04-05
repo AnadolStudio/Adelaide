@@ -7,7 +7,7 @@ import com.anadolstudio.utils.data_source.media.MediaDataStorage
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [GalleryViewModelModule::class])
 class GalleryModule {
 
     @Provides
@@ -15,5 +15,5 @@ class GalleryModule {
 
     @Provides
     fun provideGalleryRepository(mediaDataStorage: MediaDataStorage): GalleryRepository =
-            GalleryRepositoryImpl(mediaDataStorage)
+        GalleryRepositoryImpl(mediaDataStorage)
 }

@@ -37,22 +37,16 @@
         </provider>
 
         <activity
-            android:name=".feature.start.SplashActivity"
+            android:name=".feature.main.SingleActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashActivity">
+            android:theme="@style/Theme.Adelaide"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".feature.start.single.SingleActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Adelaide"
-            android:screenOrientation="portrait" />
 
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
