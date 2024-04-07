@@ -17,12 +17,12 @@ import com.anadolstudio.compose.ui.view.button.TextButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun calendarColors() = DatePickerDefaults.colors(
-    containerColor = AdelaideTheme.colors.calendarBackground,
-    todayDateBorderColor = AdelaideTheme.colors.buttonPrimary,
-    selectedDayContainerColor = AdelaideTheme.colors.buttonPrimary,
-    todayContentColor = AdelaideTheme.colors.buttonPrimary,
-    currentYearContentColor = AdelaideTheme.colors.buttonPrimary,
-    selectedYearContainerColor = AdelaideTheme.colors.buttonPrimary,
+    containerColor = AdelaideTheme.colors.template,
+    todayDateBorderColor = AdelaideTheme.colors.template,
+    selectedDayContainerColor = AdelaideTheme.colors.template,
+    todayContentColor = AdelaideTheme.colors.template,
+    currentYearContentColor = AdelaideTheme.colors.template,
+    selectedYearContainerColor = AdelaideTheme.colors.template,
     dayContentColor = AdelaideTheme.colors.textPrimary,
     dayInSelectionRangeContentColor = AdelaideTheme.colors.textPrimary,
     yearContentColor = AdelaideTheme.colors.textPrimary,
@@ -30,8 +30,8 @@ private fun calendarColors() = DatePickerDefaults.colors(
     titleContentColor = AdelaideTheme.colors.textPrimary,
     subheadContentColor = AdelaideTheme.colors.textPrimary,
     headlineContentColor = AdelaideTheme.colors.textPrimary,
-    selectedYearContentColor = AdelaideTheme.colors.textTertiary,
-    selectedDayContentColor = AdelaideTheme.colors.textTertiary,
+    selectedYearContentColor = AdelaideTheme.colors.template,
+    selectedDayContentColor = AdelaideTheme.colors.template,
     dayInSelectionRangeContainerColor = AdelaideTheme.colors.textPrimary,
 )
 

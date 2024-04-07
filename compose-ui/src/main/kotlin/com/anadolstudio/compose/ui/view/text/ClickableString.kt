@@ -32,7 +32,7 @@ internal fun AnnotatedString.Builder.applyClickableStyle(
     annotation: String,
 ) {
     addStyle(
-        style = SpanStyle(color = AdelaideTheme.colors.buttonPrimary),
+        style = SpanStyle(color = AdelaideTheme.colors.template),
         start = startIndex,
         end = endIndex,
     )

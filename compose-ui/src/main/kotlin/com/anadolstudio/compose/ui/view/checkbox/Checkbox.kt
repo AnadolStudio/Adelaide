@@ -22,10 +22,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.text.Text
 
@@ -34,8 +34,8 @@ fun Checkbox(
     isEnabled: Boolean,
     text: String,
     onClick: () -> Unit,
-    isEnabledIcon: Painter = LicardIcon.SquareCheckboxEnabled,
-    isDisabledIcon: Painter = LicardIcon.SquareCheckboxDisabled,
+    isEnabledIcon: Painter = Icons.SquareCheckboxEnabled,
+    isDisabledIcon: Painter = Icons.SquareCheckboxDisabled,
 ) {
     BaseCheckbox(
         isEnabled = isEnabled,
@@ -56,8 +56,8 @@ fun Checkbox(
     isEnabled: Boolean,
     text: AnnotatedString,
     onClick: () -> Unit,
-    isEnabledIcon: Painter = LicardIcon.SquareCheckboxEnabled,
-    isDisabledIcon: Painter = LicardIcon.SquareCheckboxDisabled,
+    isEnabledIcon: Painter = Icons.SquareCheckboxEnabled,
+    isDisabledIcon: Painter = Icons.SquareCheckboxDisabled,
 ) {
     BaseCheckbox(
         isEnabled = isEnabled,
@@ -96,7 +96,7 @@ private fun BaseCheckbox(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .padding(vertical = 12.dp, horizontal = LicardDimension.layoutHorizontalMargin)
+                .padding(vertical = 12.dp, horizontal = Dimension.mainMargin)
         ) {
             val icon = if (isEnabled) isEnabledIcon else isDisabledIcon
 

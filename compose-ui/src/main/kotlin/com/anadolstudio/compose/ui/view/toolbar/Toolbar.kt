@@ -29,11 +29,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.animation.AnimatedVisibilityNullableValue
 import com.anadolstudio.compose.ui.animation.IconAnimatedVisibility
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.modifier.surface
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.button.LicardButtonColors
 import com.anadolstudio.compose.ui.view.search.Search
@@ -58,7 +58,7 @@ fun Toolbar(
     navigationIcon: NavigationIcon?,
     onNavigationClick: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = AdelaideTheme.colors.backgroundPrimary,
+    color: Color = AdelaideTheme.colors.colorPrimary,
     title: String = "",
     enableShadow: Boolean = false
 ) {
@@ -75,7 +75,7 @@ fun Toolbar(
 
             Column(
                 Modifier
-                    .padding(horizontal = LicardDimension.layoutHorizontalMargin)
+                    .padding(horizontal = Dimension.mainMargin)
                     .weight(1f),
             ) {
                 Text(text = title, style = AdelaideTypography.textMedium18)
@@ -90,7 +90,7 @@ fun Toolbar(
     navigationIcon: NavigationIcon?,
     onNavigationClick: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = AdelaideTheme.colors.backgroundPrimary,
+    color: Color = AdelaideTheme.colors.colorPrimary,
     actions: @Composable RowScope.() -> Unit = {},
     contentBelowToolbar: @Composable (ColumnScope.() -> Unit)? = null,
     title: String = "",
@@ -112,7 +112,7 @@ fun Toolbar(
 
                 Column(
                     Modifier
-                        .padding(horizontal = LicardDimension.layoutHorizontalMargin)
+                        .padding(horizontal = Dimension.mainMargin)
                         .weight(1f),
                 ) {
                     Text(text = title, style = AdelaideTypography.textMedium18)
@@ -150,7 +150,7 @@ private fun NavigationIcon(
 @Composable
 fun Toolbar(
     modifier: Modifier = Modifier,
-    color: Color = AdelaideTheme.colors.backgroundPrimary,
+    color: Color = AdelaideTheme.colors.colorPrimary,
     contentPadding: PaddingValues = PaddingValues(),
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -167,19 +167,19 @@ fun Toolbar(
 }
 
 val AppBarHeight: Dp = 56.dp
-private val IconCornerPadding = LicardDimension.toolbarHorizontalMargin - (LicardDimension.minTouchSize - 32.dp) / 2
+private val IconCornerPadding = Dimension.toolbarHorizontalMargin - (Dimension.minTouchSize - 32.dp) / 2
 
 enum class NavigationIcon(
     private val painter: @Composable () -> Painter,
     val innerPadding: Dp,
 ) {
     Back(
-        painter = { LicardIcon.Back },
+        painter = { Icons.Back },
         innerPadding = 8.dp,
     ),
 
     Close(
-        painter = { LicardIcon.Close },
+        painter = { Icons.Close },
         innerPadding = 8.dp,
     );
 
@@ -221,7 +221,7 @@ private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode:
                 actions = {
                     IconButton(
                         onClick = { },
-                        content = { Icon(LicardIcon.Phone, contentDescription = null) }
+                        content = { Icon(Icons.VerticalMore, contentDescription = null) }
                     )
                 }
             )

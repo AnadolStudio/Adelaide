@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import com.anadolstudio.adelaide.event.EventsDispatcher
 import com.anadolstudio.adelaide.event.navigateTo
-import com.anadolstudio.adelaide.feature.main.LicardNavigator
+import com.anadolstudio.adelaide.feature.main.Navigator
 import com.licard.b2b.app.library.navigation.BaseNavGraphContract
 import androidx.navigation.createGraph as originalCreateGraph
 
@@ -13,7 +13,7 @@ internal abstract class RootNavGraphContract : BaseNavGraphContract() {
 
     protected abstract val startDestination: String
 
-    protected fun LicardNavigator.createGraph(builder: NavGraphBuilder.() -> Unit): NavGraph {
+    protected fun Navigator.createGraph(builder: NavGraphBuilder.() -> Unit): NavGraph {
         return originalCreateGraph(startDestination = startDestination, builder = builder)
     }
 
@@ -23,7 +23,7 @@ internal abstract class RootNavGraphContract : BaseNavGraphContract() {
         DeprecationLevel.ERROR,
     )
     @Suppress("UNUSED_PARAMETER", "unused")
-    protected inline fun LicardNavigator.createGraph(
+    protected inline fun Navigator.createGraph(
         startDestination: String,
         route: String? = null,
         builder: NavGraphBuilder.() -> Unit,

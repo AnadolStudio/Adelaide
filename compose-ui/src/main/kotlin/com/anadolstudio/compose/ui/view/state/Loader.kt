@@ -24,7 +24,7 @@ import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 @Composable
 fun Loader(
     modifier: Modifier = Modifier,
-    color: Color = AdelaideTheme.colors.buttonPrimary,
+    color: Color = AdelaideTheme.colors.template,
     strokeWidth: Dp = 4.dp,
 ) {
     CircularProgressIndicator(
@@ -40,7 +40,7 @@ fun LoaderLayout(
     modifier: Modifier = Modifier,
     showLoader: Boolean = false,
     backgroundColor: Color = Color.Black.copy(alpha = 0.4f),
-    loaderBackgroundColor: Color = AdelaideTheme.colors.backgroundPrimary
+    loaderBackgroundColor: Color = AdelaideTheme.colors.colorPrimary
 ) {
     AnimatedVisibility(
         visible = showLoader,

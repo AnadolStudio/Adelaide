@@ -115,6 +115,7 @@ private fun PinChar(
             targetState = value,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             contentAlignment = Alignment.Center,
+            label = "",
         ) { targetValue ->
             val maskedValue = PasswordVisualTransformation().filter(AnnotatedString(targetValue))
             Text(
@@ -125,7 +126,7 @@ private fun PinChar(
         }
         VSpacer(12.dp)
         Divider(
-            color = AdelaideTheme.colors.divider,
+            color = AdelaideTheme.colors.colorAccent,
             thickness = 1.dp
         )
     }
@@ -186,7 +187,8 @@ fun PinButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val color by animateColorAsState(
-        if (isPressed) AdelaideTheme.colors.textSecondary else AdelaideTheme.colors.textPrimary
+        if (isPressed) AdelaideTheme.colors.textSecondary else AdelaideTheme.colors.textPrimary,
+        label = ""
     )
     Box(
         contentAlignment = Alignment.Center,

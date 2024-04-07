@@ -39,10 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.animation.IconAnimatedVisibility
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.Shapes
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.theme.tiny
@@ -66,14 +66,14 @@ fun Search(
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier
-                .background(AdelaideTheme.colors.backgroundSecondary, shape = Shapes.tiny)
+                .background(AdelaideTheme.colors.colorSecondary, shape = Shapes.tiny)
                 .border(BorderStroke(width = 1.dp, color = borderColor), shape = Shapes.tiny)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier.padding(start = 16.dp),
-                painter = LicardIcon.Search,
+                painter = Icons.Search,
                 contentDescription = null
             )
             SearchTextField(
@@ -174,11 +174,11 @@ private fun SearchFieldDecorationBox(
             IconAnimatedVisibility(visible = textFieldValue.text.isNotEmpty()) {
                 IconButton(
                     onClick = onValueResetClick,
-                    modifier = Modifier.size(LicardDimension.minTouchSize)
+                    modifier = Modifier.size(Dimension.minTouchSize)
                 ) {
                     Icon(
                         modifier = Modifier.size(10.dp),
-                        painter = LicardIcon.Close,
+                        painter = Icons.Close,
                         contentDescription = null,
                     )
                 }
@@ -204,7 +204,7 @@ private fun ColumnScope.ErrorHint(
             Text(
                 text = errorText,
                 style = AdelaideTypography.captionBook14,
-                color = AdelaideTheme.colors.error,
+                color = AdelaideTheme.colors.template,
             )
         }
     }
@@ -216,7 +216,7 @@ private fun getBorderlineColor(
     enabled: Boolean,
 ): Color {
     return when {
-        error -> AdelaideTheme.colors.error
+        error -> AdelaideTheme.colors.template
         enabled -> Color.Transparent
         else -> Color.Transparent
     }
@@ -227,12 +227,12 @@ private fun createSearchTextFieldColors(): TextFieldColors = TextFieldDefaults.t
     textColor = AdelaideTheme.colors.textPrimary,
     disabledTextColor = AdelaideTheme.colors.textPrimary,
     backgroundColor = Color.Transparent,
-    cursorColor = AdelaideTheme.colors.buttonPrimary,
+    cursorColor = AdelaideTheme.colors.template,
     trailingIconColor = AdelaideTheme.colors.textPrimary,
-    disabledTrailingIconColor = AdelaideTheme.colors.buttonPrimaryDisabled,
+    disabledTrailingIconColor = AdelaideTheme.colors.template,
     errorTrailingIconColor = AdelaideTheme.colors.textPrimary,
     placeholderColor = AdelaideTheme.colors.textSecondary,
-    disabledPlaceholderColor = AdelaideTheme.colors.textPrimaryDisabled,
+    disabledPlaceholderColor = AdelaideTheme.colors.template,
 )
 
 @Preview

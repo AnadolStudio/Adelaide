@@ -2,5 +2,8 @@
 <resources>
 
     <string name="app_name" translatable="false">[DEBUG] Adelaide</string>
+    <string name="common_media" translatable="false">Медиа</string>
+    <string name="common_albums" translatable="false">Альбомы</string>
+    <string name="common_news" translatable="false">Новости</string>
 
 </resources>

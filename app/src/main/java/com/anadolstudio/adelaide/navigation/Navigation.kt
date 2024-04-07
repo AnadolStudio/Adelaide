@@ -9,7 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavOptions
-import com.anadolstudio.adelaide.feature.main.LicardNavigator
+import com.anadolstudio.adelaide.feature.main.Navigator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -18,7 +18,7 @@ import timber.log.Timber
  * Tries to navigate using this [navigator].
  * Returns `true` if navigated successfully, otherwise `false`.
  */
-internal fun LicardNavigator.navigateSafely(route: String, navOptions: NavOptions): Boolean {
+internal fun Navigator.navigateSafely(route: String, navOptions: NavOptions): Boolean {
     return try {
         navigate(route, navOptions)
         true
@@ -29,11 +29,11 @@ internal fun LicardNavigator.navigateSafely(route: String, navOptions: NavOption
 }
 
 @Composable
-internal fun LicardNavigator.previousBackStackEntryAsState(): State<NavBackStackEntry?> {
+internal fun Navigator.previousBackStackEntryAsState(): State<NavBackStackEntry?> {
     return previousBackStackEntryFlow.collectAsState(null)
 }
 
-internal val LicardNavigator.previousBackStackEntryFlow: Flow<NavBackStackEntry?>
+internal val Navigator.previousBackStackEntryFlow: Flow<NavBackStackEntry?>
     get() = currentBackStackEntryFlow.map { previousBackStackEntry }
 
 internal fun ActivityResultLauncher<Intent>.launchAppSettings(packageName: String) {

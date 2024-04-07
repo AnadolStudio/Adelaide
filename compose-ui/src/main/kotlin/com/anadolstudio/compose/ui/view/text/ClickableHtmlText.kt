@@ -13,7 +13,7 @@ fun buildHtmlWithClickable(
     clickablePart: String,
     annotation: String = "",
     isUnderlined: Boolean = false,
-    colorLink: Color = AdelaideTheme.colors.textQuaternary,
+    colorLink: Color = AdelaideTheme.colors.template,
 ): AnnotatedString {
     val spannedText = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
     val startIndex = spannedText.toString().indexOf(clickablePart)

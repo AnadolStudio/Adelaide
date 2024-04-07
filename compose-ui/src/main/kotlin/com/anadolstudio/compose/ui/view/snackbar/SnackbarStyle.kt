@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import kotlinx.coroutines.CancellableContinuation
 import kotlin.coroutines.resume
@@ -28,39 +28,22 @@ interface SnackbarStyle {
 
     object Default : SnackbarStyle {
         override val icon: Painter
-            @Composable get() = LicardIcon.Check
+            @Composable get() = Icons.Check
         override val backgroundColor: Color
-            @Composable get() = AdelaideTheme.colors.success
+            @Composable get() = AdelaideTheme.colors.template
         override val contentColor: Color
-            @Composable get() = AdelaideTheme.colors.textTertiary
+            @Composable get() = AdelaideTheme.colors.template
     }
 
     object Error : SnackbarStyle {
         override val icon: Painter
-            @Composable get() = LicardIcon.Warning
+            @Composable get() = Icons.Warning
         override val backgroundColor: Color
-            @Composable get() = AdelaideTheme.colors.error
+            @Composable get() = AdelaideTheme.colors.template
         override val contentColor: Color
-            @Composable get() = AdelaideTheme.colors.textTertiary
+            @Composable get() = AdelaideTheme.colors.template
     }
 
-    object AddToFavorites : SnackbarStyle {
-        override val icon: Painter
-            @Composable get() = LicardIcon.Heart
-        override val backgroundColor: Color
-            @Composable get() = AdelaideTheme.colors.success
-        override val contentColor: Color
-            @Composable get() = AdelaideTheme.colors.textTertiary
-    }
-
-    object DeleteFromFavorites : SnackbarStyle {
-        override val icon: Painter
-            @Composable get() = LicardIcon.Heart
-        override val backgroundColor: Color
-            @Composable get() = AdelaideTheme.colors.error
-        override val contentColor: Color
-            @Composable get() = AdelaideTheme.colors.textTertiary
-    }
 }
 
 @Suppress("ForbiddenMethodCall")

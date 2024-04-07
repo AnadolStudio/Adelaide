@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import com.anadolstudio.adelaide.di.DI
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class SingleActivity : FragmentActivity() {
 
@@ -36,8 +37,13 @@ class SingleActivity : FragmentActivity() {
 internal fun AdelaideEntryPoint() {
     val context = LocalContext.current
 
-    val navigator = rememberLicardNavigator()
+    val systemUiController = rememberSystemUiController()
+    val navigator = rememberNavigator()
+
     AdelaideTheme(useDarkTheme = false) {
+        systemUiController.setStatusBarColor(AdelaideTheme.colors.colorPrimary)
+        systemUiController.setNavigationBarColor(AdelaideTheme.colors.colorPrimary)
+
         // todo Yes we have read text of deprecation and LocalImageLoader is exactly what we need.
         CompositionLocalProvider(
             content = { MainScreen(navigator) },

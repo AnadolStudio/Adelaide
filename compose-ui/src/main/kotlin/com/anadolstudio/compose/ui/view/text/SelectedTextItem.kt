@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.view.VSpacer
 
 @Composable
@@ -27,7 +27,7 @@ fun SelectedTextItem(
     Column(
         modifier = modifier
             .clickable { onClick.invoke(title) }
-            .padding(horizontal = LicardDimension.layoutHorizontalMargin)
+            .padding(horizontal = Dimension.mainMargin)
     ) {
         VSpacer(12.dp)
         Row {
@@ -41,8 +41,8 @@ fun SelectedTextItem(
             )
             AnimatedVisibility(visible = isSelected) {
                 Icon(
-                    painter = LicardIcon.CheckMark,
-                    tint = AdelaideTheme.colors.textQuaternary,
+                    painter = Icons.CheckMark,
+                    tint = AdelaideTheme.colors.template,
                     contentDescription = null
                 )
             }

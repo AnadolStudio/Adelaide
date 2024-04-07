@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 
 @Composable
 fun PopupMenu(
@@ -27,7 +27,7 @@ fun PopupMenu(
     modifier: Modifier = Modifier
 ) {
     DropdownMenu(
-        modifier = modifier.background(AdelaideTheme.colors.backgroundPrimary),
+        modifier = modifier.background(AdelaideTheme.colors.colorPrimary),
         expanded = expandedState.value,
         onDismissRequest = { expandedState.value = false }
     ) {
@@ -72,7 +72,7 @@ private fun GroupActionsItem(
     tint: Color = AdelaideTheme.colors.textPrimary,
 ) {
     Row(
-        modifier = Modifier.padding(end = LicardDimension.layoutMediumMargin)
+        modifier = Modifier.padding(end = Dimension.mediumMargin)
     ) {
         Icon(
             modifier = Modifier
@@ -85,7 +85,7 @@ private fun GroupActionsItem(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = LicardDimension.layoutMainMargin)
+                .padding(start = Dimension.mainMargin)
                 .align(Alignment.CenterVertically),
             text = stringResource(textRes),
             style = AdelaideTypography.textBook18,

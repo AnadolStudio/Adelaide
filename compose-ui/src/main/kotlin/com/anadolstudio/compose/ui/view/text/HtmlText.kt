@@ -36,7 +36,7 @@ fun HtmlText(
     modifier: Modifier = Modifier,
     style: TextStyle = AdelaideTypography.textBook18,
     color: Color = AdelaideTheme.colors.textPrimary,
-    colorLink: Color = AdelaideTheme.colors.textQuaternary,
+    colorLink: Color = AdelaideTheme.colors.template,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Visible,
     onTextLayout: (TextLayoutResult) -> Unit = { },

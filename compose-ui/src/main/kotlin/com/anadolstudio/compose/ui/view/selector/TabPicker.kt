@@ -60,7 +60,7 @@ fun TabIndicator(
         modifier
             .padding(horizontal = 10.dp)
             .height(1.dp)
-            .background(AdelaideTheme.colors.buttonPrimary)
+            .background(AdelaideTheme.colors.colorPrimary)
     )
 }
 
@@ -88,7 +88,7 @@ private fun TabItem(
 @Composable
 private fun TabPickerPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
-        Column(modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
+        Column(modifier = Modifier.background(AdelaideTheme.colors.colorPrimary)) {
             TabPicker(
                 tabs = listOf("First", "Second", "Any"),
                 selectedIndex = 2,

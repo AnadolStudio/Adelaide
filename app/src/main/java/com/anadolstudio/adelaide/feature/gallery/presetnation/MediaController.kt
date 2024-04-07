@@ -3,7 +3,7 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 import com.anadolstudio.ui.viewmodel.BaseController
 import com.anadolstudio.utils.data_source.media.Folder
 
-interface GalleryController : BaseController {
+interface MediaController : BaseController {
     fun onPermissionGranted()
     fun onFolderChanged(folder: Folder)
     fun onImageSelected(imageUri: String)
@@ -13,4 +13,6 @@ interface GalleryController : BaseController {
     fun onZoomDecreased()
     fun onFolderClosed()
     fun onFolderOpened()
+    fun onSearchClicked()
+    fun onMoreClicked()
 }

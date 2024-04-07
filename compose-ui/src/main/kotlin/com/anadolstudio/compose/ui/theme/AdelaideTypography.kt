@@ -18,8 +18,12 @@ import com.anadolstudio.compose.ui.R
 import com.anadolstudio.compose.ui.view.text.Text
 
 private const val FUTURA_MEDIUM_FONT_WEIGHT = 450
+private const val FUTURA_LIGHT_FONT_WEIGHT = 300
+private const val FUTURA_BOLD_FONT_WEIGHT = 700
 
 private val FuturaMediumWeight = FontWeight(FUTURA_MEDIUM_FONT_WEIGHT)
+private val FuturaLightWeight = FontWeight(FUTURA_LIGHT_FONT_WEIGHT)
+private val FuturaBoldWeight = FontWeight(FUTURA_BOLD_FONT_WEIGHT)
 
 private val FuturaPTFontFamily = FontFamily(
     Font(resId = R.font.futurapt_book, weight = FontWeight.Normal),
@@ -81,6 +85,16 @@ object AdelaideTypography {
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 30.sp,
+    )
+    val textLight18 = defaultStyle.copy(
+        fontWeight = FuturaLightWeight,
+        fontSize = 18.sp,
+        lineHeight = 22.sp,
+    )
+    val textBold18 = defaultStyle.copy(
+        fontWeight = FuturaBoldWeight,
+        fontSize = 18.sp,
+        lineHeight = 22.sp,
     )
     val textMedium18 = defaultStyle.copy(
         fontWeight = FuturaMediumWeight,

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.drawable.LicardIllustration
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.VSpacer
 import com.anadolstudio.compose.ui.view.button.OutlineButtonLarge
@@ -49,7 +49,7 @@ fun PagingItemErrorStub(
         Text(
             text = buttonTitle,
             style = AdelaideTypography.captionBook16,
-            color = AdelaideTheme.colors.buttonPrimary,
+            color = AdelaideTheme.colors.template,
             modifier = Modifier
                 .padding(top = 4.dp)
                 .clickable(onClick = onButtonClick),
@@ -146,7 +146,7 @@ fun SuccessStub(
         PrimaryButtonLarge(
             text = buttonTitle,
             onClick = onButtonClick,
-            modifier = Modifier.padding(LicardDimension.layoutMainMargin),
+            modifier = Modifier.padding(Dimension.mainMargin),
         )
     }
 }
@@ -163,7 +163,7 @@ fun BaseStub(
 ) {
     Column(modifier = modifier) {
         val innerModifier = Modifier
-            .padding(LicardDimension.layoutMainMargin)
+            .padding(Dimension.mainMargin)
             .align(Alignment.CenterHorizontally)
             .run {
                 if (fillMaxSize) {
@@ -200,7 +200,7 @@ fun BaseStub(
             OutlineButtonLarge(
                 text = buttonTitle,
                 onClick = onButtonClick,
-                modifier = Modifier.padding(LicardDimension.layoutMainMargin),
+                modifier = Modifier.padding(Dimension.mainMargin),
             )
         }
     }
@@ -212,11 +212,11 @@ private fun PreviewPagingStubs(@PreviewParameter(ThemePreviewParameter::class) u
     AdelaideTheme(useDarkMode) {
         Column {
             PagingItemLoadingStub(
-                modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+                modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
             )
 
             PagingItemErrorStub(
-                modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+                modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
                 message = "Не удалось загрузить список элементов",
                 buttonTitle = "Повторить",
                 onButtonClick = {}
@@ -230,7 +230,7 @@ private fun PreviewPagingStubs(@PreviewParameter(ThemePreviewParameter::class) u
 private fun PreviewEmptyStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
         EmptyStub(
-            modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+            modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
             title = "Нет топливных карт",
             message = "Здесь будут отображаться ваши\nтопливные карты",
             image = LicardIllustration.EmptyTransaction
@@ -243,7 +243,7 @@ private fun PreviewEmptyStub(@PreviewParameter(ThemePreviewParameter::class) use
 private fun PreviewEmptyStubWithButton(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
         EmptyStub(
-            modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+            modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
             title = "Нет топливных карт",
             message = "Здесь будут отображаться ваши\nтопливные карты",
         )
@@ -255,7 +255,7 @@ private fun PreviewEmptyStubWithButton(@PreviewParameter(ThemePreviewParameter::
 private fun PreviewErrorStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
         ErrorStub(
-            modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+            modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
             errorTitle = "Что-то пошло не так",
             errorMessage = "Попробуйте обновить или зайти чуть позже.",
             buttonTitle = "Обновить",
@@ -269,7 +269,7 @@ private fun PreviewErrorStub(@PreviewParameter(ThemePreviewParameter::class) use
 private fun PreviewSuccessStub(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
         SuccessStub(
-            modifier = Modifier.background(AdelaideTheme.colors.backgroundSecondary),
+            modifier = Modifier.background(AdelaideTheme.colors.colorSecondary),
             image = LicardIllustration.EmptyTransaction,
             title = "Аккаунт успешно удален",
             buttonTitle = "Хорошо",

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.HSpacer
 import com.anadolstudio.compose.ui.view.VSpacer
@@ -55,7 +55,7 @@ internal fun Snackbar(
     Snackbar(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = LicardDimension.layoutHorizontalMargin),
+            .padding(horizontal = Dimension.mainMargin),
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 snackbarData.style.icon?.let { icon ->

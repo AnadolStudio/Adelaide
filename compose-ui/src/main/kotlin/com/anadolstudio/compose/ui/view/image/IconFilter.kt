@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.animation.IconAnimatedVisibility
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 
 @Composable
@@ -23,7 +23,7 @@ fun IconFilter(
     Box {
         IconButton(
             onClick = onClick,
-            content = { Icon(LicardIcon.Filter, contentDescription = null) }
+            content = { Icon(Icons.Filter, contentDescription = null) }
         )
 
         Box(
@@ -35,7 +35,7 @@ fun IconFilter(
                 Box(
                     modifier = Modifier
                         .size(10.dp)
-                        .background(AdelaideTheme.colors.activeFilterColor, CircleShape),
+                        .background(AdelaideTheme.colors.template, CircleShape),
                 )
             }
         }

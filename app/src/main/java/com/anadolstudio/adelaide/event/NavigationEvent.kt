@@ -3,14 +3,13 @@ package com.anadolstudio.adelaide.event
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
-import com.anadolstudio.adelaide.feature.main.LicardNavigator
-import com.anadolstudio.adelaide.navigation.bottomnavigation.bottomNavigate
+import com.anadolstudio.adelaide.feature.main.Navigator
 import com.anadolstudio.adelaide.navigation.navigateSafely
 import timber.log.Timber
 
 internal interface NavigationEvent : Event {
 
-    fun navigate(navigator: LicardNavigator): Boolean
+    fun navigate(navigator: Navigator): Boolean
 
     class ToRoute(
         private val route: String,
@@ -22,13 +21,13 @@ internal interface NavigationEvent : Event {
             navOptions(builder)
         )
 
-        override fun navigate(navigator: LicardNavigator): Boolean =
+        override fun navigate(navigator: Navigator): Boolean =
             navigator.navigateSafely(route, navOptions)
     }
 
     class Up(private val results: Map<String, Any?>) : NavigationEvent {
 
-        override fun navigate(navigator: LicardNavigator): Boolean {
+        override fun navigate(navigator: Navigator): Boolean {
             val previousBackStackEntry = navigator.previousBackStackEntry
             return if (previousBackStackEntry != null) {
                 if (results.isNotEmpty()) {
@@ -48,7 +47,7 @@ internal interface NavigationEvent : Event {
         private val inclusive: Boolean,
         private val results: Map<String, Any?>,
     ) : NavigationEvent {
-        override fun navigate(navigator: LicardNavigator): Boolean {
+        override fun navigate(navigator: Navigator): Boolean {
             try {
                 val backStackEntry = navigator.getBackStackEntry(route)
                 if (results.isNotEmpty()) {
@@ -68,9 +67,9 @@ internal interface NavigationEvent : Event {
         private val route: String,
     ) : NavigationEvent {
 
-        override fun navigate(navigator: LicardNavigator): Boolean {
+        override fun navigate(navigator: Navigator): Boolean {
             return try {
-                navigator.bottomNavigate(route)
+//                navigator.bottomNavigate(route)
                 true
             } catch (e: IllegalArgumentException) {
                 Timber.d(e)
@@ -80,7 +79,7 @@ internal interface NavigationEvent : Event {
     }
 
     class Finish : NavigationEvent {
-        override fun navigate(navigator: LicardNavigator): Boolean {
+        override fun navigate(navigator: Navigator): Boolean {
             return navigator.finish()
         }
     }

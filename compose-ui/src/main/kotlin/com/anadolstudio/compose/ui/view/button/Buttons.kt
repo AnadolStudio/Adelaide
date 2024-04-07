@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.anadolstudio.compose.ui.drawable.LicardIcon
+import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.modifier.consumeTouches
 import com.anadolstudio.compose.ui.modifier.rememberMinSize
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
@@ -245,7 +245,7 @@ private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDa
     AdelaideTheme(useDarkMode) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)
+            modifier = Modifier.background(AdelaideTheme.colors.colorPrimary)
         ) {
             PrimaryButtonLarge(
                 text = "PrimaryButtonLarge",
@@ -261,7 +261,7 @@ private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDa
             PrimaryButtonLarge(
                 text = "PrimaryButtonLarge",
                 onClick = {},
-                icon = LicardIcon.Plus
+                icon = Icons.Search
             )
             VSpacer(8.dp)
             PrimaryButtonLarge(
@@ -284,7 +284,7 @@ private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDa
             OutlineButtonLarge(
                 text = "OutlineButtonLarge",
                 onClick = {},
-                icon = LicardIcon.Plus,
+                icon = Icons.Search,
             )
             VSpacer(8.dp)
             TextButton(
@@ -301,13 +301,13 @@ private fun ButtonsPreview(@PreviewParameter(ThemePreviewParameter::class) useDa
             TextButton(
                 text = "TextButton",
                 onClick = {},
-                icon = LicardIcon.Plus,
+                icon = Icons.Search,
             )
             VSpacer(8.dp)
             FloatTextButton(
                 text = "FloatTextButton",
                 onClick = {},
-                icon = LicardIcon.Plus,
+                icon = Icons.Search,
                 paddingValues = PaddingValues()
             )
             VSpacer(8.dp)
@@ -340,9 +340,9 @@ data class LicardButtonColors(
 
         @Composable
         fun primaryButtonColors(
-            backgroundColor: Color = AdelaideTheme.colors.buttonPrimary,
-            contentColor: Color = AdelaideTheme.colors.textTertiary,
-            disabledBackgroundColor: Color = AdelaideTheme.colors.buttonPrimaryDisabled,
+            backgroundColor: Color = AdelaideTheme.colors.template,
+            contentColor: Color = AdelaideTheme.colors.template,
+            disabledBackgroundColor: Color = AdelaideTheme.colors.template,
             disabledContentColor: Color = contentColor,
         ): LicardButtonColors = LicardButtonColors(
             backgroundColor = backgroundColor,
@@ -354,7 +354,7 @@ data class LicardButtonColors(
         @Composable
         fun outlineButtonColors(
             backgroundColor: Color = Color.Transparent,
-            contentColor: Color = AdelaideTheme.colors.buttonPrimary,
+            contentColor: Color = AdelaideTheme.colors.template,
         ): LicardButtonColors = LicardButtonColors(
             backgroundColor = backgroundColor,
             contentColor = contentColor,
@@ -365,8 +365,8 @@ data class LicardButtonColors(
         @Composable
         fun textButtonColors(
             backgroundColor: Color = Color.Transparent,
-            contentColor: Color = AdelaideTheme.colors.buttonPrimary,
-            disabledContentColor: Color = AdelaideTheme.colors.buttonSecondaryText
+            contentColor: Color = AdelaideTheme.colors.template,
+            disabledContentColor: Color = AdelaideTheme.colors.template
                 .copy(alpha = ContentAlpha.disabled),
         ): LicardButtonColors = LicardButtonColors(
             backgroundColor = backgroundColor,

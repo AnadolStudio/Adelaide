@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
-import com.anadolstudio.compose.ui.theme.LicardDimension
+import com.anadolstudio.compose.ui.theme.Dimension
 import com.anadolstudio.compose.ui.theme.preview.ThemePreviewParameter
 import com.anadolstudio.compose.ui.view.VSpacer
 
@@ -275,9 +275,9 @@ private fun ColumnScope.TextFieldHint(
         Column {
             VSpacer(4.dp)
             val hintColor = if (isError) {
-                AdelaideTheme.colors.error
+                AdelaideTheme.colors.template
             } else {
-                AdelaideTheme.colors.hintColor
+                AdelaideTheme.colors.template
             }
             Text(
                 text = hintText,
@@ -365,7 +365,7 @@ private fun Modifier.indicatorLine(
     isError: Boolean,
     interactionSource: InteractionSource,
     colors: TextFieldColors,
-    horizontalPadding: Dp = LicardDimension.layoutHorizontalMargin,
+    horizontalPadding: Dp = Dimension.mainMargin,
     focusedIndicatorLineThickness: Dp = TextFieldDefaults.FocusedBorderThickness,
     unfocusedIndicatorLineThickness: Dp = TextFieldDefaults.UnfocusedBorderThickness
 ) = composed {
@@ -424,7 +424,7 @@ internal fun Modifier.drawIndicatorLine(
 @Composable
 internal fun String.addAsterisk(): AnnotatedString = buildAnnotatedString {
     append(this@addAsterisk)
-    withStyle(style = SpanStyle(color = AdelaideTheme.colors.asteriskColor)) {
+    withStyle(style = SpanStyle(color = AdelaideTheme.colors.template)) {
         append("\u002A")
     }
 }
@@ -436,24 +436,24 @@ object AccountingTextFieldDefaults {
         textColor: Color = AdelaideTheme.colors.textPrimary,
         disabledTextColor: Color = AdelaideTheme.colors.textPrimary,
         backgroundColor: Color = Color.Transparent,
-        cursorColor: Color = AdelaideTheme.colors.buttonPrimary,
-        errorCursorColor: Color = AdelaideTheme.colors.error,
+        cursorColor: Color = AdelaideTheme.colors.template,
+        errorCursorColor: Color = AdelaideTheme.colors.template,
         focusedIndicatorColor: Color = AdelaideTheme.colors.divider,
         unfocusedIndicatorColor: Color = AdelaideTheme.colors.divider,
         disabledIndicatorColor: Color = AdelaideTheme.colors.divider,
-        errorIndicatorColor: Color = AdelaideTheme.colors.error,
+        errorIndicatorColor: Color = AdelaideTheme.colors.template,
         leadingIconColor: Color = AdelaideTheme.colors.textSecondary,
-        disabledLeadingIconColor: Color = AdelaideTheme.colors.buttonPrimaryDisabled,
-        errorLeadingIconColor: Color = AdelaideTheme.colors.error,
+        disabledLeadingIconColor: Color = AdelaideTheme.colors.template,
+        errorLeadingIconColor: Color = AdelaideTheme.colors.template,
         trailingIconColor: Color = AdelaideTheme.colors.textPrimary,
-        disabledTrailingIconColor: Color = AdelaideTheme.colors.buttonPrimaryDisabled,
+        disabledTrailingIconColor: Color = AdelaideTheme.colors.template,
         errorTrailingIconColor: Color = AdelaideTheme.colors.textPrimary,
         focusedLabelColor: Color = AdelaideTheme.colors.textPrimary,
         unfocusedLabelColor: Color = AdelaideTheme.colors.textSecondary,
-        disabledLabelColor: Color = AdelaideTheme.colors.textPrimaryDisabled,
+        disabledLabelColor: Color = AdelaideTheme.colors.template,
         errorLabelColor: Color = AdelaideTheme.colors.textSecondary,
         placeholderColor: Color = AdelaideTheme.colors.textSecondary,
-        disabledPlaceholderColor: Color = AdelaideTheme.colors.textPrimaryDisabled,
+        disabledPlaceholderColor: Color = AdelaideTheme.colors.template,
     ): TextFieldColors = TextFieldDefaults.textFieldColors(
         textColor = textColor,
         disabledTextColor = disabledTextColor,
@@ -487,7 +487,7 @@ private fun TextFieldPreview(@PreviewParameter(ThemePreviewParameter::class) use
         Column(
             Modifier
                 .padding(8.dp)
-                .background(AdelaideTheme.colors.backgroundPrimary)
+                .background(AdelaideTheme.colors.colorPrimary)
         ) {
             LargeTextField(
                 value = "With label",

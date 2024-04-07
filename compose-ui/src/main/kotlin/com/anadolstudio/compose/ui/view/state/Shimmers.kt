@@ -77,7 +77,7 @@ fun CheckBoxShimmerItem() {
             .size(24.dp)
             .background(getShimmerBrush(), CircleShape)
             .padding(2.dp)
-            .background(AdelaideTheme.colors.backgroundPrimary, CircleShape),
+            .background(AdelaideTheme.colors.colorPrimary, CircleShape),
     )
 }
 
@@ -112,7 +112,7 @@ private fun getShimmerColors() = listOf(
 @Composable
 private fun Preview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
-        Column(Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
+        Column(Modifier.background(AdelaideTheme.colors.colorPrimary)) {
             ShimmerItem(size = DpSize(100.dp, 32.dp))
             VSpacer(16.dp)
             LargeShimmerItem(height = 40.dp)

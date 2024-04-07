@@ -17,6 +17,6 @@ fun BottomSheetHandle(modifier: Modifier = Modifier) {
             .width(48.dp)
             .clip(MaterialTheme.shapes.textShimmer),
         thickness = 4.dp,
-        color = AdelaideTheme.colors.handleSheetColor,
+        color = AdelaideTheme.colors.template,
     )
 }

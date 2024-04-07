@@ -2,17 +2,19 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 
 import com.anadolstudio.adelaide.lce.Lce
 import com.anadolstudio.utils.data_source.media.Folder
+import com.anadolstudio.utils.data_source.media.Image
+import org.joda.time.DateTime
 
 data class GalleryState(
-        val columnSpan: Int,
-        val imageState: ImageState = ImageState(),
-        val folderState: FolderState = FolderState()
+    val columnSpan: Int,
+    val imageState: ImageState = ImageState(),
+    val folderState: FolderState = FolderState()
 ) {
     constructor(
-            columnSpan: Int,
+        columnSpan: Int,
     ) : this(
-            columnSpan = columnSpan,
-            imageState = ImageState()
+        columnSpan = columnSpan,
+        imageState = ImageState()
     )
 }
 
@@ -24,6 +26,6 @@ data class FolderState(
 )
 
 data class ImageState(
-        val imageList: List<String> = emptyList(),
+    val imageMap: Map<DateTime, List<Image>> = emptyMap(),
 )
 

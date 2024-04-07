@@ -198,7 +198,7 @@ private fun ErrorLabel(error: String, showError: Boolean) {
         Text(
             text = error,
             modifier = Modifier.padding(top = 4.dp),
-            color = AdelaideTheme.colors.error,
+            color = AdelaideTheme.colors.template,
             style = AdelaideTypography.captionBook14
         )
     }
@@ -211,7 +211,7 @@ private fun getBorderlineColor(
     focused: Boolean,
 ): Color {
     return when {
-        error -> AdelaideTheme.colors.error
+        error -> AdelaideTheme.colors.template
         enabled && focused -> Color.Transparent
         else -> Color.Transparent
     }
@@ -230,7 +230,7 @@ private fun OtpChar(
     Column(
         modifier = modifier
             .height(56.dp)
-            .background(AdelaideTheme.colors.backgroundSecondary, shape = Shapes.tiny)
+            .background(AdelaideTheme.colors.colorSecondary, shape = Shapes.tiny)
             .border(BorderStroke(width = 1.dp, color = borderColor), shape = Shapes.tiny),
         verticalArrangement = Arrangement.Center
     ) {
@@ -252,7 +252,7 @@ private fun OtpChar(
 private fun OtpInputPreview(@PreviewParameter(ThemePreviewParameter::class) useDarkMode: Boolean) {
     AdelaideTheme(useDarkMode) {
         var value by remember { mutableStateOf("") }
-        Column(modifier = Modifier.background(AdelaideTheme.colors.backgroundPrimary)) {
+        Column(modifier = Modifier.background(AdelaideTheme.colors.colorPrimary)) {
             OtpInputField(
                 digitsCount = 6,
                 value = value,
