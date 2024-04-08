@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +58,8 @@ import com.anadolstudio.compose.ui.view.snackbar.SnackbarHostState
 import com.anadolstudio.compose.ui.view.text.Text
 import com.anadolstudio.utils.data_source.media.Folder
 import com.anadolstudio.utils.data_source.media.Image
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.glide.GlideImage
@@ -117,6 +120,8 @@ private fun ImageList(
             )
         },
     ) { insetsPadding ->
+        val map = remember { state.imageState.imageMap.entries }
+
         LazyVerticalGrid(
             modifier = Modifier
                 .padding(top = insetsPadding.calculateTopPadding())
@@ -137,8 +142,10 @@ private fun ImageList(
             horizontalArrangement = Arrangement.spacedBy(Dimension.smallMargin),
         ) {
 
-            state.imageState.imageMap.entries.forEach { (date, imageList) ->
-                item(span = { GridItemSpan(state.columnSpan) }) {
+            map.forEach { (date, imageList) ->
+                item(
+                    span = { GridItemSpan(state.columnSpan) }
+                ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -151,7 +158,11 @@ private fun ImageList(
                     )
                 }
 
-                items(imageList) { image -> ImageItem(image, controller) }
+                items(
+                    count = imageList.size,
+                    key = { imageList[it].path },
+                    itemContent = { index -> ImageItem(imageList[index], controller) }
+                )
             }
         }
 
@@ -160,13 +171,16 @@ private fun ImageList(
 
 @Composable
 private fun LazyGridItemScope.ImageItem(image: Image, controller: MediaController) {
+    val imageRemember = remember { image }
+
     Box(
         modifier = Modifier
             .animateItemPlacement()
             .zIndex(1F)
     ) {
         GlideImage(
-            imageModel = { image.path },
+            imageModel = { imageRemember.path },
+            requestOptions = { RequestOptions() .diskCacheStrategy(DiskCacheStrategy.ALL) },
             component = rememberImageComponent {
 //            +PlaceholderPlugin.Loading(painterResource(id = R.drawable.ic_image))
 //            +PlaceholderPlugin.Failure(painterResource(id = R.drawable.ic_image))
@@ -181,18 +195,23 @@ private fun LazyGridItemScope.ImageItem(image: Image, controller: MediaControlle
                 .clip(Shapes.textShimmer),
             /*.clickable { controller.onImageSelected(path) }*/
         )
-
-/*
         Column(
             Modifier
                 .background(color = AdelaideTheme.colors.colorOverlay)
                 .align(Alignment.Center)
                 .aspectRatio(1f)
         ) {
-            Text(modifier = Modifier.fillMaxWidth(), text = image.format.orEmpty(), color = Color.White)
-            Text(modifier = Modifier.fillMaxWidth(), text = image.folder.orEmpty(), color = Color.White)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = imageRemember.format.orEmpty(),
+                color = Color.White
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = imageRemember.folder.orEmpty(),
+                color = Color.White
+            )
         }
-*/
     }
 }
 
