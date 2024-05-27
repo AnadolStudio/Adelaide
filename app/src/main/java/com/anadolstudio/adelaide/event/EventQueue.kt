@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import com.anadolstudio.adelaide.feature.main.Navigator
+import com.anadolstudio.adelaide.feature.main.NavigationController
 import com.anadolstudio.compose.ui.view.snackbar.SnackbarHostState
 import com.anadolstudio.compose.ui.view.snackbar.SnackbarStyle
 import com.anadolstudio.compose.ui.view.text.Text
@@ -59,7 +59,7 @@ internal class EventQueue {
 internal fun ObserveEvents(
     events: EventQueue,
     snackbarHostState: SnackbarHostState,
-    navigator: Navigator,
+    navigator: NavigationController,
     resources: Resources = LocalContext.current.resources,
     lifecycleOwner: LifecycleOwner? = LocalLifecycleOwner.current,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
@@ -106,7 +106,7 @@ internal fun CoroutineScope.tryHandleCommonEvent(
     event: Event,
     snackbarHostState: SnackbarHostState,
     resources: Resources,
-    navigator: Navigator,
+    navigator: NavigationController,
 ): Boolean {
     return tryHandleMessageEvent(event, snackbarHostState, resources) ||
         tryHandleNavigationEvent(event, navigator)
@@ -150,7 +150,7 @@ internal fun CoroutineScope.tryHandleMessageEvent(
  */
 internal fun tryHandleNavigationEvent(
     event: Event,
-    navigator: Navigator,
+    navigator: NavigationController,
 ): Boolean {
     return if (event is NavigationEvent) {
         event.navigate(navigator)

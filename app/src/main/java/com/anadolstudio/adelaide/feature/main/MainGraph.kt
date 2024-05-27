@@ -16,7 +16,7 @@ internal object MainGraph : RootNavGraphContract() {
 
     @Composable
     operator fun invoke(
-        navigator: Navigator,
+        navigator: NavigationController,
         snackbarHostState: SnackbarHostState,
     ): NavGraph = remember(navigator, snackbarHostState) {
         navigator.createGraph {

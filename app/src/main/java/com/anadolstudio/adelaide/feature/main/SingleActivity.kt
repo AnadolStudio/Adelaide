@@ -38,7 +38,7 @@ internal fun AdelaideEntryPoint() {
     val context = LocalContext.current
 
     val systemUiController = rememberSystemUiController()
-    val navigator = rememberNavigator()
+    val navigator = rememberNavigationController()
 
     AdelaideTheme(useDarkTheme = false) {
         systemUiController.setStatusBarColor(AdelaideTheme.colors.colorPrimary)

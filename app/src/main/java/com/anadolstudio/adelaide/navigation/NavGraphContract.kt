@@ -14,7 +14,7 @@ import androidx.navigation.NavOptionsBuilder
 import com.anadolstudio.adelaide.di.viewmodel.daggerViewModel
 import com.anadolstudio.adelaide.event.EventsDispatcher
 import com.anadolstudio.adelaide.event.navigateTo
-import com.anadolstudio.adelaide.feature.main.Navigator
+import com.anadolstudio.adelaide.feature.main.NavigationController
 import com.licard.b2b.app.library.navigation.BaseNavGraphContract
 import androidx.navigation.compose.navigation as originalNavigation
 
@@ -45,7 +45,7 @@ internal open class NavGraphContract : BaseNavGraphContract() {
 
     @Composable
     protected inline fun <reified T : ViewModel> graphViewModel(
-        navigator: Navigator,
+        navigator: NavigationController,
         backStackEntry: NavBackStackEntry,
     ): T {
         val entry = remember(backStackEntry) { navigator.getBackStackEntry(route) }
@@ -54,7 +54,7 @@ internal open class NavGraphContract : BaseNavGraphContract() {
 
     @Composable
     protected inline fun <reified T : ViewModel> graphFlowEventHandler(
-        navigator: Navigator,
+        navigator: NavigationController,
         backStackEntry: NavBackStackEntry,
         factory: ViewModelProvider.Factory,
     ): T {
@@ -64,7 +64,7 @@ internal open class NavGraphContract : BaseNavGraphContract() {
 
     @Composable
     protected inline fun <T> rememberFlowParams(
-        navigator: Navigator,
+        navigator: NavigationController,
         backStackEntry: NavBackStackEntry,
         crossinline transform: @DisallowComposableCalls (NavBackStackEntry) -> T,
     ): T {

@@ -22,7 +22,7 @@ import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 
 @Stable
-class Navigator(
+class NavigationController(
     context: Context,
     val bottomSheetNavigator: BottomSheetNavigator,
 ) : NavHostController(context) {
@@ -33,13 +33,13 @@ class Navigator(
 }
 
 @Composable
-internal fun rememberNavigator(
+internal fun rememberNavigationController(
     bottomSheetNavigator: BottomSheetNavigator = rememberBottomSheetNavigator(),
-): Navigator {
+): NavigationController {
     val context = LocalContext.current
     return rememberSaveable(
         bottomSheetNavigator,
-        saver = licardNavigatorSaver(context, bottomSheetNavigator)
+        saver = navigatorSaver(context, bottomSheetNavigator)
     ) {
         createNavigator(context, bottomSheetNavigator)
     }
@@ -49,16 +49,16 @@ private fun createNavigator(
     context: Context,
     bottomSheetNavigator: BottomSheetNavigator,
 ) =
-    Navigator(context, bottomSheetNavigator).apply {
+    NavigationController(context, bottomSheetNavigator).apply {
         navigatorProvider.addNavigator(ComposeNavigator())
         navigatorProvider.addNavigator(DialogNavigator())
         navigatorProvider.addNavigator(bottomSheetNavigator)
     }
 
-private fun licardNavigatorSaver(
+private fun navigatorSaver(
     context: Context,
     bottomSheetNavigator: BottomSheetNavigator,
-): Saver<Navigator, *> = Saver(
+): Saver<NavigationController, *> = Saver(
     save = { it.saveState() },
     restore = {
         createNavigator(context, bottomSheetNavigator)

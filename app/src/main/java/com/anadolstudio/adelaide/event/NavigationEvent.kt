@@ -3,13 +3,13 @@ package com.anadolstudio.adelaide.event
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
-import com.anadolstudio.adelaide.feature.main.Navigator
+import com.anadolstudio.adelaide.feature.main.NavigationController
 import com.anadolstudio.adelaide.navigation.navigateSafely
 import timber.log.Timber
 
 internal interface NavigationEvent : Event {
 
-    fun navigate(navigator: Navigator): Boolean
+    fun navigate(navigator: NavigationController): Boolean
 
     class ToRoute(
         private val route: String,
@@ -21,13 +21,13 @@ internal interface NavigationEvent : Event {
             navOptions(builder)
         )
 
-        override fun navigate(navigator: Navigator): Boolean =
+        override fun navigate(navigator: NavigationController): Boolean =
             navigator.navigateSafely(route, navOptions)
     }
 
     class Up(private val results: Map<String, Any?>) : NavigationEvent {
 
-        override fun navigate(navigator: Navigator): Boolean {
+        override fun navigate(navigator: NavigationController): Boolean {
             val previousBackStackEntry = navigator.previousBackStackEntry
             return if (previousBackStackEntry != null) {
                 if (results.isNotEmpty()) {
@@ -47,7 +47,7 @@ internal interface NavigationEvent : Event {
         private val inclusive: Boolean,
         private val results: Map<String, Any?>,
     ) : NavigationEvent {
-        override fun navigate(navigator: Navigator): Boolean {
+        override fun navigate(navigator: NavigationController): Boolean {
             try {
                 val backStackEntry = navigator.getBackStackEntry(route)
                 if (results.isNotEmpty()) {
@@ -67,7 +67,7 @@ internal interface NavigationEvent : Event {
         private val route: String,
     ) : NavigationEvent {
 
-        override fun navigate(navigator: Navigator): Boolean {
+        override fun navigate(navigator: NavigationController): Boolean {
             return try {
 //                navigator.bottomNavigate(route)
                 true
@@ -79,7 +79,7 @@ internal interface NavigationEvent : Event {
     }
 
     class Finish : NavigationEvent {
-        override fun navigate(navigator: Navigator): Boolean {
+        override fun navigate(navigator: NavigationController): Boolean {
             return navigator.finish()
         }
     }

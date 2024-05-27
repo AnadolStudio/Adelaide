@@ -46,7 +46,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.anadolstudio.adelaide.di.viewmodel.daggerViewModel
-import com.anadolstudio.adelaide.feature.main.Navigator
+import com.anadolstudio.adelaide.feature.main.NavigationController
 import com.anadolstudio.compose.ui.drawable.Icons
 import com.anadolstudio.compose.ui.theme.AdelaideTheme
 import com.anadolstudio.compose.ui.theme.AdelaideTypography
@@ -68,7 +68,7 @@ import org.joda.time.DateTime
 
 @Composable
 internal fun MediaScreen(
-    navigator: Navigator,
+    navigator: NavigationController,
     snackbarHostState: SnackbarHostState,
     viewModel: MediaViewModel = daggerViewModel()
 ) {

@@ -47,7 +47,7 @@ import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 
 @Composable
 internal fun MainScreen(
-    navigator: Navigator,
+    navigator: NavigationController,
     viewModel: MainViewModel = daggerViewModel(),
 ) {
     val state by viewModel.stateLiveData.observeState()
@@ -57,7 +57,7 @@ internal fun MainScreen(
 
 @Composable
 private fun MainLayout(
-    navigator: Navigator?,
+    navigator: NavigationController?,
     state: MainScreenState,
     controller: MainController,
 ) {
@@ -93,7 +93,7 @@ private fun MainLayout(
 
 @Composable
 private fun ModalBottomSheet(
-    navigator: Navigator,
+    navigator: NavigationController,
     snackbarHostState: SnackbarHostState,
     paddingValues: PaddingValues,
     scrollBottomBehavior: BottomAppBarScrollBehavior
