@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.View
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.DialogImageDetailBinding
-import com.anadolstudio.core.bitmap_util.BitmapDecoder
-import com.anadolstudio.core.presentation.dialogs.simple.CoreDialogFragment
-import com.anadolstudio.core.viewbinding.viewBinding
+import com.anadolstudio.ui.dialogs.CoreDialogFragment
+import com.anadolstudio.ui.viewbinding.viewBinding
+import com.anadolstudio.utils.bitmap_util.BitmapDecoder
 import kotlin.math.min
 
 class ImageDetailDialog : CoreDialogFragment(R.layout.dialog_image_detail) {

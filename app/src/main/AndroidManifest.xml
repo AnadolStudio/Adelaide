@@ -38,7 +38,7 @@
         </provider>
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".feature.start.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashActivity">
@@ -50,7 +50,7 @@
         </activity>
 
         <activity
-            android:name=".SingleActivity"
+            android:name=".feature.start.single.SingleActivity"
             android:exported="true"
             android:theme="@style/Theme.Adelaide"
             android:screenOrientation="portrait" />

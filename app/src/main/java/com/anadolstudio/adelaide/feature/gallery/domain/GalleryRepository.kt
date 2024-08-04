@@ -1,6 +1,7 @@
 package com.anadolstudio.adelaide.feature.gallery.domain
 
-import com.anadolstudio.core.data_source.media.Folder
+import com.anadolstudio.utils.data_source.media.Folder
+import com.anadolstudio.utils.data_source.media.Image
 import io.reactivex.Single
 
 interface GalleryRepository {
@@ -9,7 +10,7 @@ interface GalleryRepository {
             pageIndex: Int,
             pageSize: Int,
             folder: String?
-    ): Single<List<String>>
+    ): Single<List<Image>>
 
     fun loadFolders(): Single<Set<Folder>>
 }

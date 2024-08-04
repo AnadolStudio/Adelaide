@@ -4,9 +4,10 @@ import com.anadolstudio.adelaide.feature.gallery.di.GalleryModule
 import dagger.Module
 
 @Module(
-        includes = [
-            UseCaseModule::class,
-            GalleryModule::class
-        ]
+    includes = [
+        GalleryModule::class,
+        ViewModelModule::class,
+        RepositoryModule::class,
+    ]
 )
 class AppModule

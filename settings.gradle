@@ -10,14 +10,14 @@ dependencyResolutionManagement {
 rootProject.name = "Adelaide"
 include(
         ":app",
-        ":core:android-base",
-        ":core:photoeditor",
-        ":core:base",
-        ":core:common",
         ":core:utils",
-        ":core:resources",
-        ":features:gallery",
-        ":features:home",
+        ":core:ui",
+        ":core:paginator",
+        ":core:view",
+        ":core:photoeditor",
 )
-project(':core:android-base').projectDir = new File(rootDir, '/AndroidCoreBase/core')
+project(':core:utils').projectDir = new File(rootDir, '/AndroidCoreBase/utils')
+project(':core:ui').projectDir = new File(rootDir, '/AndroidCoreBase/ui')
+project(':core:paginator').projectDir = new File(rootDir, '/AndroidCoreBase/paginator')
+project(':core:view').projectDir = new File(rootDir, '/AndroidCoreBase/view')
 project(':core:photoeditor').projectDir = new File(rootDir, '/PhotoEditorCore/photoeditor')

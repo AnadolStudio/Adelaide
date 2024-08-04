@@ -1,9 +1,10 @@
 package com.anadolstudio.adelaide.feature.gallery.data
 
 import com.anadolstudio.adelaide.feature.gallery.domain.GalleryRepository
-import com.anadolstudio.core.data_source.media.Folder
-import com.anadolstudio.core.data_source.media.MediaDataStorage
-import com.anadolstudio.core.util.rx.singleFrom
+import com.anadolstudio.utils.data_source.media.Folder
+import com.anadolstudio.utils.data_source.media.Image
+import com.anadolstudio.utils.data_source.media.MediaDataStorage
+import com.anadolstudio.utils.util.rx.singleFrom
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class GalleryRepositoryImpl @Inject constructor(private val mediaDataStorage: Me
             pageIndex: Int,
             pageSize: Int,
             folder: String?
-    ): Single<List<String>> = singleFrom {
+    ): Single<List<Image>> = singleFrom {
         mediaDataStorage.loadImages(pageIndex = pageIndex, pageSize = pageSize, folder = folder)
     }
 

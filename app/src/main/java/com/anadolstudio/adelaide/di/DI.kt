@@ -11,4 +11,7 @@ object DI {
                 .appContext(context)
                 .build()
     }
+
+    fun getComponent(): AppComponent = appComponent
+
 }
