@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/overlay">
 
     <ImageView
         android:id="@+id/image_photo"
@@ -16,7 +17,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_height="350dp"
         android:src="@drawable/test"
+        android:background="@drawable/bg_oval"
         tools:ignore="ContentDescription"
+        android:adjustViewBounds="false"
         android:layout_margin="@dimen/padding_large"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

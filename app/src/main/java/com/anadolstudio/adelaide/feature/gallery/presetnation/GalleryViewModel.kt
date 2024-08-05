@@ -2,6 +2,8 @@ package com.anadolstudio.adelaide.feature.gallery.presetnation
 
 import android.Manifest
 import android.content.Context
+import android.content.res.Resources
+import android.view.View
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.base.viewmodel.BaseContentViewModel
 import com.anadolstudio.adelaide.feature.common.domain.NightModeRepository
@@ -13,27 +15,32 @@ import com.anadolstudio.ui.viewmodel.states.LoadingDataContext
 import com.anadolstudio.ui.viewmodel.states.smartSubscribeWithUpdatingState
 import com.anadolstudio.utils.data_source.media.Folder
 import com.anadolstudio.utils.data_source.media.Image
+import com.anadolstudio.utils.glide.BitmapGlideTarget
+import com.anadolstudio.utils.glide.GlideBitmapListener
 import com.anadolstudio.utils.util.extentions.hasAllPermissions
 import com.anadolstudio.utils.util.extentions.hasAnyPermissions
 import com.anadolstudio.utils.util.extentions.startAppSettingsActivity
+import com.anadolstudio.utils.util.extentions.startSimpleVibration
 import com.anadolstudio.utils.util.rx.schedulersIoToMain
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.reactivex.Single
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
 class GalleryViewModel @Inject constructor(
-    private val galleryRepository: GalleryRepository,
-    private val nightModeRepository: NightModeRepository,
-    private val context: Context,
+        private val galleryRepository: GalleryRepository,
+        private val nightModeRepository: NightModeRepository,
+        private val context: Context,
 ) : BaseContentViewModel<GalleryState>(
-    GalleryState(
-        columnSpan = DEFAULT_COLUM_COUNT,
-        pagingDataState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
-            true -> PagingDataState.Loading()
-            false -> PagingDataState.Empty()
-        },
-    )
+        GalleryState(
+                columnSpan = DEFAULT_COLUM_COUNT,
+                pagingDataState = when (context.hasAnyPermissions(STORAGE_PERMISSION)) {
+                    true -> PagingDataState.Loading()
+                    false -> PagingDataState.Empty()
+                },
+        )
 ), GalleryController {
 
     companion object {
@@ -44,34 +51,35 @@ class GalleryViewModel @Inject constructor(
         private const val MIN_FOLDER_COUNT = 1
 
         const val DEFAULT_COLUM_COUNT = 3
+        const val SELECT_VIBRATION = 50L
 
         val STORAGE_PERMISSION = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
         )
     }
 
     private val requestFactory: ((Int) -> Single<List<Image>>) = { pageIndex ->
         galleryRepository
-            .loadImages(
-                pageIndex = pageIndex,
-                pageSize = PAGE_SIZE,
-                folder = state.folderState.currentFolder?.value,
-            )
-            .schedulersIoToMain()
+                .loadImages(
+                        pageIndex = pageIndex,
+                        pageSize = PAGE_SIZE,
+                        folder = state.folderState.currentFolder?.value,
+                )
+                .schedulersIoToMain()
     }
 
     private val pagingViewControllerDelegate = PagingViewController.Delegate(
-        provideCurrentData = { state.imageState.imageList },
-        provideCurrentPagingData = { state.imageState.pagingDataState },
-        updateStateAction = { updateState { copy(imageState = imageState.copy(pagingDataState = it)) } },
-        updateData = { updateState { copy(imageState = imageState.copy(imageList = it)) } }
+            provideCurrentData = { state.imageState.imageList },
+            provideCurrentPagingData = { state.imageState.pagingDataState },
+            updateStateAction = { updateState { copy(imageState = imageState.copy(pagingDataState = it)) } },
+            updateData = { updateState { copy(imageState = imageState.copy(imageList = it)) } }
     )
 
     private val paginator = PaginatorImpl(
-        requestFactory = requestFactory,
-        viewController = pagingViewControllerDelegate,
-        firstPageNumber = FIRST_PAGE_NUMBER
+            requestFactory = requestFactory,
+            viewController = pagingViewControllerDelegate,
+            firstPageNumber = FIRST_PAGE_NUMBER
     )
 
     init {
@@ -93,28 +101,28 @@ class GalleryViewModel @Inject constructor(
 
     private fun loadFolders(loadingDataContext: LoadingDataContext) {
         galleryRepository.loadFolders()
-            .map(this::mapFolders)
-            .smartSubscribeWithUpdatingState(
-                loadingContext = loadingDataContext,
-                previousState = state.folderState.progressState,
-                onNewState = { updateState { copy(folderState = folderState.copy(progressState = it)) } },
-                onSuccess = { folders ->
-                    val currentFolder =
-                        folders.firstOrNull { it == state.folderState.currentFolder }
-                            ?: folders.firstOrNull()
+                .map(this::mapFolders)
+                .smartSubscribeWithUpdatingState(
+                        loadingContext = loadingDataContext,
+                        previousState = state.folderState.progressState,
+                        onNewState = { updateState { copy(folderState = folderState.copy(progressState = it)) } },
+                        onSuccess = { folders ->
+                            val currentFolder =
+                                    folders.firstOrNull { it == state.folderState.currentFolder }
+                                            ?: folders.firstOrNull()
 
-                    updateState {
-                        copy(
-                            folderState = folderState.copy(
-                                currentFolder = currentFolder,
-                                folders = folders
-                            )
-                        )
-                    }
-                },
-                onError = this::showError,
-            )
-            .disposeOnCleared()
+                            updateState {
+                                copy(
+                                        folderState = folderState.copy(
+                                                currentFolder = currentFolder,
+                                                folders = folders
+                                        )
+                                )
+                            }
+                        },
+                        onError = this::showError,
+                )
+                .disposeOnCleared()
     }
 
     private fun mapFolders(folders: Set<Folder>): Set<Folder> {
@@ -123,9 +131,9 @@ class GalleryViewModel @Inject constructor(
         if (folderList.size > MIN_FOLDER_COUNT) {
             val totalCount = folderList.sumOf { it.imageCount }
             val defaultFolder = folderList.first().copy(
-                name = context.getString(R.string.gallery_toolbar_title),
-                value = null,
-                imageCount = totalCount
+                    name = context.getString(R.string.gallery_toolbar_title),
+                    value = null,
+                    imageCount = totalCount
             )
             folderList.add(0, defaultFolder)
         }
@@ -136,17 +144,36 @@ class GalleryViewModel @Inject constructor(
 
     override fun onPermissionGranted() = initLoad()
 
-    override fun onImageSelected(image: Image) =
-        showEvent(GalleryEvent.DetailPhotoEvent(image.path))
+    override fun onImageClicked(view: View, image: Image) {
+
+    }
+
+    override fun onImageLongClicked(view: View, image: Image) {
+        val listener = GlideBitmapListener(
+                onSuccessAction = { bitmap -> showEvent(GalleryEvent.PreviewPhotoEvent(bitmap)) },
+                onErrorAction = {}
+        )
+
+        val displayMetrics = Resources.getSystem().displayMetrics
+
+        Glide
+                .with(context)
+                .asBitmap()
+                .load(image.path)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(listener)
+                .into(
+                        BitmapGlideTarget(displayMetrics.widthPixels / 2, displayMetrics.heightPixels / 2)
+                )
+
+        context.startSimpleVibration(SELECT_VIBRATION)
+    }
 
     override fun onLoadMoreImages() = paginator.loadNewPage()
 
     override fun onNavigateToSettingsClicked() = context.startAppSettingsActivity()
 
-    override fun onBackClicked() {
-        nightModeRepository.toggleNightMode()
-    }
-//    override fun onBackClicked() = navigateUp()
+    override fun onBackClicked() = navigateUp()
 
     override fun onFolderChanged(folder: Folder) {
         if (folder == state.folderState.currentFolder) return
@@ -156,13 +183,13 @@ class GalleryViewModel @Inject constructor(
     }
 
     override fun onZoomIncreased() =
-        updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }
+            updateState { copy(columnSpan = min(columnSpan + 1, MAX_COLUM_COUNT)) }
 
     override fun onZoomDecreased() =
-        updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
+            updateState { copy(columnSpan = max(columnSpan - 1, MIN_COLUM_COUNT)) }
 
     override fun onFolderClosed() =
-        updateState { copy(folderState = folderState.copy(folderVisible = false)) }
+            updateState { copy(folderState = folderState.copy(folderVisible = false)) }
 
     override fun onFolderOpened() = updateState {
         copy(folderState = folderState.copy(folderVisible = folderState.folders.isNotEmpty()))

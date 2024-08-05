@@ -1,14 +1,14 @@
 package com.anadolstudio.adelaide.feature.detail
 
-import android.graphics.Point
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import com.anadolstudio.adelaide.R
 import com.anadolstudio.adelaide.databinding.DialogImageDetailBinding
 import com.anadolstudio.ui.dialogs.CoreDialogFragment
+import com.anadolstudio.ui.fragment.withArgs
 import com.anadolstudio.ui.viewbinding.viewBinding
-import com.anadolstudio.utils.bitmap_util.BitmapDecoder
-import kotlin.math.min
 
 class ImageDetailDialog : CoreDialogFragment(R.layout.dialog_image_detail) {
 
@@ -16,10 +16,8 @@ class ImageDetailDialog : CoreDialogFragment(R.layout.dialog_image_detail) {
 
         private const val PHOTO_FILE = "photo_file"
 
-        fun newInstance(path: String?): ImageDetailDialog = ImageDetailDialog().apply {
-            val args = Bundle()
-            args.putString(PHOTO_FILE, path)
-            arguments = args
+        fun newInstance(bitmap: Bitmap): ImageDetailDialog = ImageDetailDialog().withArgs {
+            putParcelable(PHOTO_FILE, bitmap)
         }
 
     }
@@ -31,26 +29,29 @@ class ImageDetailDialog : CoreDialogFragment(R.layout.dialog_image_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireDialog().setContentView(binding.root)
+        requireDialog().setCancelable(true)
 
-        val path = requireArguments().getString(PHOTO_FILE)
 
-        if (path == null) {
-            dismiss()
-            return
-        }
-
-        val size = Point()
+        /*val size = Point()
         requireActivity().windowManager.defaultDisplay.getSize(size)
         val min = min(size.x, size.y)
 
         val bitmap = BitmapDecoder.Manager.decodeBitmapFromPath(
                 requireContext(),
                 path, min, min
-        )
-//        binding.imagePhoto.layoutParams.height = bitmap.height
-        binding.imagePhoto.setImageBitmap(bitmap)
-        binding.imagePhoto.requestLayout()
+        )*/
 
+//        binding.imagePhoto.layoutParams.height = bitmap.height
+        binding.imagePhoto.setImageBitmap(requireArguments().getParcelable(PHOTO_FILE))
+        binding.imagePhoto.requestLayout()
+        binding.imagePhoto.setOnClickListener { }
+        binding.root.setOnTouchListener { v, event ->
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                dismiss()
+            }
+            return@setOnTouchListener false
+        }
     }
 
 }

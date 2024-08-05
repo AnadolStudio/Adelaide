@@ -23,22 +23,6 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/folders_view_pager"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/padding_small"
-        android:paddingVertical="@dimen/padding_small"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        app:layout_insetEdge="start"
-        tools:listitem="@layout/item_folder"
-        tools:visibility="visible"
-        tools:ignore="RtlSymmetry" />
-
     <com.anadolstudio.view.TouchFrameLayout
         android:id="@+id/recycler_container"
         android:layout_width="match_parent"
@@ -51,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="@dimen/padding_medium"
+            android:paddingVertical="@dimen/padding_medium"
             android:paddingHorizontal="@dimen/padding_medium"
             android:scrollbarFadeDuration="1"
             android:scrollbarSize="4dp"
